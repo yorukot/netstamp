@@ -1,0 +1,35 @@
+/* ============================================================
+   Netstamp docs – Starlight orange theme override
+   ============================================================ */
+
+/* Light mode */
+:root {
+  --sl-color-accent-low:  #fff7ed;   /* orange-50  */
+  --sl-color-accent:      #f97316;   /* orange-500 */
+  --sl-color-accent-high: #ea580c;   /* orange-600 */
+
+  /* Slightly sharper text baseline */
+  --sl-font: system-ui, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Dark mode */
+:root[data-theme='dark'] {
+  --sl-color-accent-low:  #431407;   /* orange-950 */
+  --sl-color-accent:      #fb923c;   /* orange-400 */
+  --sl-color-accent-high: #fdba74;   /* orange-300 */
+}
+
+/* Tighten border-radius on interactive elements */
+:root {
+  --sl-border-radius: 3px;
+}
+
+/* Sidebar active link indicator */
+.sidebar-content a[aria-current='page'] {
+  border-radius: 3px;
+}
+
+/* Code blocks */
+.expressive-code .frame {
+  border-radius: 4px;
+}

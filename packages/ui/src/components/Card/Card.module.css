@@ -1,0 +1,42 @@
+.card {
+  background: var(--ns-surface);
+  border: 1px solid var(--ns-border);
+  border-radius: var(--ns-radius);
+  box-shadow: var(--ns-shadow-xs);
+  overflow: hidden;
+}
+
+.header {
+  padding: 20px 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  font-family: var(--ns-font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ns-text);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.description {
+  font-family: var(--ns-font-sans);
+  font-size: 13px;
+  color: var(--ns-text-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.content {
+  padding: 20px 24px;
+}
+
+.footer {
+  padding: 0 24px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

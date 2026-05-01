@@ -1,0 +1,25 @@
+{
+	"name": "netstamp",
+	"type": "module",
+	"scripts": {
+		"preinstall": "npx only-allow pnpm",
+		"prepare": "sh -c 'command -v git >/dev/null 2>&1 && [ -d .git ] && git config core.hooksPath .githooks || exit 0'",
+		"format": "prettier --write .",
+		"dev:web": "pnpm --filter @netstamp/web dev",
+		"dev:docs": "pnpm --filter @netstamp/docs dev",
+		"dev:server": "make -C apps/server dev",
+		"build:web": "pnpm --filter @netstamp/web build",
+		"build:docs": "pnpm --filter @netstamp/docs build",
+		"build:server": "make -C apps/server build",
+		"test:server": "make -C apps/server test"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": ["esbuild", "sharp"]
+	},
+	"devDependencies": {
+		"prettier": "^3.8.3",
+		"prettier-plugin-astro": "^0.14.1",
+		"prettier-plugin-organize-imports": "^4.3.0",
+		"prettier-plugin-packagejson": "^3.0.2"
+	}
+}

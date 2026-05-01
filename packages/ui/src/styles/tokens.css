@@ -1,0 +1,128 @@
+/* ============================================================
+   @netstamp/ui – Design Tokens
+   Import this once at the root of each app:
+     import '@netstamp/ui/styles'
+   ============================================================ */
+
+:root {
+  /* ---------- Orange palette ---------- */
+  --ns-orange-50:  #fff7ed;
+  --ns-orange-100: #ffedd5;
+  --ns-orange-200: #fed7aa;
+  --ns-orange-300: #fdba74;
+  --ns-orange-400: #fb923c;
+  --ns-orange-500: #f97316;
+  --ns-orange-600: #ea580c;
+  --ns-orange-700: #c2410c;
+  --ns-orange-800: #9a3412;
+  --ns-orange-900: #7c2d12;
+
+  /* ---------- Neutral palette ---------- */
+  --ns-neutral-0:   #ffffff;
+  --ns-neutral-50:  #fafafa;
+  --ns-neutral-100: #f4f4f5;
+  --ns-neutral-200: #e4e4e7;
+  --ns-neutral-300: #d4d4d8;
+  --ns-neutral-400: #a1a1aa;
+  --ns-neutral-500: #71717a;
+  --ns-neutral-600: #52525b;
+  --ns-neutral-700: #3f3f46;
+  --ns-neutral-800: #27272a;
+  --ns-neutral-900: #18181b;
+  --ns-neutral-950: #09090b;
+
+  /* ---------- Semantic – light mode ---------- */
+  --ns-bg:              var(--ns-neutral-0);
+  --ns-bg-subtle:       var(--ns-neutral-50);
+  --ns-surface:         var(--ns-neutral-0);
+  --ns-surface-raised:  var(--ns-neutral-50);
+
+  --ns-border:          var(--ns-neutral-200);
+  --ns-border-strong:   var(--ns-neutral-300);
+
+  --ns-text:            var(--ns-neutral-900);
+  --ns-text-muted:      var(--ns-neutral-500);
+  --ns-text-subtle:     var(--ns-neutral-400);
+  --ns-text-on-accent:  var(--ns-neutral-0);
+
+  --ns-accent:          var(--ns-orange-500);
+  --ns-accent-hover:    var(--ns-orange-600);
+  --ns-accent-active:   var(--ns-orange-700);
+  --ns-accent-subtle:   var(--ns-orange-50);
+  --ns-accent-muted:    rgba(249, 115, 22, 0.12);
+  --ns-accent-border:   rgba(249, 115, 22, 0.40);
+
+  /* ---------- Radius – intentionally tiny ---------- */
+  --ns-radius-xs: 2px;
+  --ns-radius-sm: 3px;
+  --ns-radius:    4px;
+  --ns-radius-lg: 6px;
+
+  /* ---------- Shadows ---------- */
+  --ns-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --ns-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.10), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --ns-shadow:    0 4px 6px -1px rgba(0, 0, 0, 0.10), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+
+  /* ---------- Typography ---------- */
+  --ns-font-sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --ns-font-mono: ui-monospace, Consolas, 'Courier New', monospace;
+
+  /* ---------- Transitions ---------- */
+  --ns-transition: 150ms ease;
+}
+
+/* ---------- Dark mode ---------- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ns-bg:              var(--ns-neutral-950);
+    --ns-bg-subtle:       var(--ns-neutral-900);
+    --ns-surface:         var(--ns-neutral-900);
+    --ns-surface-raised:  var(--ns-neutral-800);
+
+    --ns-border:          var(--ns-neutral-800);
+    --ns-border-strong:   var(--ns-neutral-700);
+
+    --ns-text:            var(--ns-neutral-50);
+    --ns-text-muted:      var(--ns-neutral-400);
+    --ns-text-subtle:     var(--ns-neutral-500);
+    --ns-text-on-accent:  var(--ns-neutral-0);
+
+    --ns-accent:          var(--ns-orange-400);
+    --ns-accent-hover:    var(--ns-orange-300);
+    --ns-accent-active:   var(--ns-orange-200);
+    --ns-accent-subtle:   rgba(251, 146, 60, 0.08);
+    --ns-accent-muted:    rgba(251, 146, 60, 0.14);
+    --ns-accent-border:   rgba(251, 146, 60, 0.35);
+
+    --ns-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.30);
+    --ns-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.40), 0 1px 2px rgba(0, 0, 0, 0.30);
+    --ns-shadow:    0 4px 6px -1px rgba(0, 0, 0, 0.40), 0 2px 4px -2px rgba(0, 0, 0, 0.30);
+  }
+}
+
+/* Opt-in class-based dark mode (e.g. data-theme="dark" on <html>) */
+[data-theme='dark'] {
+  --ns-bg:              var(--ns-neutral-950);
+  --ns-bg-subtle:       var(--ns-neutral-900);
+  --ns-surface:         var(--ns-neutral-900);
+  --ns-surface-raised:  var(--ns-neutral-800);
+
+  --ns-border:          var(--ns-neutral-800);
+  --ns-border-strong:   var(--ns-neutral-700);
+
+  --ns-text:            var(--ns-neutral-50);
+  --ns-text-muted:      var(--ns-neutral-400);
+  --ns-text-subtle:     var(--ns-neutral-500);
+  --ns-text-on-accent:  var(--ns-neutral-0);
+
+  --ns-accent:          var(--ns-orange-400);
+  --ns-accent-hover:    var(--ns-orange-300);
+  --ns-accent-active:   var(--ns-orange-200);
+  --ns-accent-subtle:   rgba(251, 146, 60, 0.08);
+  --ns-accent-muted:    rgba(251, 146, 60, 0.14);
+  --ns-accent-border:   rgba(251, 146, 60, 0.35);
+
+  --ns-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.30);
+  --ns-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.40), 0 1px 2px rgba(0, 0, 0, 0.30);
+  --ns-shadow:    0 4px 6px -1px rgba(0, 0, 0, 0.40), 0 2px 4px -2px rgba(0, 0, 0, 0.30);
+}

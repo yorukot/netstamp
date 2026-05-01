@@ -1,0 +1,15 @@
+.label {
+  display: inline-block;
+  font-family: var(--ns-font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ns-text);
+  line-height: 1.4;
+  cursor: default;
+  user-select: none;
+}
+
+.label[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
