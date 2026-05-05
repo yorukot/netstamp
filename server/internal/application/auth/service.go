@@ -44,7 +44,7 @@ func (s *Service) Register(ctx context.Context, input RegisterInput) (AuthAccess
 func (s *Service) Login(ctx context.Context, input LoginInput) (AuthAccessResult, error) {
 	email := normalizeEmail(input.Email)
 	user, err := s.users.GetUserByEmail(ctx, email)
-	if errors.Is(err, ErrUserNotFound) {
+	if errors.Is(err, identity.ErrUserNotFound) {
 		return AuthAccessResult{}, ErrCredentialsInvalid
 	}
 	if err != nil {

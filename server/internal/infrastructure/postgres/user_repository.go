@@ -3,6 +3,7 @@ package postgres
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
@@ -28,7 +29,7 @@ func (r *UserRepository) CreateUser(ctx context.Context, input appauth.CreateUse
 	})
 	if err != nil {
 		if isUniqueViolation(err, "uq_users_email") {
-			return identity.User{}, appauth.ErrEmailAlreadyExists
+			return identity.User{}, fmt.Errorf("email already exists: %w", appauth.ErrEmailAlreadyExists)
 		}
 		return identity.User{}, err
 	}
@@ -46,7 +47,7 @@ func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (iden
 	row, err := r.queries.GetUserByEmail(ctx, email)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return identity.User{}, appauth.ErrUserNotFound
+			return identity.User{}, identity.ErrUserNotFound
 		}
 
 		return identity.User{}, err
