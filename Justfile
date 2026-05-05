@@ -1,0 +1,129 @@
+set dotenv-load := true
+
+server_dir := "server"
+web_filter := "@netstamp/web"
+docs_filter := "@netstamp/docs"
+
+alias dev := backend-dev
+alias fmt := backend-fmt
+alias tidy := backend-tidy
+alias migrate-status := backend-migrate-status
+
+# Misc
+
+# List available recipes.
+default:
+    @just --list --unsorted
+
+# Install workspace dependencies.
+install:
+    pnpm install
+
+# Format frontend, docs, and shared files with Prettier.
+format:
+    pnpm format
+
+# Build all runnable surfaces.
+build: docs-build web-build backend-build
+
+# Lint all available targets.
+lint: web-lint golangci-lint
+
+# Run all available tests.
+test: backend-test
+
+# Remove local build and coverage artifacts.
+clean:
+    rm -rf docs/dist web/dist server/bin server/tmp server/coverage.out
+
+# Documentation
+
+# Start the documentation dev server.
+docs-dev:
+    pnpm --filter {{ docs_filter }} dev
+
+# Build documentation.
+docs-build:
+    pnpm --filter {{ docs_filter }} build
+
+# Preview the built documentation.
+docs-preview:
+    pnpm --filter {{ docs_filter }} preview
+
+# Web
+
+# Start the web dev server.
+web-dev:
+    pnpm --filter {{ web_filter }} dev
+
+# Build the web app.
+web-build:
+    pnpm --filter {{ web_filter }} build
+
+# Lint the web app.
+web-lint:
+    pnpm --filter {{ web_filter }} lint
+
+# Preview the built web app.
+web-preview:
+    pnpm --filter {{ web_filter }} preview
+
+# Backend
+
+# Start the backend API server.
+backend-dev:
+    cd {{ server_dir }} && go run ./cmd/api
+
+# Build the backend API binary.
+backend-build:
+    cd {{ server_dir }} && go build -o bin/api ./cmd/api
+
+# Run backend tests.
+backend-test:
+    cd {{ server_dir }} && go test ./...
+
+# Format backend Go code with gofmt.
+backend-fmt:
+    cd {{ server_dir }} && go fmt ./...
+
+# Tidy backend Go modules.
+backend-tidy:
+    cd {{ server_dir }} && go mod tidy
+
+# Generate SQLC code.
+backend-sqlc:
+    cd {{ server_dir }} && go run github.com/sqlc-dev/sqlc/cmd/sqlc generate
+
+# Lint backend protobuf files.
+backend-buf-lint:
+    cd {{ server_dir }} && go run github.com/bufbuild/buf/cmd/buf lint
+
+# Generate backend protobuf code.
+backend-buf-generate:
+    cd {{ server_dir }} && go run github.com/bufbuild/buf/cmd/buf generate
+
+# Show database migration status.
+backend-migrate-status:
+    cd {{ server_dir }} && go run ./cmd/migrate -command status
+
+# Apply database migrations.
+backend-migrate-up:
+    cd {{ server_dir }} && go run ./cmd/migrate -command up
+
+# Roll back the latest database migration.
+backend-migrate-down:
+    cd {{ server_dir }} && go run ./cmd/migrate -command down
+
+# GolangCI
+
+# Run golangci-lint on backend code.
+golangci-lint:
+    cd {{ server_dir }} && golangci-lint run --config ../golangci.yml ./...
+
+# Format backend code with golangci formatters.
+golangci-fmt:
+    cd {{ server_dir }} && golangci-lint fmt --config ../golangci.yml
+
+# Apply safe golangci-lint fixes.
+golangci-fix:
+    cd {{ server_dir }} && golangci-lint run --fix --config ../golangci.yml ./...

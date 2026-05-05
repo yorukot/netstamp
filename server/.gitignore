@@ -1,10 +1,12 @@
-.DS_Store
+# Backend environment files
 .env
+.env.*
 *.env
+!.env.example
 !*.env.example
 
+# Go build/test artifacts
 /bin/
 /dist/
 /tmp/
 /coverage.out
-

@@ -7,11 +7,11 @@
 		"format": "prettier --write .",
 		"dev:web": "pnpm --filter @netstamp/web dev",
 		"dev:docs": "pnpm --filter @netstamp/docs dev",
-		"dev:server": "make -C apps/server dev",
+		"dev:server": "just backend-dev",
 		"build:web": "pnpm --filter @netstamp/web build",
 		"build:docs": "pnpm --filter @netstamp/docs build",
-		"build:server": "make -C apps/server build",
-		"test:server": "make -C apps/server test"
+		"build:server": "just backend-build",
+		"test:server": "just backend-test"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": ["esbuild", "sharp"]

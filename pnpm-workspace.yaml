@@ -1,4 +1,4 @@
 packages:
-  - "apps/web"
-  - "apps/docs"
+  - "web"
+  - "docs"
   - "packages/*"

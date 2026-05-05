@@ -1,0 +1,211 @@
+# golangci-lint config for backend API services
+# Requires golangci-lint v2.x
+# Docs: https://golangci-lint.run/docs/configuration/file/
+
+version: "2"
+
+run:
+  timeout: 5m
+  tests: true
+  modules-download-mode: readonly
+  relative-path-mode: gomod
+  go: "1.25"
+
+linters:
+  # Keep this explicit and stable. `all` is usually too noisy for API teams.
+  default: none
+  enable:
+    # Correctness / compiler-adjacent
+    - govet
+    - staticcheck
+    - unused
+    - ineffassign
+    - unconvert
+    - wastedassign
+    - copyloopvar
+    - intrange
+
+    # Error handling
+    - errcheck
+    - errorlint
+    - errname
+    - nilerr
+    - nilnil
+    - nilnesserr
+    - noinlineerr
+
+    # HTTP / context / DB resource safety
+    - bodyclose
+    - noctx
+    - contextcheck
+    - rowserrcheck
+    - sqlclosecheck
+
+    # Security / API boundary
+    - gosec
+    - errchkjson
+    - musttag
+    - nosprintfhostport
+
+    # Maintainability
+    - revive
+    - gocritic
+    - cyclop
+    - dupl
+    - maintidx
+    - nestif
+    - interfacebloat
+    - prealloc
+    - perfsprint
+
+    # Style / hygiene
+    - asciicheck
+    - bidichk
+    - misspell
+    - whitespace
+    - nolintlint
+    - usestdlibvars
+    - canonicalheader
+
+    # Tests
+    - testifylint
+    - thelper
+    - tparallel
+    - usetesting
+
+  settings:
+    errcheck:
+      check-type-assertions: true
+      check-blank: true
+
+    govet:
+      enable-all: true
+      disable:
+        # Often noisy in table-driven tests and generated-style code.
+        - fieldalignment
+
+    gocritic:
+      enabled-tags:
+        - diagnostic
+        - style
+        - performance
+        - experimental
+        - opinionated
+      disabled-checks:
+        # Too subjective for most backend API codebases.
+        - whyNoLint
+        - hugeParam
+        - rangeValCopy
+
+    cyclop:
+      max-complexity: 15
+      package-average: 0.0
+
+    dupl:
+      threshold: 120
+
+    interfacebloat:
+      max: 10
+
+    maintidx:
+      under: 20
+
+    nestif:
+      min-complexity: 5
+
+    revive:
+      confidence: 0.8
+      severity: warning
+      rules:
+        - name: blank-imports
+        - name: context-as-argument
+        - name: context-keys-type
+        - name: dot-imports
+        - name: error-return
+        - name: error-strings
+        - name: error-naming
+        - name: exported
+          disabled: true # Enable in libraries; too noisy for internal API packages.
+        - name: if-return
+        - name: increment-decrement
+        - name: var-naming
+        - name: var-declaration
+        - name: receiver-naming
+        - name: range
+        - name: time-naming
+        - name: unexported-return
+        - name: indent-error-flow
+        - name: superfluous-else
+        - name: unreachable-code
+        - name: redefines-builtin-id
+
+    nolintlint:
+      require-explanation: true
+      require-specific: true
+      allow-unused: false
+
+    testifylint:
+      enable-all: true
+
+  exclusions:
+    generated: strict
+    warn-unused: true
+    presets:
+      - comments
+      - common-false-positives
+      - std-error-handling
+    rules:
+      # Tests should be allowed to be longer/noisier and to use weaker randomness.
+      - path: _test\.go
+        linters:
+          - dupl
+          - gosec
+          - cyclop
+          - maintidx
+          - errcheck
+          - noctx
+          - contextcheck
+
+      # Common generated/mock folders.
+      - path: '(^|/)(mocks?|mock|testdata|fixtures)(/|$)'
+        linters:
+          - dupl
+          - gosec
+          - errcheck
+          - maintidx
+
+formatters:
+  enable:
+    - gofumpt
+    - goimports
+    - gci
+  settings:
+    gofumpt:
+      extra-rules: true
+    goimports:
+      local-prefixes:
+        - github.com/yorukot/netstamp
+    gci:
+      sections:
+        - standard
+        - default
+        - localmodule
+      custom-order: true
+  exclusions:
+    generated: strict
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  uniq-by-line: true
+
+output:
+  formats:
+    text:
+      path: stdout
+      print-linter-name: true
+      print-issued-lines: true
+      colors: true
+  sort-order:
+    - file
+    - linter

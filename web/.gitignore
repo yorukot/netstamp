@@ -1,3 +1,8 @@
+# Package manager lockfiles
+package-lock.json
+yarn.lock
+bun.lockb
+
 # Logs
 logs
 *.log
@@ -7,18 +12,65 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Diagnostic reports
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependencies
+node_modules/
+jspm_packages/
+web_modules/
+
+# Build output and framework caches
+dist/
+dist-ssr/
+out/
+.astro/
+astro_tmp_pages_*
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+.temp/
+.svelte-kit/
+.docusaurus/
+**/.vitepress/dist/
+**/.vitepress/cache/
+
+# Tool caches and generated files
+*.tsbuildinfo
+.nyc_output/
+coverage/
+*.lcov
+lib-cov/
+.grunt/
+.lock-wscript
+build/Release/
+.npm/
+.eslintcache
+.stylelintcache
+.node_repl_history
+*.tgz
+.yarn-integrity
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# Frontend environment files
+.env
+.env.*
+*.env
+!.env.example
+!*.env.example
+*.local

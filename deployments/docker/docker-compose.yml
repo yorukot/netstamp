@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:16-alpine
+    image: timescale/timescaledb:latest-pg16
     environment:
       POSTGRES_DB: netstamp
       POSTGRES_USER: netstamp
@@ -17,4 +17,3 @@ services:
 
 volumes:
   netstamp-postgres:
-

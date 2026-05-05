@@ -2,9 +2,9 @@ version: "2"
 sql:
   - engine: "postgresql"
     schema:
-      - "db/migrations"
+      - "server/db/migrations"
     queries:
-      - "db/query"
+      - "server/db/query"
     gen:
       go:
         package: "sqlc"
@@ -13,4 +13,3 @@ sql:
         emit_json_tags: true
         emit_prepared_queries: false
         emit_interface: false
-
