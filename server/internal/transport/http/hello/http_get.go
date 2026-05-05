@@ -1,20 +1,21 @@
 package hello
 
 import (
-	"net/http"
+	"context"
 
-	"github.com/yorukot/netstamp/internal/transport/http/respond"
+	"github.com/danielgtaylor/huma/v2"
 )
 
-func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
-	result, err := h.service.GetGreeting(r.Context())
+func (h *Handler) Get(ctx context.Context, _ *GetInput) (*GetOutput, error) {
+	result, err := h.service.GetGreeting(ctx)
 	if err != nil {
-		respond.Error(w, r, http.StatusServiceUnavailable, "request_cancelled", "request was cancelled")
-		return
+		return nil, huma.Error503ServiceUnavailable("request was cancelled")
 	}
 
-	respond.JSON(w, http.StatusOK, GreetingResponse{
-		Message: result.Message,
-		Service: result.Service,
-	})
+	return &GetOutput{
+		Body: GreetingResponse{
+			Message: result.Message,
+			Service: result.Service,
+		},
+	}, nil
 }

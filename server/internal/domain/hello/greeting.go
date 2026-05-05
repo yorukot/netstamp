@@ -7,7 +7,7 @@ type Greeting struct {
 
 func NewGreeting(service string) Greeting {
 	return Greeting{
-		message: "Hello from NetStamp",
+		message: "Hello from Netstamp",
 		service: service,
 	}
 }

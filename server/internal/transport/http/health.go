@@ -5,34 +5,73 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/yorukot/netstamp/internal/transport/http/respond"
+	"github.com/danielgtaylor/huma/v2"
 )
 
-func livenessHandler(w http.ResponseWriter, _ *http.Request) {
-	respond.JSON(w, http.StatusOK, map[string]string{
-		"status": "ok",
-	})
+type rootBody struct {
+	Message string `json:"message" doc:"Human-readable API status message." example:"Netstamp API is running"`
 }
 
-func readinessHandler(check func(context.Context) error) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if check == nil {
-			respond.JSON(w, http.StatusOK, map[string]string{
-				"status": "ready",
-			})
-			return
+type rootOutput struct {
+	Body rootBody
+}
+
+type healthBody struct {
+	Status string `json:"status" doc:"Current health status." example:"ready"`
+}
+
+type healthOutput struct {
+	Body healthBody
+}
+
+func registerSystemRoutes(api huma.API, readinessCheck func(context.Context) error) {
+	huma.Register(api, huma.Operation{
+		OperationID: "getAPIStatus",
+		Method:      http.MethodGet,
+		Path:        "/",
+		Summary:     "Get API status",
+		Tags:        []string{"System"},
+	}, func(context.Context, *struct{}) (*rootOutput, error) {
+		return &rootOutput{Body: rootBody{
+			Message: "Netstamp API is running",
+		}}, nil
+	})
+
+	huma.Register(api, huma.Operation{
+		OperationID: "getLiveness",
+		Method:      http.MethodGet,
+		Path:        "/livez",
+		Summary:     "Get liveness status",
+		Tags:        []string{"System"},
+	}, func(context.Context, *struct{}) (*healthOutput, error) {
+		return &healthOutput{Body: healthBody{
+			Status: "ok",
+		}}, nil
+	})
+
+	huma.Register(api, huma.Operation{
+		OperationID: "getReadiness",
+		Method:      http.MethodGet,
+		Path:        "/readyz",
+		Summary:     "Get readiness status",
+		Tags:        []string{"System"},
+		Errors:      []int{http.StatusServiceUnavailable},
+	}, func(ctx context.Context, _ *struct{}) (*healthOutput, error) {
+		if readinessCheck == nil {
+			return &healthOutput{Body: healthBody{
+				Status: "ready",
+			}}, nil
 		}
 
-		ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
+		ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
 		defer cancel()
 
-		if err := check(ctx); err != nil {
-			respond.Error(w, r, http.StatusServiceUnavailable, "not_ready", "readiness check failed")
-			return
+		if err := readinessCheck(ctx); err != nil {
+			return nil, huma.Error503ServiceUnavailable("readiness check failed")
 		}
 
-		respond.JSON(w, http.StatusOK, map[string]string{
-			"status": "ready",
-		})
-	}
+		return &healthOutput{Body: healthBody{
+			Status: "ready",
+		}}, nil
+	})
 }

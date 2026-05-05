@@ -1,8 +1,9 @@
 package hello
 
 import (
-	"github.com/go-chi/chi/v5"
+	"net/http"
 
+	"github.com/danielgtaylor/huma/v2"
 	apphello "github.com/yorukot/netstamp/internal/application/hello"
 )
 
@@ -14,6 +15,13 @@ func NewHandler(service *apphello.Service) *Handler {
 	return &Handler{service: service}
 }
 
-func (h *Handler) RegisterRoutes(r chi.Router) {
-	r.Get("/hello", h.Get)
+func (h *Handler) RegisterRoutes(api huma.API) {
+	huma.Register(api, huma.Operation{
+		OperationID: "getGreeting",
+		Method:      http.MethodGet,
+		Path:        "/v1/hello",
+		Summary:     "Get greeting",
+		Tags:        []string{"Hello"},
+		Errors:      []int{http.StatusServiceUnavailable},
+	}, h.Get)
 }

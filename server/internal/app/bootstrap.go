@@ -61,6 +61,7 @@ func New(ctx context.Context) (*Application, error) {
 
 	httpHandler := httpserver.NewRouter(httpserver.Dependencies{
 		Log:            log,
+		APIVersion:     cfg.Version,
 		HelloService:   helloSvc,
 		ReadinessCheck: readiness,
 		RequestTimeout: cfg.HTTP.RequestTimeout,
