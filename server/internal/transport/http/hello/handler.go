@@ -23,5 +23,5 @@ func (h *Handler) RegisterRoutes(api huma.API) {
 		Summary:     "Get greeting",
 		Tags:        []string{"Hello"},
 		Errors:      []int{http.StatusServiceUnavailable},
-	}, h.Get)
+	}, h.get)
 }
