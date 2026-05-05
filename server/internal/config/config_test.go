@@ -75,12 +75,13 @@ func TestLoadFromEnvironment(t *testing.T) {
 	}
 }
 
-func TestLoadFromConfigFile(t *testing.T) {
+func TestLoadFromDotEnv(t *testing.T) {
 	clearConfigEnv(t)
 
 	dir := t.TempDir()
-	configFile := filepath.Join(dir, "local.env")
-	err := os.WriteFile(configFile, []byte(strings.Join([]string{
+	t.Chdir(dir)
+
+	err := os.WriteFile(filepath.Join(dir, ".env"), []byte(strings.Join([]string{
 		"APP_ENV=staging",
 		"SERVICE_NAME=netstamp-staging",
 		"HTTP_ADDR=:8282",
@@ -88,9 +89,8 @@ func TestLoadFromConfigFile(t *testing.T) {
 		"",
 	}, "\n")), 0o600)
 	if err != nil {
-		t.Fatalf("write config file: %v", err)
+		t.Fatalf("write .env: %v", err)
 	}
-	t.Setenv(keyConfigFile, configFile)
 
 	cfg, err := Load()
 	if err != nil {
@@ -101,13 +101,13 @@ func TestLoadFromConfigFile(t *testing.T) {
 		t.Fatalf("expected staging env, got %q", cfg.Env)
 	}
 	if cfg.ServiceName != "netstamp-staging" {
-		t.Fatalf("expected service from config file, got %q", cfg.ServiceName)
+		t.Fatalf("expected service from .env, got %q", cfg.ServiceName)
 	}
 	if cfg.HTTP.Addr != ":8282" {
-		t.Fatalf("expected HTTP addr from config file, got %q", cfg.HTTP.Addr)
+		t.Fatalf("expected HTTP addr from .env, got %q", cfg.HTTP.Addr)
 	}
 	if cfg.HTTP.RequestTimeout != 2*time.Second {
-		t.Fatalf("expected request timeout from config file, got %s", cfg.HTTP.RequestTimeout)
+		t.Fatalf("expected request timeout from .env, got %s", cfg.HTTP.RequestTimeout)
 	}
 }
 
@@ -124,13 +124,33 @@ func TestLoadReturnsValidationErrors(t *testing.T) {
 
 	message := err.Error()
 	for _, want := range []string{
-		"REQUEST_TIMEOUT must be a duration",
+		"'REQUEST_TIMEOUT' time: invalid duration",
 		"DB_MAX_CONNS must not be negative",
 		"DATABASE_URL must be set when DATABASE_REQUIRED=true",
 	} {
 		if !strings.Contains(message, want) {
 			t.Fatalf("expected error to contain %q, got %q", want, message)
 		}
+	}
+}
+
+func TestLoadReturnsUnknownDotEnvKeyErrors(t *testing.T) {
+	clearConfigEnv(t)
+
+	dir := t.TempDir()
+	t.Chdir(dir)
+
+	err := os.WriteFile(filepath.Join(dir, ".env"), []byte("UNKNOWN_SETTING=true\n"), 0o600)
+	if err != nil {
+		t.Fatalf("write .env: %v", err)
+	}
+
+	_, err = Load()
+	if err == nil {
+		t.Fatal("expected validation error")
+	}
+	if !strings.Contains(err.Error(), "has invalid keys: unknown_setting") {
+		t.Fatalf("expected unknown key error, got %q", err.Error())
 	}
 }
 

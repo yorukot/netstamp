@@ -3,7 +3,6 @@ package config
 import (
 	"errors"
 	"fmt"
-	"strconv"
 	"strings"
 	"time"
 
@@ -11,7 +10,6 @@ import (
 )
 
 const (
-	keyConfigFile            = "CONFIG_FILE"
 	keyAppEnv                = "APP_ENV"
 	keyServiceName           = "SERVICE_NAME"
 	keyAppVersion            = "APP_VERSION"
@@ -32,59 +30,58 @@ const (
 	keyDBMaxConnIdleTime     = "DB_MAX_CONN_IDLE_TIME"
 )
 
-var defaultSettings = map[string]string{
-	keyConfigFile:            "",
+var defaultSettings = map[string]any{
 	keyAppEnv:                "local",
 	keyServiceName:           "netstamp-api",
 	keyAppVersion:            "dev",
 	keyLogLevel:              "info",
-	keyShutdownTimeout:       "10s",
+	keyShutdownTimeout:       10 * time.Second,
 	keyHTTPAddr:              ":8080",
 	keyGRPCAddr:              ":9090",
-	keyRequestTimeout:        "10s",
-	keyHTTPReadHeaderTimeout: "5s",
-	keyHTTPReadTimeout:       "15s",
-	keyHTTPWriteTimeout:      "15s",
-	keyHTTPIdleTimeout:       "60s",
-	keyDatabaseRequired:      "false",
+	keyRequestTimeout:        10 * time.Second,
+	keyHTTPReadHeaderTimeout: 5 * time.Second,
+	keyHTTPReadTimeout:       15 * time.Second,
+	keyHTTPWriteTimeout:      15 * time.Second,
+	keyHTTPIdleTimeout:       60 * time.Second,
+	keyDatabaseRequired:      false,
 	keyDatabaseURL:           "",
-	keyDBMaxConns:            "10",
-	keyDBMinConns:            "0",
-	keyDBMaxConnLifetime:     "1h",
-	keyDBMaxConnIdleTime:     "30m",
+	keyDBMaxConns:            int32(10),
+	keyDBMinConns:            int32(0),
+	keyDBMaxConnLifetime:     time.Hour,
+	keyDBMaxConnIdleTime:     30 * time.Minute,
 }
 
 type Config struct {
-	Env             string
-	ServiceName     string
-	Version         string
-	LogLevel        string
-	ShutdownTimeout time.Duration
-	HTTP            HTTPConfig
-	GRPC            GRPCConfig
-	Database        DatabaseConfig
+	Env             string         `mapstructure:"APP_ENV"`
+	ServiceName     string         `mapstructure:"SERVICE_NAME"`
+	Version         string         `mapstructure:"APP_VERSION"`
+	LogLevel        string         `mapstructure:"LOG_LEVEL"`
+	ShutdownTimeout time.Duration  `mapstructure:"SHUTDOWN_TIMEOUT"`
+	HTTP            HTTPConfig     `mapstructure:",squash"`
+	GRPC            GRPCConfig     `mapstructure:",squash"`
+	Database        DatabaseConfig `mapstructure:",squash"`
 }
 
 type HTTPConfig struct {
-	Addr              string
-	RequestTimeout    time.Duration
-	ReadHeaderTimeout time.Duration
-	ReadTimeout       time.Duration
-	WriteTimeout      time.Duration
-	IdleTimeout       time.Duration
+	Addr              string        `mapstructure:"HTTP_ADDR"`
+	RequestTimeout    time.Duration `mapstructure:"REQUEST_TIMEOUT"`
+	ReadHeaderTimeout time.Duration `mapstructure:"HTTP_READ_HEADER_TIMEOUT"`
+	ReadTimeout       time.Duration `mapstructure:"HTTP_READ_TIMEOUT"`
+	WriteTimeout      time.Duration `mapstructure:"HTTP_WRITE_TIMEOUT"`
+	IdleTimeout       time.Duration `mapstructure:"HTTP_IDLE_TIMEOUT"`
 }
 
 type GRPCConfig struct {
-	Addr string
+	Addr string `mapstructure:"GRPC_ADDR"`
 }
 
 type DatabaseConfig struct {
-	URL             string
-	Required        bool
-	MaxConns        int32
-	MinConns        int32
-	MaxConnLifetime time.Duration
-	MaxConnIdleTime time.Duration
+	URL             string        `mapstructure:"DATABASE_URL"`
+	Required        bool          `mapstructure:"DATABASE_REQUIRED"`
+	MaxConns        int32         `mapstructure:"DB_MAX_CONNS"`
+	MinConns        int32         `mapstructure:"DB_MIN_CONNS"`
+	MaxConnLifetime time.Duration `mapstructure:"DB_MAX_CONN_LIFETIME"`
+	MaxConnIdleTime time.Duration `mapstructure:"DB_MAX_CONN_IDLE_TIME"`
 }
 
 func Load() (Config, error) {
@@ -93,84 +90,42 @@ func Load() (Config, error) {
 		return Config{}, err
 	}
 
+	var cfg Config
 	var errs []error
-
-	shutdownTimeout, err := durationSetting(settings, keyShutdownTimeout)
-	errs = appendIfErr(errs, err)
-
-	requestTimeout, err := durationSetting(settings, keyRequestTimeout)
-	errs = appendIfErr(errs, err)
-
-	readHeaderTimeout, err := durationSetting(settings, keyHTTPReadHeaderTimeout)
-	errs = appendIfErr(errs, err)
-
-	readTimeout, err := durationSetting(settings, keyHTTPReadTimeout)
-	errs = appendIfErr(errs, err)
-
-	writeTimeout, err := durationSetting(settings, keyHTTPWriteTimeout)
-	errs = appendIfErr(errs, err)
-
-	idleTimeout, err := durationSetting(settings, keyHTTPIdleTimeout)
-	errs = appendIfErr(errs, err)
-
-	dbRequired, err := boolSetting(settings, keyDatabaseRequired)
-	errs = appendIfErr(errs, err)
-
-	maxConns, err := int32Setting(settings, keyDBMaxConns)
-	errs = appendIfErr(errs, err)
-
-	minConns, err := int32Setting(settings, keyDBMinConns)
-	errs = appendIfErr(errs, err)
-
-	maxConnLifetime, err := durationSetting(settings, keyDBMaxConnLifetime)
-	errs = appendIfErr(errs, err)
-
-	maxConnIdleTime, err := durationSetting(settings, keyDBMaxConnIdleTime)
-	errs = appendIfErr(errs, err)
-
-	cfg := Config{
-		Env:             stringSetting(settings, keyAppEnv),
-		ServiceName:     stringSetting(settings, keyServiceName),
-		Version:         stringSetting(settings, keyAppVersion),
-		LogLevel:        stringSetting(settings, keyLogLevel),
-		ShutdownTimeout: shutdownTimeout,
-		HTTP: HTTPConfig{
-			Addr:              stringSetting(settings, keyHTTPAddr),
-			RequestTimeout:    requestTimeout,
-			ReadHeaderTimeout: readHeaderTimeout,
-			ReadTimeout:       readTimeout,
-			WriteTimeout:      writeTimeout,
-			IdleTimeout:       idleTimeout,
-		},
-		GRPC: GRPCConfig{
-			Addr: stringSetting(settings, keyGRPCAddr),
-		},
-		Database: DatabaseConfig{
-			URL:             stringSetting(settings, keyDatabaseURL),
-			Required:        dbRequired,
-			MaxConns:        maxConns,
-			MinConns:        minConns,
-			MaxConnLifetime: maxConnLifetime,
-			MaxConnIdleTime: maxConnIdleTime,
-		},
+	if err := settings.UnmarshalExact(&cfg); err != nil {
+		errs = append(errs, fmt.Errorf("decode config: %w", err))
 	}
 
+	errs = append(errs, validate(cfg)...)
+	return cfg, errors.Join(errs...)
+}
+
+func validate(cfg Config) []error {
+	var errs []error
 	if cfg.HTTP.Addr == "" {
 		errs = append(errs, errors.New("HTTP_ADDR must not be empty"))
 	}
 	if cfg.GRPC.Addr == "" {
 		errs = append(errs, errors.New("GRPC_ADDR must not be empty"))
 	}
+	if cfg.Database.MaxConns < 0 {
+		errs = append(errs, errors.New("DB_MAX_CONNS must not be negative"))
+	}
+	if cfg.Database.MinConns < 0 {
+		errs = append(errs, errors.New("DB_MIN_CONNS must not be negative"))
+	}
 	if cfg.Database.Required && cfg.Database.URL == "" {
 		errs = append(errs, errors.New("DATABASE_URL must be set when DATABASE_REQUIRED=true"))
 	}
 
-	return cfg, errors.Join(errs...)
+	return errs
 }
 
 func newSettings() (*viper.Viper, error) {
 	settings := viper.New()
+	settings.SetConfigName(".env")
 	settings.SetConfigType("env")
+	settings.AddConfigPath(".")
 	settings.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
 	settings.AutomaticEnv()
 
@@ -182,76 +137,21 @@ func newSettings() (*viper.Viper, error) {
 		}
 	}
 
-	if err := readConfigFile(settings); err != nil {
+	if err := loadDotEnv(settings); err != nil {
 		errs = append(errs, err)
 	}
 
 	return settings, errors.Join(errs...)
 }
 
-func readConfigFile(settings *viper.Viper) error {
-	configFile := stringSetting(settings, keyConfigFile)
-	if configFile == "" {
-		return nil
-	}
-
-	settings.SetConfigFile(configFile)
+func loadDotEnv(settings *viper.Viper) error {
 	if err := settings.ReadInConfig(); err != nil {
-		return fmt.Errorf("read config file %q: %w", configFile, err)
+		var notFound viper.ConfigFileNotFoundError
+		if errors.As(err, &notFound) {
+			return nil
+		}
+		return fmt.Errorf("read .env: %w", err)
 	}
 
 	return nil
-}
-
-func stringSetting(settings *viper.Viper, key string) string {
-	return strings.TrimSpace(settings.GetString(key))
-}
-
-func durationSetting(settings *viper.Viper, key string) (time.Duration, error) {
-	value := stringSetting(settings, key)
-	if value == "" {
-		return 0, nil
-	}
-
-	parsed, err := time.ParseDuration(value)
-	if err != nil {
-		return 0, fmt.Errorf("%s must be a duration: %w", key, err)
-	}
-	return parsed, nil
-}
-
-func int32Setting(settings *viper.Viper, key string) (int32, error) {
-	value := stringSetting(settings, key)
-	if value == "" {
-		return 0, nil
-	}
-
-	parsed, err := strconv.ParseInt(value, 10, 32)
-	if err != nil {
-		return 0, fmt.Errorf("%s must be an int32: %w", key, err)
-	}
-	if parsed < 0 {
-		return 0, fmt.Errorf("%s must not be negative", key)
-	}
-	return int32(parsed), nil
-}
-
-func boolSetting(settings *viper.Viper, key string) (bool, error) {
-	value := stringSetting(settings, key)
-	if value == "" {
-		return false, nil
-	}
-
-	parsed, err := strconv.ParseBool(value)
-	if err != nil {
-		return false, fmt.Errorf("%s must be a boolean: %w", key, err)
-	}
-	return parsed, nil
-}
-
-func appendIfErr(errs []error, err error) []error {
-	if err != nil {
-		return append(errs, err)
-	}
-	return errs
 }
