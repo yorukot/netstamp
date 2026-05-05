@@ -2,19 +2,37 @@ package auth
 
 import (
 	"context"
+	"errors"
 
 	"github.com/danielgtaylor/huma/v2"
+
+	appauth "github.com/yorukot/netstamp/internal/application/auth"
 )
 
-func (h *Handler) register(ctx context.Context, _ *registerInput) (*registerOutput, error) {
-	result, err := h.service.GetGreeting(ctx)
+func (h *Handler) register(ctx context.Context, input *registerInput) (*registerOutput, error) {
+	result, err := h.service.Register(ctx, appauth.RegisterInput{
+		Email:    input.Body.Email,
+		Password: input.Body.Password,
+	})
+
 	if err != nil {
-		return nil, huma.Error503ServiceUnavailable("request was cancelled")
+		switch {
+		case errors.Is(err, appauth.ErrEmailAlreadyExists):
+			return nil, huma.Error409Conflict("email already exists")
+		default:
+			return nil, huma.Error500InternalServerError("register user failed")
+		}
 	}
 
 	return &registerOutput{
 		Body: registerOutputBody{
-			Message: result.Message,
+			User: userResponse{
+				ID:    result.UserID,
+				Email: result.Email,
+			},
+			TokenType:   result.TokenType,
+			AccessToken: result.AccessToken,
+			ExpiresIn:   result.ExpiresIn,
 		},
 	}, nil
 }
@@ -28,13 +46,18 @@ type registerOutput struct {
 }
 
 type registerInputBody struct {
-	Username string
-	Password string
+	Email    string `json:"email" format:"email" maxLength:"254" required:"true" doc:"Email address used to sign in." example:"user@example.com"`
+	Password string `json:"password" minLength:"8" maxLength:"128" required:"true" writeOnly:"true" doc:"Plain-text password. It is stored only as an Argon2id hash." example:"correct-horse-battery-staple"`
 }
 
 type registerOutputBody struct {
-	Message string
-	TokenType  string
-	AccessToken string
-	ExpiresIn int
+	User        userResponse `json:"user"`
+	TokenType   string       `json:"tokenType" example:"Bearer"`
+	AccessToken string       `json:"accessToken"`
+	ExpiresIn   int          `json:"expiresIn" example:"43200" doc:"Access token lifetime in seconds."`
+}
+
+type userResponse struct {
+	ID    string `json:"id" format:"uuid"`
+	Email string `json:"email" format:"email"`
 }

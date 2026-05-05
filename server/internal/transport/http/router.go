@@ -11,7 +11,9 @@ import (
 	chimw "github.com/go-chi/chi/v5/middleware"
 	"go.uber.org/zap"
 
+	appauth "github.com/yorukot/netstamp/internal/application/auth"
 	apphello "github.com/yorukot/netstamp/internal/application/hello"
+	authhttp "github.com/yorukot/netstamp/internal/transport/http/auth"
 	hellohttp "github.com/yorukot/netstamp/internal/transport/http/hello"
 	httpmiddleware "github.com/yorukot/netstamp/internal/transport/http/middleware"
 )
@@ -19,6 +21,7 @@ import (
 type Dependencies struct {
 	Log            *zap.Logger
 	APIVersion     string
+	AuthService    *appauth.Service
 	HelloService   *apphello.Service
 	ReadinessCheck func(context.Context) error
 	RequestTimeout time.Duration
@@ -39,6 +42,9 @@ func NewRouter(dep Dependencies) http.Handler {
 	r.Route(dep.basePath(), func(apiRouter chi.Router) {
 		api := humachi.New(apiRouter, newHumaConfig(dep))
 		registerSystemRoutes(api, dep.ReadinessCheck)
+		if dep.AuthService != nil {
+			authhttp.NewHandler(dep.AuthService).RegisterRoutes(api)
+		}
 		hellohttp.NewHandler(dep.HelloService).RegisterRoutes(api)
 	})
 

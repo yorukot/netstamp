@@ -250,7 +250,7 @@ func validConfig() Config {
 	return Config{
 		Env:             "local",
 		ServiceName:     "netstamp-api",
-		Version:         "dev",
+		Version:         "v1",
 		LogLevel:        "info",
 		ShutdownTimeout: 10 * time.Second,
 		HTTP: HTTPConfig{
@@ -275,6 +275,13 @@ func validConfig() Config {
 			MinConns:        0,
 			MaxConnLifetime: time.Hour,
 			MaxConnIdleTime: 30 * time.Minute,
+		},
+		Auth: AuthConfig{
+			JWTSecret:           "local-development-jwt-secret-change-before-production",
+			AccessTokenTTL:      12 * time.Hour,
+			Argon2idMemoryKiB:   64 * 1024,
+			Argon2idIterations:  3,
+			Argon2idParallelism: 4,
 		},
 	}
 }

@@ -9,9 +9,11 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
+	appauth "github.com/yorukot/netstamp/internal/application/auth"
 	apphello "github.com/yorukot/netstamp/internal/application/hello"
 	"github.com/yorukot/netstamp/internal/config"
 	"github.com/yorukot/netstamp/internal/infrastructure/postgres"
+	"github.com/yorukot/netstamp/internal/infrastructure/security"
 	"github.com/yorukot/netstamp/internal/logger"
 	grpcserver "github.com/yorukot/netstamp/internal/transport/grpc"
 	httpserver "github.com/yorukot/netstamp/internal/transport/http"
@@ -56,12 +58,22 @@ func New(ctx context.Context) (*Application, error) {
 	}
 
 	// Initialize application services and handlers
+	userRepo := postgres.NewUserRepository(dbPool)
+	passwordHasher := security.NewArgon2idPasswordHasher(security.Argon2idConfig{
+		MemoryKiB:   cfg.Auth.Argon2idMemoryKiB,
+		Iterations:  cfg.Auth.Argon2idIterations,
+		Parallelism: cfg.Auth.Argon2idParallelism,
+	})
+	tokenIssuer := security.NewJWTIssuer(cfg.Auth.JWTSecret, cfg.Auth.AccessTokenTTL)
+
+	authSvc := appauth.NewService(userRepo, passwordHasher, tokenIssuer)
 	helloSvc := apphello.NewService(cfg.ServiceName)
 	readiness := postgres.NewReadinessCheck(dbPool)
 
 	httpHandler := httpserver.NewRouter(httpserver.Dependencies{
 		Log:            log,
 		APIVersion:     cfg.Version,
+		AuthService:    authSvc,
 		HelloService:   helloSvc,
 		ReadinessCheck: readiness,
 		RequestTimeout: cfg.HTTP.RequestTimeout,

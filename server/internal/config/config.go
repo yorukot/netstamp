@@ -35,6 +35,11 @@ const (
 	keyDBMinConns            = "DB_MIN_CONNS"
 	keyDBMaxConnLifetime     = "DB_MAX_CONN_LIFETIME"
 	keyDBMaxConnIdleTime     = "DB_MAX_CONN_IDLE_TIME"
+	keyAuthJWTSecret         = "AUTH_JWT_SECRET"
+	keyAuthAccessTokenTTL    = "AUTH_ACCESS_TOKEN_TTL"
+	keyAuthArgon2idMemoryKiB = "AUTH_ARGON2ID_MEMORY_KIB"
+	keyAuthArgon2idIter      = "AUTH_ARGON2ID_ITERATIONS"
+	keyAuthArgon2idParallel  = "AUTH_ARGON2ID_PARALLELISM"
 )
 
 var defaultSettings = map[string]any{
@@ -60,6 +65,11 @@ var defaultSettings = map[string]any{
 	keyDBMinConns:            int32(0),
 	keyDBMaxConnLifetime:     time.Hour,
 	keyDBMaxConnIdleTime:     30 * time.Minute,
+	keyAuthJWTSecret:         "local-development-jwt-secret-change-before-production",
+	keyAuthAccessTokenTTL:    12 * time.Hour,
+	keyAuthArgon2idMemoryKiB: 64 * 1024,
+	keyAuthArgon2idIter:      3,
+	keyAuthArgon2idParallel:  4,
 }
 
 type Config struct {
@@ -71,6 +81,7 @@ type Config struct {
 	HTTP            HTTPConfig     `mapstructure:",squash"`
 	GRPC            GRPCConfig     `mapstructure:",squash"`
 	Database        DatabaseConfig `mapstructure:",squash"`
+	Auth            AuthConfig     `mapstructure:",squash"`
 }
 
 type HTTPConfig struct {
@@ -97,6 +108,14 @@ type DatabaseConfig struct {
 	MinConns        int32         `mapstructure:"DB_MIN_CONNS"`
 	MaxConnLifetime time.Duration `mapstructure:"DB_MAX_CONN_LIFETIME"`
 	MaxConnIdleTime time.Duration `mapstructure:"DB_MAX_CONN_IDLE_TIME"`
+}
+
+type AuthConfig struct {
+	JWTSecret           string        `mapstructure:"AUTH_JWT_SECRET"`
+	AccessTokenTTL      time.Duration `mapstructure:"AUTH_ACCESS_TOKEN_TTL"`
+	Argon2idMemoryKiB   int           `mapstructure:"AUTH_ARGON2ID_MEMORY_KIB"`
+	Argon2idIterations  int           `mapstructure:"AUTH_ARGON2ID_ITERATIONS"`
+	Argon2idParallelism int           `mapstructure:"AUTH_ARGON2ID_PARALLELISM"`
 }
 
 func (cfg DatabaseConfig) ConnectionString() string {
@@ -139,9 +158,10 @@ func validate(cfg Config) []error {
 	// Global settings
 	errs = append(errs, validateRequiredString(keyAppEnv, cfg.Env)...)
 	errs = append(errs, validateRequiredString(keyServiceName, cfg.ServiceName)...)
+	errs = append(errs, validateRequiredString(keyAppVersion, cfg.Version)...)
 	errs = append(errs, validateLogLevel(cfg.LogLevel)...)
 	errs = append(errs, validatePositiveDuration(keyShutdownTimeout, cfg.ShutdownTimeout)...)
-	if !strings.HasPrefix(cfg.Version, "v") {
+	if strings.TrimSpace(cfg.Version) != "" && !strings.HasPrefix(cfg.Version, "v") {
 		errs = append(errs, fmt.Errorf("APP_VERSION must start with 'v'"))
 	}
 
@@ -177,6 +197,13 @@ func validate(cfg Config) []error {
 	}
 	errs = append(errs, validatePositiveDuration(keyDBMaxConnLifetime, cfg.Database.MaxConnLifetime)...)
 	errs = append(errs, validatePositiveDuration(keyDBMaxConnIdleTime, cfg.Database.MaxConnIdleTime)...)
+
+	// Auth settings
+	errs = append(errs, validateRequiredString(keyAuthJWTSecret, cfg.Auth.JWTSecret)...)
+	errs = append(errs, validatePositiveDuration(keyAuthAccessTokenTTL, cfg.Auth.AccessTokenTTL)...)
+	errs = append(errs, validatePositiveInt(keyAuthArgon2idMemoryKiB, cfg.Auth.Argon2idMemoryKiB)...)
+	errs = append(errs, validatePositiveInt(keyAuthArgon2idIter, cfg.Auth.Argon2idIterations)...)
+	errs = append(errs, validateUint8(keyAuthArgon2idParallel, cfg.Auth.Argon2idParallelism)...)
 
 	return errs
 }

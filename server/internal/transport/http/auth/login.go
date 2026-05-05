@@ -6,17 +6,8 @@ import (
 	"github.com/danielgtaylor/huma/v2"
 )
 
-func (h *Handler) login(ctx context.Context, _ *loginInput) (*loginOutput, error) {
-	result, err := h.service.GetGreeting(ctx)
-	if err != nil {
-		return nil, huma.Error503ServiceUnavailable("request was cancelled")
-	}
-
-	return &loginOutput{
-		Body: loginOutputBody{
-			Message: result.Message,
-		},
-	}, nil
+func (h *Handler) login(_ context.Context, _ *loginInput) (*loginOutput, error) {
+	return nil, huma.Error501NotImplemented("login is not implemented")
 }
 
 type loginInput struct {
@@ -28,14 +19,12 @@ type loginOutput struct {
 }
 
 type loginInputBody struct {
-	Username string
-	Password string
+	Email    string `json:"email" format:"email" required:"true"`
+	Password string `json:"password" required:"true"`
 }
 
 type loginOutputBody struct {
-	Message string
-	TokenType  string
-	AccessToken string
-	ExpiresIn int
+	TokenType   string `json:"tokenType"`
+	AccessToken string `json:"accessToken"`
+	ExpiresIn   int    `json:"expiresIn"`
 }
-

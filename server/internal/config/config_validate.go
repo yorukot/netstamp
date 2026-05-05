@@ -54,6 +54,20 @@ func validatePositiveDuration(key string, value time.Duration) []error {
 	return nil
 }
 
+func validatePositiveInt(key string, value int) []error {
+	if value <= 0 {
+		return []error{fmt.Errorf("%s must be greater than 0", key)}
+	}
+	return nil
+}
+
+func validateUint8(key string, value int) []error {
+	if value < 1 || value > 255 {
+		return []error{fmt.Errorf("%s must be between 1 and 255", key)}
+	}
+	return nil
+}
+
 func validateDatabasePort(value int32) []error {
 	if value < 1 || value > 65535 {
 		return []error{errors.New("DATABASE_PORT must be between 1 and 65535")}

@@ -4,31 +4,35 @@ import (
 	"net/http"
 
 	"github.com/danielgtaylor/huma/v2"
-	apphello "github.com/yorukot/netstamp/internal/application/hello"
+
+	appauth "github.com/yorukot/netstamp/internal/application/auth"
 )
 
 type Handler struct {
-	service *apphello.Service
+	service *appauth.Service
 }
 
-func NewHandler(service *apphello.Service) *Handler {
+func NewHandler(service *appauth.Service) *Handler {
 	return &Handler{service: service}
 }
 
 func (h *Handler) RegisterRoutes(api huma.API) {
-    huma.Register(api, huma.Operation{
-        OperationID: "registerUser",
-        Method:      http.MethodPost,
-        Path:        "/auth/register",
-        Summary:     "Register user",
-        Tags:        []string{"Auth"},
-    }, h.register)
+	huma.Register(api, huma.Operation{
+		OperationID:   "registerUser",
+		Method:        http.MethodPost,
+		Path:          "/auth/register",
+		DefaultStatus: http.StatusCreated,
+		Summary:       "Register user",
+		Tags:          []string{"Auth"},
+		Errors:        []int{http.StatusUnprocessableEntity, http.StatusConflict, http.StatusInternalServerError},
+	}, h.register)
 
-    huma.Register(api, huma.Operation{
-        OperationID: "loginUser",
-        Method:      http.MethodPost,
-        Path:        "/auth/login",
-        Summary:     "Login user",
-        Tags:        []string{"Auth"},
-    }, h.login)
+	huma.Register(api, huma.Operation{
+		OperationID: "loginUser",
+		Method:      http.MethodPost,
+		Path:        "/auth/login",
+		Summary:     "Login user",
+		Tags:        []string{"Auth"},
+		Errors:      []int{http.StatusNotImplemented},
+	}, h.login)
 }

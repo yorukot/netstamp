@@ -27,7 +27,7 @@ func main() {
 	defer func() {
 		_ = application.Log.Sync()
 	}()
-	
+
 	err = application.Run(ctx)
 	if err != nil && !errors.Is(err, context.Canceled) {
 		application.Log.Error("startup failed", zap.Error(err))
