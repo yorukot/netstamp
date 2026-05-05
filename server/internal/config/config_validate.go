@@ -1,0 +1,71 @@
+package config
+
+import (
+	"errors"
+	"fmt"
+	"net"
+	"strconv"
+	"strings"
+	"time"
+
+	"go.uber.org/zap/zapcore"
+)
+
+func validateRequiredString(key string, value string) []error {
+	if strings.TrimSpace(value) == "" {
+		return []error{fmt.Errorf("%s must not be empty", key)}
+	}
+	return nil
+}
+
+func validateLogLevel(value string) []error {
+	trimmed := strings.TrimSpace(value)
+	if trimmed == "" {
+		return []error{errors.New("LOG_LEVEL must not be empty")}
+	}
+	if _, err := zapcore.ParseLevel(strings.ToLower(trimmed)); err != nil {
+		return []error{errors.New("LOG_LEVEL must be one of debug, info, warn, error, dpanic, panic, or fatal")}
+	}
+	return nil
+}
+
+func validateListenAddr(key string, value string) []error {
+	if strings.TrimSpace(value) == "" {
+		return []error{fmt.Errorf("%s must not be empty", key)}
+	}
+
+	_, port, err := net.SplitHostPort(value)
+	if err != nil {
+		return []error{fmt.Errorf("%s must be a host:port address", key)}
+	}
+
+	portNumber, err := strconv.Atoi(port)
+	if err != nil || portNumber < 1 || portNumber > 65535 {
+		return []error{fmt.Errorf("%s port must be between 1 and 65535", key)}
+	}
+
+	return nil
+}
+
+func validatePositiveDuration(key string, value time.Duration) []error {
+	if value <= 0 {
+		return []error{fmt.Errorf("%s must be greater than 0", key)}
+	}
+	return nil
+}
+
+func validateDatabasePort(value int32) []error {
+	if value < 1 || value > 65535 {
+		return []error{errors.New("DATABASE_PORT must be between 1 and 65535")}
+	}
+	return nil
+}
+
+func validateDatabaseSSLMode(value string) []error {
+	switch strings.TrimSpace(value) {
+	case "disable", "allow", "prefer", "require", "verify-ca", "verify-full":
+		return nil
+	default:
+		return []error{errors.New("DATABASE_SSLMODE must be one of disable, allow, prefer, require, verify-ca, or verify-full")}
+	}
+}

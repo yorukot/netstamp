@@ -1,12 +1,15 @@
 package config
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 	"time"
 )
+
+const testDatabaseConnectionString = "postgres://netstamp:netstamp@localhost:5432/netstamp?sslmode=disable"
 
 func TestLoadDefaults(t *testing.T) {
 	clearConfigEnv(t)
@@ -31,8 +34,14 @@ func TestLoadDefaults(t *testing.T) {
 	if cfg.HTTP.RequestTimeout != 10*time.Second {
 		t.Fatalf("expected default request timeout, got %s", cfg.HTTP.RequestTimeout)
 	}
-	if cfg.Database.Required {
-		t.Fatal("expected database to be optional by default")
+	if cfg.Database.Host != "localhost" {
+		t.Fatalf("expected database host, got %q", cfg.Database.Host)
+	}
+	if cfg.Database.Port != 5432 {
+		t.Fatalf("expected database port, got %d", cfg.Database.Port)
+	}
+	if cfg.Database.ConnectionString() != testDatabaseConnectionString {
+		t.Fatalf("expected connection string, got %q", cfg.Database.ConnectionString())
 	}
 }
 
@@ -43,8 +52,12 @@ func TestLoadFromEnvironment(t *testing.T) {
 	t.Setenv(keyHTTPAddr, ":8181")
 	t.Setenv(keyGRPCAddr, ":9191")
 	t.Setenv(keyRequestTimeout, "250ms")
-	t.Setenv(keyDatabaseRequired, "true")
-	t.Setenv(keyDatabaseURL, "postgres://netstamp:netstamp@localhost:5432/netstamp?sslmode=disable")
+	t.Setenv(keyDatabaseHost, "db.internal")
+	t.Setenv(keyDatabasePort, "15432")
+	t.Setenv(keyDatabaseUser, "netstamp_user")
+	t.Setenv(keyDatabasePassword, "secret")
+	t.Setenv(keyDatabaseName, "netstamp_prod")
+	t.Setenv(keyDatabaseSSLMode, "require")
 	t.Setenv(keyDBMaxConns, "12")
 
 	cfg, err := Load()
@@ -67,8 +80,20 @@ func TestLoadFromEnvironment(t *testing.T) {
 	if cfg.HTTP.RequestTimeout != 250*time.Millisecond {
 		t.Fatalf("expected request timeout override, got %s", cfg.HTTP.RequestTimeout)
 	}
-	if !cfg.Database.Required {
-		t.Fatal("expected database to be required")
+	if cfg.Database.Host != "db.internal" {
+		t.Fatalf("expected database host override, got %q", cfg.Database.Host)
+	}
+	if cfg.Database.Port != 15432 {
+		t.Fatalf("expected database port override, got %d", cfg.Database.Port)
+	}
+	if cfg.Database.User != "netstamp_user" {
+		t.Fatalf("expected database user override, got %q", cfg.Database.User)
+	}
+	if cfg.Database.Name != "netstamp_prod" {
+		t.Fatalf("expected database name override, got %q", cfg.Database.Name)
+	}
+	if cfg.Database.SSLMode != "require" {
+		t.Fatalf("expected database sslmode override, got %q", cfg.Database.SSLMode)
 	}
 	if cfg.Database.MaxConns != 12 {
 		t.Fatalf("expected DB max conns override, got %d", cfg.Database.MaxConns)
@@ -86,6 +111,8 @@ func TestLoadFromDotEnv(t *testing.T) {
 		"SERVICE_NAME=netstamp-staging",
 		"HTTP_ADDR=:8282",
 		"REQUEST_TIMEOUT=2s",
+		"DATABASE_HOST=db.staging.internal",
+		"DATABASE_NAME=netstamp_staging",
 		"",
 	}, "\n")), 0o600)
 	if err != nil {
@@ -109,13 +136,19 @@ func TestLoadFromDotEnv(t *testing.T) {
 	if cfg.HTTP.RequestTimeout != 2*time.Second {
 		t.Fatalf("expected request timeout from .env, got %s", cfg.HTTP.RequestTimeout)
 	}
+	if cfg.Database.Host != "db.staging.internal" {
+		t.Fatalf("expected database host from .env, got %q", cfg.Database.Host)
+	}
+	if cfg.Database.Name != "netstamp_staging" {
+		t.Fatalf("expected database name from .env, got %q", cfg.Database.Name)
+	}
 }
 
 func TestLoadReturnsValidationErrors(t *testing.T) {
 	clearConfigEnv(t)
 	t.Setenv(keyRequestTimeout, "not-a-duration")
+	t.Setenv(keyDatabaseHost, " ")
 	t.Setenv(keyDBMaxConns, "-1")
-	t.Setenv(keyDatabaseRequired, "true")
 
 	_, err := Load()
 	if err == nil {
@@ -125,8 +158,67 @@ func TestLoadReturnsValidationErrors(t *testing.T) {
 	message := err.Error()
 	for _, want := range []string{
 		"'REQUEST_TIMEOUT' time: invalid duration",
+		"DATABASE_HOST must not be empty",
 		"DB_MAX_CONNS must not be negative",
-		"DATABASE_URL must be set when DATABASE_REQUIRED=true",
+	} {
+		if !strings.Contains(message, want) {
+			t.Fatalf("expected error to contain %q, got %q", want, message)
+		}
+	}
+}
+
+func TestValidateReturnsErrorsForInvalidValues(t *testing.T) {
+	cfg := validConfig()
+	cfg.Env = " "
+	cfg.ServiceName = ""
+	cfg.Version = "\t"
+	cfg.LogLevel = "verbose"
+	cfg.ShutdownTimeout = 0
+	cfg.HTTP.Addr = "localhost"
+	cfg.GRPC.Addr = ":99999"
+	cfg.HTTP.RequestTimeout = -time.Second
+	cfg.HTTP.ReadHeaderTimeout = 0
+	cfg.HTTP.ReadTimeout = 0
+	cfg.HTTP.WriteTimeout = 0
+	cfg.HTTP.IdleTimeout = 0
+	cfg.Database.Host = ""
+	cfg.Database.Port = 0
+	cfg.Database.User = ""
+	cfg.Database.Name = ""
+	cfg.Database.SSLMode = "invalid"
+	cfg.Database.MaxConns = 0
+	cfg.Database.MinConns = 1
+	cfg.Database.MaxConnLifetime = 0
+	cfg.Database.MaxConnIdleTime = -time.Second
+
+	err := errors.Join(validate(cfg)...)
+	if err == nil {
+		t.Fatal("expected validation errors")
+	}
+
+	message := err.Error()
+	for _, want := range []string{
+		"APP_ENV must not be empty",
+		"SERVICE_NAME must not be empty",
+		"APP_VERSION must not be empty",
+		"LOG_LEVEL must be one of debug, info, warn, error, dpanic, panic, or fatal",
+		"SHUTDOWN_TIMEOUT must be greater than 0",
+		"HTTP_ADDR must be a host:port address",
+		"GRPC_ADDR port must be between 1 and 65535",
+		"REQUEST_TIMEOUT must be greater than 0",
+		"HTTP_READ_HEADER_TIMEOUT must be greater than 0",
+		"HTTP_READ_TIMEOUT must be greater than 0",
+		"HTTP_WRITE_TIMEOUT must be greater than 0",
+		"HTTP_IDLE_TIMEOUT must be greater than 0",
+		"DATABASE_HOST must not be empty",
+		"DATABASE_USER must not be empty",
+		"DATABASE_NAME must not be empty",
+		"DATABASE_PORT must be between 1 and 65535",
+		"DATABASE_SSLMODE must be one of disable, allow, prefer, require, verify-ca, or verify-full",
+		"DB_MAX_CONNS must be greater than 0",
+		"DB_MIN_CONNS must not be greater than DB_MAX_CONNS",
+		"DB_MAX_CONN_LIFETIME must be greater than 0",
+		"DB_MAX_CONN_IDLE_TIME must be greater than 0",
 	} {
 		if !strings.Contains(message, want) {
 			t.Fatalf("expected error to contain %q, got %q", want, message)
@@ -151,6 +243,39 @@ func TestLoadReturnsUnknownDotEnvKeyErrors(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "has invalid keys: unknown_setting") {
 		t.Fatalf("expected unknown key error, got %q", err.Error())
+	}
+}
+
+func validConfig() Config {
+	return Config{
+		Env:             "local",
+		ServiceName:     "netstamp-api",
+		Version:         "dev",
+		LogLevel:        "info",
+		ShutdownTimeout: 10 * time.Second,
+		HTTP: HTTPConfig{
+			Addr:              ":8080",
+			RequestTimeout:    10 * time.Second,
+			ReadHeaderTimeout: 5 * time.Second,
+			ReadTimeout:       15 * time.Second,
+			WriteTimeout:      15 * time.Second,
+			IdleTimeout:       60 * time.Second,
+		},
+		GRPC: GRPCConfig{
+			Addr: ":9090",
+		},
+		Database: DatabaseConfig{
+			Host:            "localhost",
+			Port:            5432,
+			User:            "netstamp",
+			Password:        "netstamp",
+			Name:            "netstamp",
+			SSLMode:         "disable",
+			MaxConns:        10,
+			MinConns:        0,
+			MaxConnLifetime: time.Hour,
+			MaxConnIdleTime: 30 * time.Minute,
+		},
 	}
 }
 

@@ -26,11 +26,13 @@ type Application struct {
 }
 
 func New(ctx context.Context) (*Application, error) {
+	// Load configuration from environment variables and .env file
 	cfg, err := config.Load()
 	if err != nil {
 		return nil, fmt.Errorf("load config: %w", err)
 	}
 
+	// Creating logger before database connection to ensure we can log any errors that occur during startup
 	log, _, err := logger.New(logger.Config{
 		Env:     cfg.Env,
 		Service: cfg.ServiceName,
@@ -41,14 +43,21 @@ func New(ctx context.Context) (*Application, error) {
 		return nil, fmt.Errorf("create logger: %w", err)
 	}
 
-	dbPool, err := openDatabase(ctx, cfg.Database)
+	// Open database connection pool.
+	dbPool, err := postgres.NewPool(ctx, postgres.PoolConfig{
+		ConnectionString: cfg.Database.ConnectionString(),
+		MaxConns:         cfg.Database.MaxConns,
+		MinConns:         cfg.Database.MinConns,
+		MaxConnLifetime:  cfg.Database.MaxConnLifetime,
+		MaxConnIdleTime:  cfg.Database.MaxConnIdleTime,
+	})
 	if err != nil {
-		_ = log.Sync()
 		return nil, err
 	}
 
+	// Initialize application services and handlers
 	helloSvc := apphello.NewService(cfg.ServiceName)
-	readiness := postgres.NewReadinessCheck(dbPool, cfg.Database.Required)
+	readiness := postgres.NewReadinessCheck(dbPool)
 
 	httpHandler := httpserver.NewRouter(httpserver.Dependencies{
 		Log:            log,
@@ -57,42 +66,15 @@ func New(ctx context.Context) (*Application, error) {
 		RequestTimeout: cfg.HTTP.RequestTimeout,
 	})
 
+	// GRPC server setup will be done in the Run method, as it requires the application context and dependencies to be fully initialized.
 	return &Application{
-		Config: cfg,
-		Log:    log,
-		HTTPServer: httpserver.NewServer(httpserver.Config{
-			Addr:              cfg.HTTP.Addr,
-			ReadHeaderTimeout: cfg.HTTP.ReadHeaderTimeout,
-			ReadTimeout:       cfg.HTTP.ReadTimeout,
-			WriteTimeout:      cfg.HTTP.WriteTimeout,
-			IdleTimeout:       cfg.HTTP.IdleTimeout,
-		}, httpHandler),
+		Config:     cfg,
+		Log:        log,
+		HTTPServer: httpserver.NewServer(cfg.HTTP, httpHandler),
 		GRPCServer: grpcserver.New(grpcserver.Dependencies{
 			Log:         log,
 			ServiceName: cfg.ServiceName,
 		}),
 		DBPool: dbPool,
 	}, nil
-}
-
-func openDatabase(ctx context.Context, cfg config.DatabaseConfig) (*pgxpool.Pool, error) {
-	if cfg.URL == "" {
-		if cfg.Required {
-			return nil, fmt.Errorf("DATABASE_URL is required when DATABASE_REQUIRED=true")
-		}
-		return nil, nil
-	}
-
-	pool, err := postgres.NewPool(ctx, postgres.PoolConfig{
-		URL:             cfg.URL,
-		MaxConns:        cfg.MaxConns,
-		MinConns:        cfg.MinConns,
-		MaxConnLifetime: cfg.MaxConnLifetime,
-		MaxConnIdleTime: cfg.MaxConnIdleTime,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("connect database: %w", err)
-	}
-
-	return pool, nil
 }

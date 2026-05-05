@@ -8,7 +8,7 @@ CREATE TYPE team_member_role AS ENUM ('owner', 'admin', 'editor', 'viewer');
 CREATE TYPE check_type AS ENUM ('ping', 'traceroute');
 CREATE TYPE target_type AS ENUM ('host', 'ip');
 CREATE TYPE ip_family AS ENUM ('ipv4', 'ipv6');
-CREATE TYPE probe_status AS ENUM ('online', 'offline', 'degraded');
+CREATE TYPE probe_state AS ENUM ('online', 'offline', 'degraded');
 CREATE TYPE check_result_status AS ENUM ('success', 'partial', 'timeout', 'error');
 CREATE TYPE traceroute_protocol AS ENUM ('icmp', 'udp', 'tcp');
 
@@ -122,7 +122,7 @@ CREATE TABLE probe_credentials (
 
 CREATE TABLE probe_statuses (
     probe_id uuid PRIMARY KEY REFERENCES probes(id) ON DELETE CASCADE,
-    status probe_status NOT NULL,
+    status probe_state NOT NULL,
     last_seen_at timestamptz,
     agent_version text,
     ip_families ip_family[] NOT NULL DEFAULT '{}'::ip_family[],
@@ -425,7 +425,7 @@ DROP FUNCTION IF EXISTS set_updated_at();
 
 DROP TYPE IF EXISTS traceroute_protocol;
 DROP TYPE IF EXISTS check_result_status;
-DROP TYPE IF EXISTS probe_status;
+DROP TYPE IF EXISTS probe_state;
 DROP TYPE IF EXISTS ip_family;
 DROP TYPE IF EXISTS target_type;
 DROP TYPE IF EXISTS check_type;

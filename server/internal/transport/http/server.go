@@ -2,18 +2,11 @@ package httpserver
 
 import (
 	"net/http"
-	"time"
+
+	"github.com/yorukot/netstamp/internal/config"
 )
 
-type Config struct {
-	Addr              string
-	ReadHeaderTimeout time.Duration
-	ReadTimeout       time.Duration
-	WriteTimeout      time.Duration
-	IdleTimeout       time.Duration
-}
-
-func NewServer(cfg Config, handler http.Handler) *http.Server {
+func NewServer(cfg config.HTTPConfig, handler http.Handler) *http.Server {
 	return &http.Server{
 		Addr:              cfg.Addr,
 		Handler:           handler,

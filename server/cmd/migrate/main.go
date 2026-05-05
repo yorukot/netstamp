@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-	databaseURL := flag.String("database-url", "", "PostgreSQL connection URL")
+	databaseConnectionString := flag.String("database-connection-string", "", "PostgreSQL connection string")
 	dir := flag.String("dir", "db/migrations", "migration directory")
 	command := flag.String("command", "status", "migration command: status, up, or down")
 	flag.Parse()
@@ -26,13 +26,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	resolvedDatabaseURL := *databaseURL
-	if resolvedDatabaseURL == "" {
-		resolvedDatabaseURL = cfg.Database.URL
+	resolvedDatabaseConnectionString := *databaseConnectionString
+	if resolvedDatabaseConnectionString == "" {
+		resolvedDatabaseConnectionString = cfg.Database.ConnectionString()
 	}
 
-	if resolvedDatabaseURL == "" {
-		_, _ = fmt.Fprintln(os.Stderr, "DATABASE_URL or -database-url is required")
+	if resolvedDatabaseConnectionString == "" {
+		_, _ = fmt.Fprintln(os.Stderr, "database connection settings are required")
 		os.Exit(2)
 	}
 
@@ -41,7 +41,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	db, err := sql.Open("pgx", resolvedDatabaseURL)
+	db, err := sql.Open("pgx", resolvedDatabaseConnectionString)
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "open database: %v\n", err)
 		os.Exit(1)

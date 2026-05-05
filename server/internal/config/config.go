@@ -3,6 +3,9 @@ package config
 import (
 	"errors"
 	"fmt"
+	"net"
+	"net/url"
+	"strconv"
 	"strings"
 	"time"
 
@@ -22,8 +25,12 @@ const (
 	keyHTTPReadTimeout       = "HTTP_READ_TIMEOUT"
 	keyHTTPWriteTimeout      = "HTTP_WRITE_TIMEOUT"
 	keyHTTPIdleTimeout       = "HTTP_IDLE_TIMEOUT"
-	keyDatabaseRequired      = "DATABASE_REQUIRED"
-	keyDatabaseURL           = "DATABASE_URL"
+	keyDatabaseHost          = "DATABASE_HOST"
+	keyDatabasePort          = "DATABASE_PORT"
+	keyDatabaseUser          = "DATABASE_USER"
+	keyDatabasePassword      = "DATABASE_PASSWORD"
+	keyDatabaseName          = "DATABASE_NAME"
+	keyDatabaseSSLMode       = "DATABASE_SSLMODE"
 	keyDBMaxConns            = "DB_MAX_CONNS"
 	keyDBMinConns            = "DB_MIN_CONNS"
 	keyDBMaxConnLifetime     = "DB_MAX_CONN_LIFETIME"
@@ -43,8 +50,12 @@ var defaultSettings = map[string]any{
 	keyHTTPReadTimeout:       15 * time.Second,
 	keyHTTPWriteTimeout:      15 * time.Second,
 	keyHTTPIdleTimeout:       60 * time.Second,
-	keyDatabaseRequired:      false,
-	keyDatabaseURL:           "",
+	keyDatabaseHost:          "localhost",
+	keyDatabasePort:          int32(5432),
+	keyDatabaseUser:          "netstamp",
+	keyDatabasePassword:      "netstamp",
+	keyDatabaseName:          "netstamp",
+	keyDatabaseSSLMode:       "disable",
 	keyDBMaxConns:            int32(10),
 	keyDBMinConns:            int32(0),
 	keyDBMaxConnLifetime:     time.Hour,
@@ -76,12 +87,34 @@ type GRPCConfig struct {
 }
 
 type DatabaseConfig struct {
-	URL             string        `mapstructure:"DATABASE_URL"`
-	Required        bool          `mapstructure:"DATABASE_REQUIRED"`
+	Host            string        `mapstructure:"DATABASE_HOST"`
+	Port            int32         `mapstructure:"DATABASE_PORT"`
+	User            string        `mapstructure:"DATABASE_USER"`
+	Password        string        `mapstructure:"DATABASE_PASSWORD"`
+	Name            string        `mapstructure:"DATABASE_NAME"`
+	SSLMode         string        `mapstructure:"DATABASE_SSLMODE"`
 	MaxConns        int32         `mapstructure:"DB_MAX_CONNS"`
 	MinConns        int32         `mapstructure:"DB_MIN_CONNS"`
 	MaxConnLifetime time.Duration `mapstructure:"DB_MAX_CONN_LIFETIME"`
 	MaxConnIdleTime time.Duration `mapstructure:"DB_MAX_CONN_IDLE_TIME"`
+}
+
+func (cfg DatabaseConfig) ConnectionString() string {
+	databaseURL := url.URL{
+		Scheme: "postgres",
+		User:   url.User(cfg.User),
+		Host:   net.JoinHostPort(cfg.Host, strconv.FormatInt(int64(cfg.Port), 10)),
+		Path:   cfg.Name,
+	}
+	if cfg.Password != "" {
+		databaseURL.User = url.UserPassword(cfg.User, cfg.Password)
+	}
+
+	query := databaseURL.Query()
+	query.Set("sslmode", cfg.SSLMode)
+	databaseURL.RawQuery = query.Encode()
+
+	return databaseURL.String()
 }
 
 func Load() (Config, error) {
@@ -102,21 +135,46 @@ func Load() (Config, error) {
 
 func validate(cfg Config) []error {
 	var errs []error
-	if cfg.HTTP.Addr == "" {
-		errs = append(errs, errors.New("HTTP_ADDR must not be empty"))
-	}
-	if cfg.GRPC.Addr == "" {
-		errs = append(errs, errors.New("GRPC_ADDR must not be empty"))
-	}
+
+	// Global settings
+	errs = append(errs, validateRequiredString(keyAppEnv, cfg.Env)...)
+	errs = append(errs, validateRequiredString(keyServiceName, cfg.ServiceName)...)
+	errs = append(errs, validateRequiredString(keyAppVersion, cfg.Version)...)
+	errs = append(errs, validateLogLevel(cfg.LogLevel)...)
+	errs = append(errs, validatePositiveDuration(keyShutdownTimeout, cfg.ShutdownTimeout)...)
+
+	// HTTP settings
+	errs = append(errs, validateListenAddr(keyHTTPAddr, cfg.HTTP.Addr)...)
+	errs = append(errs, validatePositiveDuration(keyRequestTimeout, cfg.HTTP.RequestTimeout)...)
+	errs = append(errs, validatePositiveDuration(keyHTTPReadHeaderTimeout, cfg.HTTP.ReadHeaderTimeout)...)
+	errs = append(errs, validatePositiveDuration(keyHTTPReadTimeout, cfg.HTTP.ReadTimeout)...)
+	errs = append(errs, validatePositiveDuration(keyHTTPWriteTimeout, cfg.HTTP.WriteTimeout)...)
+	errs = append(errs, validatePositiveDuration(keyHTTPIdleTimeout, cfg.HTTP.IdleTimeout)...)
+
+	// gRPC settings
+	errs = append(errs, validateListenAddr(keyGRPCAddr, cfg.GRPC.Addr)...)
+
+	// Database settings
+	errs = append(errs, validateRequiredString(keyDatabaseHost, cfg.Database.Host)...)
+	errs = append(errs, validateRequiredString(keyDatabaseUser, cfg.Database.User)...)
+	errs = append(errs, validateRequiredString(keyDatabaseName, cfg.Database.Name)...)
+	errs = append(errs, validateDatabasePort(cfg.Database.Port)...)
+	errs = append(errs, validateDatabaseSSLMode(cfg.Database.SSLMode)...)
+
 	if cfg.Database.MaxConns < 0 {
 		errs = append(errs, errors.New("DB_MAX_CONNS must not be negative"))
 	}
 	if cfg.Database.MinConns < 0 {
 		errs = append(errs, errors.New("DB_MIN_CONNS must not be negative"))
 	}
-	if cfg.Database.Required && cfg.Database.URL == "" {
-		errs = append(errs, errors.New("DATABASE_URL must be set when DATABASE_REQUIRED=true"))
+	if cfg.Database.MaxConns == 0 {
+		errs = append(errs, errors.New("DB_MAX_CONNS must be greater than 0"))
 	}
+	if cfg.Database.MinConns > cfg.Database.MaxConns {
+		errs = append(errs, errors.New("DB_MIN_CONNS must not be greater than DB_MAX_CONNS"))
+	}
+	errs = append(errs, validatePositiveDuration(keyDBMaxConnLifetime, cfg.Database.MaxConnLifetime)...)
+	errs = append(errs, validatePositiveDuration(keyDBMaxConnIdleTime, cfg.Database.MaxConnIdleTime)...)
 
 	return errs
 }

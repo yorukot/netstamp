@@ -26,9 +26,6 @@ func NewRouter(dep Dependencies) http.Handler {
 	if dep.Log == nil {
 		dep.Log = zap.NewNop()
 	}
-	if dep.RequestTimeout == 0 {
-		dep.RequestTimeout = 10 * time.Second
-	}
 
 	r := chi.NewRouter()
 	r.Use(chimw.RequestID)

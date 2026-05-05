@@ -8,15 +8,15 @@ import (
 )
 
 type PoolConfig struct {
-	URL             string
-	MaxConns        int32
-	MinConns        int32
-	MaxConnLifetime time.Duration
-	MaxConnIdleTime time.Duration
+	ConnectionString string
+	MaxConns         int32
+	MinConns         int32
+	MaxConnLifetime  time.Duration
+	MaxConnIdleTime  time.Duration
 }
 
 func NewPool(ctx context.Context, cfg PoolConfig) (*pgxpool.Pool, error) {
-	poolConfig, err := pgxpool.ParseConfig(cfg.URL)
+	poolConfig, err := pgxpool.ParseConfig(cfg.ConnectionString)
 	if err != nil {
 		return nil, err
 	}
