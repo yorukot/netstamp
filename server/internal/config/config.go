@@ -40,7 +40,7 @@ const (
 var defaultSettings = map[string]any{
 	keyAppEnv:                "local",
 	keyServiceName:           "netstamp-api",
-	keyAppVersion:            "dev",
+	keyAppVersion:            "v1",
 	keyLogLevel:              "info",
 	keyShutdownTimeout:       10 * time.Second,
 	keyHTTPAddr:              ":8080",
@@ -139,9 +139,11 @@ func validate(cfg Config) []error {
 	// Global settings
 	errs = append(errs, validateRequiredString(keyAppEnv, cfg.Env)...)
 	errs = append(errs, validateRequiredString(keyServiceName, cfg.ServiceName)...)
-	errs = append(errs, validateRequiredString(keyAppVersion, cfg.Version)...)
 	errs = append(errs, validateLogLevel(cfg.LogLevel)...)
 	errs = append(errs, validatePositiveDuration(keyShutdownTimeout, cfg.ShutdownTimeout)...)
+	if !strings.HasPrefix(cfg.Version, "v") {
+		errs = append(errs, fmt.Errorf("APP_VERSION must start with 'v'"))
+	}
 
 	// HTTP settings
 	errs = append(errs, validateListenAddr(keyHTTPAddr, cfg.HTTP.Addr)...)

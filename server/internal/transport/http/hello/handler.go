@@ -19,7 +19,7 @@ func (h *Handler) RegisterRoutes(api huma.API) {
 	huma.Register(api, huma.Operation{
 		OperationID: "getGreeting",
 		Method:      http.MethodGet,
-		Path:        "/v1/hello",
+		Path:        "/hello",
 		Summary:     "Get greeting",
 		Tags:        []string{"Hello"},
 		Errors:      []int{http.StatusServiceUnavailable},

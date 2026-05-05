@@ -70,9 +70,9 @@ web-preview:
 
 # Backend
 
-# Start the backend API server.
+# Start the backend API server with hot reload.
 backend-dev:
-    cd {{ server_dir }} && go run ./cmd/api
+    cd {{ server_dir }} && air -c .air.toml
 
 # Build the backend API binary.
 backend-build:

@@ -3,7 +3,6 @@ package httpserver
 import (
 	"context"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -15,7 +14,6 @@ import (
 	apphello "github.com/yorukot/netstamp/internal/application/hello"
 	hellohttp "github.com/yorukot/netstamp/internal/transport/http/hello"
 	httpmiddleware "github.com/yorukot/netstamp/internal/transport/http/middleware"
-	"github.com/yorukot/netstamp/internal/transport/http/respond"
 )
 
 type Dependencies struct {
@@ -38,27 +36,30 @@ func NewRouter(dep Dependencies) http.Handler {
 	r.Use(chimw.Timeout(dep.RequestTimeout))
 	r.Use(httpmiddleware.ZapRequestLogger(dep.Log))
 
-	api := humachi.New(r, newHumaConfig(dep))
-	registerSystemRoutes(api, dep.ReadinessCheck)
-	hellohttp.NewHandler(dep.HelloService).RegisterRoutes(api)
+	r.Route(dep.basePath(), func(apiRouter chi.Router) {
+		api := humachi.New(apiRouter, newHumaConfig(dep))
+		registerSystemRoutes(api, dep.ReadinessCheck)
+		hellohttp.NewHandler(dep.HelloService).RegisterRoutes(api)
+	})
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
-		respond.Error(w, r, http.StatusNotFound, "not_found", "route not found")
+		w.WriteHeader(http.StatusNotFound)
 	})
+
 	r.MethodNotAllowed(func(w http.ResponseWriter, r *http.Request) {
-		respond.Error(w, r, http.StatusMethodNotAllowed, "method_not_allowed", "method not allowed")
+		w.WriteHeader(http.StatusMethodNotAllowed)
 	})
 
 	return r
 }
 
 func newHumaConfig(dep Dependencies) huma.Config {
-	version := strings.TrimSpace(dep.APIVersion)
-	if version == "" {
-		version = "dev"
-	}
-
-	config := huma.DefaultConfig("Netstamp API", version)
+	config := huma.DefaultConfig("Netstamp API", dep.APIVersion)
 	config.Info.Description = "Controller HTTP API for Netstamp."
+	config.Servers = []*huma.Server{{URL: dep.basePath()}}
 	return config
+}
+
+func (d *Dependencies) basePath() string {
+	return "/api/" + d.APIVersion
 }
