@@ -328,7 +328,6 @@ Probe 設定表保存目前設定。若 probe 被移除，使用 `deleted_at` so
 | `provider` | `TEXT` | `NULL` | 例如 `hetzner`、`aws`、`home` |
 | `region` | `TEXT` | `NULL` | Probe 區域 |
 | `hostname` | `TEXT` | `NULL` | Probe 主機名稱 |
-| `labels` | `JSONB` | `NOT NULL DEFAULT '{}'::jsonb` | 自訂標籤 |
 | `enabled` | `BOOLEAN` | `NOT NULL DEFAULT true` | 是否允許 probe 執行檢查 |
 | `created_at` | `TIMESTAMPTZ` | `NOT NULL DEFAULT now()` | 建立時間 |
 | `updated_at` | `TIMESTAMPTZ` | `NOT NULL DEFAULT now()` | 更新時間 |
