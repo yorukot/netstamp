@@ -1,18 +1,8 @@
 package auth
 
-import "time"
-
 type RegisterInput struct {
 	Email    string
 	Password string
-}
-
-type RegisterResult struct {
-	UserID      string
-	Email       string
-	AccessToken string
-	TokenType   string
-	ExpiresIn   int
 }
 
 type CreateUserInput struct {
@@ -20,12 +10,17 @@ type CreateUserInput struct {
 	PasswordHash string
 }
 
-type User struct {
-	ID        string
-	Email     string
-	IsActive  bool
-	CreatedAt time.Time
-	UpdatedAt time.Time
+type LoginInput struct {
+	Email    string
+	Password string
+}
+
+type AuthAccessResult struct {
+	UserID      string
+	Email       string
+	AccessToken string
+	TokenType   string
+	ExpiresIn   int
 }
 
 type AccessTokenInput struct {

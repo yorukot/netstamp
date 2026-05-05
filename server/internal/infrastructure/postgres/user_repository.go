@@ -4,10 +4,12 @@ import (
 	"context"
 	"errors"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	appauth "github.com/yorukot/netstamp/internal/application/auth"
+	"github.com/yorukot/netstamp/internal/domain/identity"
 	"github.com/yorukot/netstamp/internal/infrastructure/postgres/sqlc"
 )
 
@@ -19,24 +21,44 @@ func NewUserRepository(pool *pgxpool.Pool) *UserRepository {
 	return &UserRepository{queries: sqlc.New(pool)}
 }
 
-func (r *UserRepository) CreateUser(ctx context.Context, input appauth.CreateUserInput) (appauth.User, error) {
+func (r *UserRepository) CreateUser(ctx context.Context, input appauth.CreateUserInput) (identity.User, error) {
 	row, err := r.queries.CreateUser(ctx, sqlc.CreateUserParams{
 		Email:        input.Email,
 		PasswordHash: input.PasswordHash,
 	})
 	if err != nil {
 		if isUniqueViolation(err, "uq_users_email") {
-			return appauth.User{}, appauth.ErrEmailAlreadyExists
+			return identity.User{}, appauth.ErrEmailAlreadyExists
 		}
-		return appauth.User{}, err
+		return identity.User{}, err
 	}
 
-	return appauth.User{
+	return identity.User{
 		ID:        row.ID.String(),
 		Email:     row.Email,
 		IsActive:  row.IsActive,
 		CreatedAt: row.CreatedAt.Time,
 		UpdatedAt: row.UpdatedAt.Time,
+	}, nil
+}
+
+func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (identity.User, error) {
+	row, err := r.queries.GetUserByEmail(ctx, email)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return identity.User{}, appauth.ErrUserNotFound
+		}
+
+		return identity.User{}, err
+	}
+
+	return identity.User{
+		ID:           row.ID.String(),
+		Email:        row.Email,
+		PasswordHash: row.PasswordHash,
+		IsActive:     row.IsActive,
+		CreatedAt:    row.CreatedAt.Time,
+		UpdatedAt:    row.UpdatedAt.Time,
 	}, nil
 }
 

@@ -2,12 +2,38 @@ package auth
 
 import (
 	"context"
+	"errors"
 
 	"github.com/danielgtaylor/huma/v2"
+	appauth "github.com/yorukot/netstamp/internal/application/auth"
 )
 
-func (h *Handler) login(_ context.Context, _ *loginInput) (*loginOutput, error) {
-	return nil, huma.Error501NotImplemented("login is not implemented")
+func (h *Handler) login(ctx context.Context, input *loginInput) (*loginOutput, error) {
+	result, err := h.service.Login(ctx, appauth.LoginInput{
+		Email:    input.Body.Email,
+		Password: input.Body.Password,
+	})
+
+	if err != nil {
+		switch {
+		case errors.Is(err, appauth.ErrCredentialsInvalid):
+			return nil, huma.Error401Unauthorized("invalid email or password")
+		default:
+			return nil, huma.Error500InternalServerError("login failed")
+		}
+	}
+
+	return &loginOutput{
+		Body: loginOutputBody{
+			User: userResponse{
+				ID:    result.UserID,
+				Email: result.Email,
+			},
+			TokenType:   result.TokenType,
+			AccessToken: result.AccessToken,
+			ExpiresIn:   result.ExpiresIn,
+		},
+	}, nil
 }
 
 type loginInput struct {
@@ -24,7 +50,8 @@ type loginInputBody struct {
 }
 
 type loginOutputBody struct {
-	TokenType   string `json:"tokenType"`
-	AccessToken string `json:"accessToken"`
-	ExpiresIn   int    `json:"expiresIn"`
+	User        userResponse `json:"user"`
+	TokenType   string       `json:"tokenType" example:"Bearer"`
+	AccessToken string       `json:"accessToken"`
+	ExpiresIn   int          `json:"expiresIn" example:"43200" doc:"Access token lifetime in seconds."`
 }

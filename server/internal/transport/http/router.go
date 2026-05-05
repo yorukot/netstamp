@@ -12,9 +12,7 @@ import (
 	"go.uber.org/zap"
 
 	appauth "github.com/yorukot/netstamp/internal/application/auth"
-	apphello "github.com/yorukot/netstamp/internal/application/hello"
 	authhttp "github.com/yorukot/netstamp/internal/transport/http/auth"
-	hellohttp "github.com/yorukot/netstamp/internal/transport/http/hello"
 	httpmiddleware "github.com/yorukot/netstamp/internal/transport/http/middleware"
 )
 
@@ -22,7 +20,6 @@ type Dependencies struct {
 	Log            *zap.Logger
 	APIVersion     string
 	AuthService    *appauth.Service
-	HelloService   *apphello.Service
 	ReadinessCheck func(context.Context) error
 	RequestTimeout time.Duration
 }
@@ -45,7 +42,6 @@ func NewRouter(dep Dependencies) http.Handler {
 		if dep.AuthService != nil {
 			authhttp.NewHandler(dep.AuthService).RegisterRoutes(api)
 		}
-		hellohttp.NewHandler(dep.HelloService).RegisterRoutes(api)
 	})
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {

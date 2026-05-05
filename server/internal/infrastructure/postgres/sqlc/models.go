@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/netip"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -313,13 +314,13 @@ func (ns NullTracerouteProtocol) Value() (driver.Value, error) {
 }
 
 type Check struct {
-	ID          pgtype.UUID        `json:"id"`
-	TeamID      pgtype.UUID        `json:"team_id"`
+	ID          uuid.UUID          `json:"id"`
+	TeamID      uuid.UUID          `json:"team_id"`
 	Name        string             `json:"name"`
 	CheckType   CheckType          `json:"check_type"`
 	Target      string             `json:"target"`
 	TargetType  TargetType         `json:"target_type"`
-	Description pgtype.Text        `json:"description"`
+	Description *string            `json:"description"`
 	Enabled     bool               `json:"enabled"`
 	CreatedAt   pgtype.Timestamptz `json:"created_at"`
 	UpdatedAt   pgtype.Timestamptz `json:"updated_at"`
@@ -327,14 +328,14 @@ type Check struct {
 }
 
 type CheckLabel struct {
-	TeamID  pgtype.UUID `json:"team_id"`
-	CheckID pgtype.UUID `json:"check_id"`
-	LabelID pgtype.UUID `json:"label_id"`
+	TeamID  uuid.UUID `json:"team_id"`
+	CheckID uuid.UUID `json:"check_id"`
+	LabelID uuid.UUID `json:"label_id"`
 }
 
 type Label struct {
-	ID        pgtype.UUID        `json:"id"`
-	TeamID    pgtype.UUID        `json:"team_id"`
+	ID        uuid.UUID          `json:"id"`
+	TeamID    uuid.UUID          `json:"team_id"`
 	Name      string             `json:"name"`
 	CreatedAt pgtype.Timestamptz `json:"created_at"`
 	UpdatedAt pgtype.Timestamptz `json:"updated_at"`
@@ -342,7 +343,7 @@ type Label struct {
 }
 
 type PingCheckConfig struct {
-	CheckID         pgtype.UUID  `json:"check_id"`
+	CheckID         uuid.UUID    `json:"check_id"`
 	CheckType       CheckType    `json:"check_type"`
 	PacketCount     int32        `json:"packet_count"`
 	PacketSizeBytes int32        `json:"packet_size_bytes"`
@@ -351,9 +352,9 @@ type PingCheckConfig struct {
 }
 
 type PingResult struct {
-	ID            pgtype.UUID        `json:"id"`
-	TeamID        pgtype.UUID        `json:"team_id"`
-	ProbeCheckID  pgtype.UUID        `json:"probe_check_id"`
+	ID            uuid.UUID          `json:"id"`
+	TeamID        uuid.UUID          `json:"team_id"`
+	ProbeCheckID  uuid.UUID          `json:"probe_check_id"`
 	StartedAt     pgtype.Timestamptz `json:"started_at"`
 	FinishedAt    pgtype.Timestamptz `json:"finished_at"`
 	DurationMs    int32              `json:"duration_ms"`
@@ -361,27 +362,27 @@ type PingResult struct {
 	SentCount     int32              `json:"sent_count"`
 	ReceivedCount int32              `json:"received_count"`
 	LossPercent   float64            `json:"loss_percent"`
-	RttMinMs      pgtype.Float8      `json:"rtt_min_ms"`
-	RttAvgMs      pgtype.Float8      `json:"rtt_avg_ms"`
-	RttMedianMs   pgtype.Float8      `json:"rtt_median_ms"`
-	RttMaxMs      pgtype.Float8      `json:"rtt_max_ms"`
-	RttStddevMs   pgtype.Float8      `json:"rtt_stddev_ms"`
+	RttMinMs      *float64           `json:"rtt_min_ms"`
+	RttAvgMs      *float64           `json:"rtt_avg_ms"`
+	RttMedianMs   *float64           `json:"rtt_median_ms"`
+	RttMaxMs      *float64           `json:"rtt_max_ms"`
+	RttStddevMs   *float64           `json:"rtt_stddev_ms"`
 	RttSamplesMs  []float64          `json:"rtt_samples_ms"`
 	ResolvedIp    *netip.Addr        `json:"resolved_ip"`
 	IpFamily      NullIpFamily       `json:"ip_family"`
 	Raw           []byte             `json:"raw"`
-	ErrorCode     pgtype.Text        `json:"error_code"`
-	ErrorMessage  pgtype.Text        `json:"error_message"`
+	ErrorCode     *string            `json:"error_code"`
+	ErrorMessage  *string            `json:"error_message"`
 	CreatedAt     pgtype.Timestamptz `json:"created_at"`
 }
 
 type Probe struct {
-	ID        pgtype.UUID        `json:"id"`
-	TeamID    pgtype.UUID        `json:"team_id"`
+	ID        uuid.UUID          `json:"id"`
+	TeamID    uuid.UUID          `json:"team_id"`
 	Name      string             `json:"name"`
-	Hostname  pgtype.Text        `json:"hostname"`
-	Latitude  pgtype.Float8      `json:"latitude"`
-	Longitude pgtype.Float8      `json:"longitude"`
+	Hostname  *string            `json:"hostname"`
+	Latitude  *float64           `json:"latitude"`
+	Longitude *float64           `json:"longitude"`
 	Enabled   bool               `json:"enabled"`
 	CreatedAt pgtype.Timestamptz `json:"created_at"`
 	UpdatedAt pgtype.Timestamptz `json:"updated_at"`
@@ -389,11 +390,11 @@ type Probe struct {
 }
 
 type ProbeCheck struct {
-	ID              pgtype.UUID        `json:"id"`
-	TeamID          pgtype.UUID        `json:"team_id"`
-	ProbeID         pgtype.UUID        `json:"probe_id"`
-	CheckID         pgtype.UUID        `json:"check_id"`
-	Name            pgtype.Text        `json:"name"`
+	ID              uuid.UUID          `json:"id"`
+	TeamID          uuid.UUID          `json:"team_id"`
+	ProbeID         uuid.UUID          `json:"probe_id"`
+	CheckID         uuid.UUID          `json:"check_id"`
+	Name            *string            `json:"name"`
 	Enabled         bool               `json:"enabled"`
 	IntervalSeconds int32              `json:"interval_seconds"`
 	JitterSeconds   int32              `json:"jitter_seconds"`
@@ -403,41 +404,41 @@ type ProbeCheck struct {
 }
 
 type ProbeCredential struct {
-	ProbeID       pgtype.UUID        `json:"probe_id"`
+	ProbeID       uuid.UUID          `json:"probe_id"`
 	SecretHash    string             `json:"secret_hash"`
 	CreatedAt     pgtype.Timestamptz `json:"created_at"`
 	LastRotatedAt pgtype.Timestamptz `json:"last_rotated_at"`
 }
 
 type ProbeLabel struct {
-	TeamID  pgtype.UUID `json:"team_id"`
-	ProbeID pgtype.UUID `json:"probe_id"`
-	LabelID pgtype.UUID `json:"label_id"`
+	TeamID  uuid.UUID `json:"team_id"`
+	ProbeID uuid.UUID `json:"probe_id"`
+	LabelID uuid.UUID `json:"label_id"`
 }
 
 type ProbeStatus struct {
-	ProbeID      pgtype.UUID        `json:"probe_id"`
+	ProbeID      uuid.UUID          `json:"probe_id"`
 	Status       ProbeState         `json:"status"`
 	LastSeenAt   pgtype.Timestamptz `json:"last_seen_at"`
-	AgentVersion pgtype.Text        `json:"agent_version"`
+	AgentVersion *string            `json:"agent_version"`
 	IpFamilies   []IpFamily         `json:"ip_families"`
 	UpdatedAt    pgtype.Timestamptz `json:"updated_at"`
 }
 
 type Team struct {
-	ID              pgtype.UUID        `json:"id"`
+	ID              uuid.UUID          `json:"id"`
 	Name            string             `json:"name"`
 	Slug            string             `json:"slug"`
-	CreatedByUserID pgtype.UUID        `json:"created_by_user_id"`
+	CreatedByUserID uuid.UUID          `json:"created_by_user_id"`
 	CreatedAt       pgtype.Timestamptz `json:"created_at"`
 	UpdatedAt       pgtype.Timestamptz `json:"updated_at"`
 	DeletedAt       pgtype.Timestamptz `json:"deleted_at"`
 }
 
 type TeamMember struct {
-	ID        pgtype.UUID        `json:"id"`
-	TeamID    pgtype.UUID        `json:"team_id"`
-	UserID    pgtype.UUID        `json:"user_id"`
+	ID        uuid.UUID          `json:"id"`
+	TeamID    uuid.UUID          `json:"team_id"`
+	UserID    uuid.UUID          `json:"user_id"`
 	Role      TeamMemberRole     `json:"role"`
 	CreatedAt pgtype.Timestamptz `json:"created_at"`
 	UpdatedAt pgtype.Timestamptz `json:"updated_at"`
@@ -445,34 +446,34 @@ type TeamMember struct {
 }
 
 type TracerouteCheckConfig struct {
-	CheckID       pgtype.UUID        `json:"check_id"`
+	CheckID       uuid.UUID          `json:"check_id"`
 	CheckType     CheckType          `json:"check_type"`
 	Protocol      TracerouteProtocol `json:"protocol"`
 	MaxHops       int32              `json:"max_hops"`
 	TimeoutMs     int32              `json:"timeout_ms"`
 	QueriesPerHop int32              `json:"queries_per_hop"`
-	Port          pgtype.Int4        `json:"port"`
+	Port          *int32             `json:"port"`
 }
 
 type TracerouteHop struct {
-	TracerouteResultID pgtype.UUID        `json:"traceroute_result_id"`
-	TeamID             pgtype.UUID        `json:"team_id"`
-	ProbeCheckID       pgtype.UUID        `json:"probe_check_id"`
+	TracerouteResultID uuid.UUID          `json:"traceroute_result_id"`
+	TeamID             uuid.UUID          `json:"team_id"`
+	ProbeCheckID       uuid.UUID          `json:"probe_check_id"`
 	StartedAt          pgtype.Timestamptz `json:"started_at"`
 	HopNumber          int32              `json:"hop_number"`
 	HopIp              *netip.Addr        `json:"hop_ip"`
-	Hostname           pgtype.Text        `json:"hostname"`
+	Hostname           *string            `json:"hostname"`
 	RttsMs             []float64          `json:"rtts_ms"`
 	LossPercent        float64            `json:"loss_percent"`
-	ErrorCode          pgtype.Text        `json:"error_code"`
-	ErrorMessage       pgtype.Text        `json:"error_message"`
+	ErrorCode          *string            `json:"error_code"`
+	ErrorMessage       *string            `json:"error_message"`
 	CreatedAt          pgtype.Timestamptz `json:"created_at"`
 }
 
 type TracerouteResult struct {
-	ID           pgtype.UUID        `json:"id"`
-	TeamID       pgtype.UUID        `json:"team_id"`
-	ProbeCheckID pgtype.UUID        `json:"probe_check_id"`
+	ID           uuid.UUID          `json:"id"`
+	TeamID       uuid.UUID          `json:"team_id"`
+	ProbeCheckID uuid.UUID          `json:"probe_check_id"`
 	StartedAt    pgtype.Timestamptz `json:"started_at"`
 	FinishedAt   pgtype.Timestamptz `json:"finished_at"`
 	DurationMs   int32              `json:"duration_ms"`
@@ -480,16 +481,16 @@ type TracerouteResult struct {
 	ResolvedIp   *netip.Addr        `json:"resolved_ip"`
 	Reached      bool               `json:"reached"`
 	HopCount     int32              `json:"hop_count"`
-	PathHash     pgtype.Text        `json:"path_hash"`
+	PathHash     *string            `json:"path_hash"`
 	Protocol     TracerouteProtocol `json:"protocol"`
 	Raw          []byte             `json:"raw"`
-	ErrorCode    pgtype.Text        `json:"error_code"`
-	ErrorMessage pgtype.Text        `json:"error_message"`
+	ErrorCode    *string            `json:"error_code"`
+	ErrorMessage *string            `json:"error_message"`
 	CreatedAt    pgtype.Timestamptz `json:"created_at"`
 }
 
 type User struct {
-	ID           pgtype.UUID        `json:"id"`
+	ID           uuid.UUID          `json:"id"`
 	Email        string             `json:"email"`
 	PasswordHash string             `json:"password_hash"`
 	IsActive     bool               `json:"is_active"`

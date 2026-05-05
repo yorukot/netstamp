@@ -2,7 +2,10 @@ package auth
 
 import (
 	"context"
+	"errors"
 	"strings"
+
+	"github.com/yorukot/netstamp/internal/domain/identity"
 )
 
 type Service struct {
@@ -19,11 +22,12 @@ func NewService(users UserRepository, hasher PasswordHasher, tokens TokenIssuer)
 	}
 }
 
-func (s *Service) Register(ctx context.Context, input RegisterInput) (RegisterResult, error) {
+func (s *Service) Register(ctx context.Context, input RegisterInput) (AuthAccessResult, error) {
 	email := normalizeEmail(input.Email)
+
 	passwordHash, err := s.hasher.Hash(input.Password)
 	if err != nil {
-		return RegisterResult{}, err
+		return AuthAccessResult{}, err
 	}
 
 	user, err := s.users.CreateUser(ctx, CreateUserInput{
@@ -31,18 +35,39 @@ func (s *Service) Register(ctx context.Context, input RegisterInput) (RegisterRe
 		PasswordHash: passwordHash,
 	})
 	if err != nil {
-		return RegisterResult{}, err
+		return AuthAccessResult{}, err
 	}
 
+	return s.issueAccessResult(ctx, user)
+}
+
+func (s *Service) Login(ctx context.Context, input LoginInput) (AuthAccessResult, error) {
+	email := normalizeEmail(input.Email)
+	user, err := s.users.GetUserByEmail(ctx, email)
+	if errors.Is(err, ErrUserNotFound) {
+		return AuthAccessResult{}, ErrCredentialsInvalid
+	}
+	if err != nil {
+		return AuthAccessResult{}, err
+	}
+
+	if err := s.hasher.Compare(input.Password, user.PasswordHash); err != nil {
+		return AuthAccessResult{}, ErrCredentialsInvalid
+	}
+
+	return s.issueAccessResult(ctx, user)
+}
+
+func (s *Service) issueAccessResult(ctx context.Context, user identity.User) (AuthAccessResult, error) {
 	token, err := s.tokens.IssueAccessToken(ctx, AccessTokenInput{
 		Subject: user.ID,
 		Email:   user.Email,
 	})
 	if err != nil {
-		return RegisterResult{}, err
+		return AuthAccessResult{}, err
 	}
 
-	return RegisterResult{
+	return AuthAccessResult{
 		UserID:      user.ID,
 		Email:       user.Email,
 		AccessToken: token.Value,

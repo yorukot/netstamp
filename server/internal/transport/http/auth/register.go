@@ -56,8 +56,3 @@ type registerOutputBody struct {
 	AccessToken string       `json:"accessToken"`
 	ExpiresIn   int          `json:"expiresIn" example:"43200" doc:"Access token lifetime in seconds."`
 }
-
-type userResponse struct {
-	ID    string `json:"id" format:"uuid"`
-	Email string `json:"email" format:"email"`
-}

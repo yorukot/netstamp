@@ -10,7 +10,6 @@ import (
 	"google.golang.org/grpc"
 
 	appauth "github.com/yorukot/netstamp/internal/application/auth"
-	apphello "github.com/yorukot/netstamp/internal/application/hello"
 	"github.com/yorukot/netstamp/internal/config"
 	"github.com/yorukot/netstamp/internal/infrastructure/postgres"
 	"github.com/yorukot/netstamp/internal/infrastructure/security"
@@ -67,14 +66,12 @@ func New(ctx context.Context) (*Application, error) {
 	tokenIssuer := security.NewJWTIssuer(cfg.Auth.JWTSecret, cfg.Auth.AccessTokenTTL)
 
 	authSvc := appauth.NewService(userRepo, passwordHasher, tokenIssuer)
-	helloSvc := apphello.NewService(cfg.ServiceName)
 	readiness := postgres.NewReadinessCheck(dbPool)
 
 	httpHandler := httpserver.NewRouter(httpserver.Dependencies{
 		Log:            log,
 		APIVersion:     cfg.Version,
 		AuthService:    authSvc,
-		HelloService:   helloSvc,
 		ReadinessCheck: readiness,
 		RequestTimeout: cfg.HTTP.RequestTimeout,
 	})
