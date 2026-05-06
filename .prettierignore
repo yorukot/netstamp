@@ -1,1 +1,3 @@
 pnpm-lock.yaml
+docs/.astro/
+docs/dist/

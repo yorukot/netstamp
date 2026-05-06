@@ -167,7 +167,7 @@ linters:
           - contextcheck
 
       # Common generated/mock folders.
-      - path: '(^|/)(mocks?|mock|testdata|fixtures)(/|$)'
+      - path: "(^|/)(mocks?|mock|testdata|fixtures)(/|$)"
         linters:
           - dupl
           - gosec

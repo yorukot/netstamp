@@ -1,7 +1,6 @@
 # Netstamp Design System
 
-> Category: Network Observability / Developer Infrastructure
-> Current frontend: dark engineering console, orange-accented probe fleet dashboard, cut-corner industrial panels, monospace operational UI.
+> Category: Network Observability / Developer Infrastructure Current frontend: dark engineering console, orange-accented probe fleet dashboard, cut-corner industrial panels, monospace operational UI.
 
 This document describes the visual language already used by the Netstamp frontend. Keep new UI aligned with `packages/ui/src/styles/tokens.css`, `web/src/index.css`, `web/src/layouts/AppShell.module.css`, `web/src/features/dashboard/components/LandingPage.module.css`, and the reusable components in `packages/ui/src/components`.
 
@@ -262,15 +261,8 @@ Use this shape for the current top-left and bottom-right cuts:
 
 ```css
 .frame {
-  --cut: var(--ns-cut-sm);
-  clip-path: polygon(
-    var(--cut) 0,
-    100% 0,
-    100% calc(100% - var(--cut)),
-    calc(100% - var(--cut)) 100%,
-    0 100%,
-    0 var(--cut)
-  );
+	--cut: var(--ns-cut-sm);
+	clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
 }
 ```
 
@@ -280,42 +272,35 @@ Use this when the element already has `border: 1px solid var(--frame-color)` and
 
 ```css
 .frame {
-  --cut: var(--ns-cut-sm);
-  --frame-color: var(--ns-border);
-  position: relative;
-  border: 1px solid var(--frame-color);
-  clip-path: polygon(
-    var(--cut) 0,
-    100% 0,
-    100% calc(100% - var(--cut)),
-    calc(100% - var(--cut)) 100%,
-    0 100%,
-    0 var(--cut)
-  );
+	--cut: var(--ns-cut-sm);
+	--frame-color: var(--ns-border);
+	position: relative;
+	border: 1px solid var(--frame-color);
+	clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
 }
 
 .frame::before,
 .frame::after {
-  content: "";
-  position: absolute;
-  width: calc(var(--cut) * 1.41421356);
-  height: 1px;
-  background: var(--frame-color);
-  pointer-events: none;
+	content: "";
+	position: absolute;
+	width: calc(var(--cut) * 1.41421356);
+	height: 1px;
+	background: var(--frame-color);
+	pointer-events: none;
 }
 
 .frame::before {
-  top: var(--cut);
-  left: 0;
-  transform: rotate(-45deg);
-  transform-origin: left center;
+	top: var(--cut);
+	left: 0;
+	transform: rotate(-45deg);
+	transform-origin: left center;
 }
 
 .frame::after {
-  right: 0;
-  bottom: var(--cut);
-  transform: rotate(-45deg);
-  transform-origin: right center;
+	right: 0;
+	bottom: var(--cut);
+	transform: rotate(-45deg);
+	transform-origin: right center;
 }
 ```
 
@@ -327,36 +312,29 @@ Use the mask frame technique when a full clipped outline is easier than patching
 
 ```css
 .frame {
-  --frame-color: var(--ns-border);
-  position: relative;
-  border: 1px solid transparent;
-  clip-path: polygon(
-    var(--ns-cut-sm) 0,
-    100% 0,
-    100% calc(100% - var(--ns-cut-sm)),
-    calc(100% - var(--ns-cut-sm)) 100%,
-    0 100%,
-    0 var(--ns-cut-sm)
-  );
+	--frame-color: var(--ns-border);
+	position: relative;
+	border: 1px solid transparent;
+	clip-path: polygon(var(--ns-cut-sm) 0, 100% 0, 100% calc(100% - var(--ns-cut-sm)), calc(100% - var(--ns-cut-sm)) 100%, 0 100%, 0 var(--ns-cut-sm));
 }
 
 .frame::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  padding: 1px;
-  background: var(--frame-color);
-  clip-path: inherit;
-  pointer-events: none;
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 2;
+	padding: 1px;
+	background: var(--frame-color);
+	clip-path: inherit;
+	pointer-events: none;
+	mask:
+		linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	mask-composite: exclude;
+	-webkit-mask:
+		linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
 }
 ```
 

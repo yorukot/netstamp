@@ -11,3 +11,5 @@
 *.sw?
 
 node_modules/
+docs/.astro/
+docs/dist/
