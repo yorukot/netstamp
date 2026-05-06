@@ -1,0 +1,119 @@
+.panel {
+	position: relative;
+	min-width: 0;
+	--ns-frame-color: var(--ns-border);
+	border: 1px solid var(--ns-frame-color);
+	overflow: hidden;
+	box-shadow: var(--ns-shadow-sm);
+	isolation: isolate;
+	clip-path: polygon(var(--ns-cut-lg) 0, 100% 0, 100% calc(100% - var(--ns-cut-lg)), calc(100% - var(--ns-cut-lg)) 100%, 0 100%, 0 var(--ns-cut-lg));
+}
+
+.panel::before,
+.panel::after {
+	content: "";
+	position: absolute;
+	pointer-events: none;
+}
+
+.panel::before {
+	top: var(--ns-cut-lg);
+	left: 0;
+	width: calc(var(--ns-cut-lg) * 1.41421356);
+	height: 1px;
+	background: var(--ns-frame-color);
+	transform: rotate(-45deg);
+	transform-origin: left center;
+}
+
+.panel::after {
+	right: 0;
+	bottom: var(--ns-cut-lg);
+	width: calc(var(--ns-cut-lg) * 1.41421356);
+	height: 1px;
+	background: var(--ns-frame-color);
+	transform: rotate(-45deg);
+	transform-origin: right center;
+}
+
+.glass {
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent), #141419;
+	background-size: 100% 100%;
+}
+
+.matte {
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent), #111318;
+	background-size: 100% 100%;
+}
+
+.deep {
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent), #08080b;
+	background-size: 100% 100%;
+}
+
+.padded {
+	padding: 1.25rem;
+}
+
+.flush {
+	padding: 0;
+}
+
+.header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 1rem;
+	padding-bottom: 1rem;
+}
+
+.copy {
+	display: grid;
+	gap: 0.5rem;
+	min-width: 0;
+}
+
+.eyebrow {
+	color: var(--ns-accent-hover);
+	font-family: var(--ns-font-mono);
+	font-size: 0.6875rem;
+	font-weight: 700;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+}
+
+.header h3 {
+	margin: 0;
+	color: var(--ns-text);
+	font-family: var(--ns-font-display);
+	font-size: 1rem;
+	font-weight: 650;
+}
+
+.actions {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+}
+
+.separator {
+	height: 1px;
+	margin: 0 -1.25rem 1rem;
+	background: linear-gradient(90deg, transparent, var(--ns-border), transparent);
+}
+
+@media (max-width: 48rem) {
+	.padded {
+		padding: 1rem;
+	}
+
+	.header {
+		display: grid;
+	}
+
+	.actions {
+		justify-content: flex-start;
+	}
+}
