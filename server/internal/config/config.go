@@ -17,6 +17,7 @@ const (
 	keyServiceName           = "SERVICE_NAME"
 	keyAppVersion            = "APP_VERSION"
 	keyLogLevel              = "LOG_LEVEL"
+	keyLogPseudonymKey       = "LOG_PSEUDONYM_KEY"
 	keyShutdownTimeout       = "SHUTDOWN_TIMEOUT"
 	keyHTTPAddr              = "HTTP_ADDR"
 	keyGRPCAddr              = "GRPC_ADDR"
@@ -47,6 +48,7 @@ var defaultSettings = map[string]any{
 	keyServiceName:           "netstamp-api",
 	keyAppVersion:            "v1",
 	keyLogLevel:              "info",
+	keyLogPseudonymKey:       "local-development-log-pseudonym-key-change-before-production",
 	keyShutdownTimeout:       10 * time.Second,
 	keyHTTPAddr:              ":8080",
 	keyGRPCAddr:              ":9090",
@@ -77,6 +79,7 @@ type Config struct {
 	ServiceName     string         `mapstructure:"SERVICE_NAME"`
 	Version         string         `mapstructure:"APP_VERSION"`
 	LogLevel        string         `mapstructure:"LOG_LEVEL"`
+	LogPseudonymKey string         `mapstructure:"LOG_PSEUDONYM_KEY"`
 	ShutdownTimeout time.Duration  `mapstructure:"SHUTDOWN_TIMEOUT"`
 	HTTP            HTTPConfig     `mapstructure:",squash"`
 	GRPC            GRPCConfig     `mapstructure:",squash"`
@@ -160,6 +163,7 @@ func validate(cfg Config) []error {
 	errs = append(errs, validateRequiredString(keyServiceName, cfg.ServiceName)...)
 	errs = append(errs, validateRequiredString(keyAppVersion, cfg.Version)...)
 	errs = append(errs, validateLogLevel(cfg.LogLevel)...)
+	errs = append(errs, validateRequiredString(keyLogPseudonymKey, cfg.LogPseudonymKey)...)
 	errs = append(errs, validatePositiveDuration(keyShutdownTimeout, cfg.ShutdownTimeout)...)
 	if strings.TrimSpace(cfg.Version) != "" && !strings.HasPrefix(cfg.Version, "v") {
 		errs = append(errs, fmt.Errorf("APP_VERSION must start with 'v'"))

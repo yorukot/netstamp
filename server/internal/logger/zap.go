@@ -25,18 +25,10 @@ func New(cfg Config) (*zap.Logger, zap.AtomicLevel, error) {
 		level.SetLevel(parsed)
 	}
 
-	zapConfig := zap.NewProductionConfig()
-	if cfg.Env == "local" {
-		zapConfig = zap.NewDevelopmentConfig()
-	}
-
-	zapConfig.Level = level
-	zapConfig.EncoderConfig.TimeKey = "time"
-	zapConfig.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	zapConfig := newZapConfig(cfg, level)
 
 	log, err := zapConfig.Build(
 		zap.AddCaller(),
-		zap.AddStacktrace(zapcore.ErrorLevel),
 	)
 	if err != nil {
 		return nil, level, err
@@ -49,4 +41,18 @@ func New(cfg Config) (*zap.Logger, zap.AtomicLevel, error) {
 	)
 
 	return log, level, nil
+}
+
+func newZapConfig(cfg Config, level zap.AtomicLevel) zap.Config {
+	zapConfig := zap.NewProductionConfig()
+	if cfg.Env == "local" {
+		zapConfig = zap.NewDevelopmentConfig()
+	}
+
+	zapConfig.Level = level
+	zapConfig.DisableStacktrace = true
+	zapConfig.EncoderConfig.TimeKey = "time"
+	zapConfig.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+
+	return zapConfig
 }

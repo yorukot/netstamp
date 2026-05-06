@@ -64,8 +64,9 @@ func New(ctx context.Context) (*Application, error) {
 		Parallelism: cfg.Auth.Argon2idParallelism,
 	})
 	tokenIssuer := security.NewJWTIssuer(cfg.Auth.JWTSecret, cfg.Auth.AccessTokenTTL)
+	authEvents := logger.NewAuthEventRecorder(log, cfg.LogPseudonymKey)
 
-	authSvc := appauth.NewService(userRepo, passwordHasher, tokenIssuer)
+	authSvc := appauth.NewService(userRepo, passwordHasher, tokenIssuer, authEvents)
 	readiness := postgres.NewReadinessCheck(dbPool)
 
 	httpHandler := httpserver.NewRouter(httpserver.Dependencies{

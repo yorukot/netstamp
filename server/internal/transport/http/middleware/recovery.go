@@ -1,0 +1,41 @@
+package middleware
+
+import (
+	"net/http"
+
+	chimw "github.com/go-chi/chi/v5/middleware"
+	"go.uber.org/zap"
+)
+
+func ZapRecoverer(root *zap.Logger) func(http.Handler) http.Handler {
+	if root == nil {
+		root = zap.NewNop()
+	}
+
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			defer func() {
+				if recovered := recover(); recovered != nil {
+					requestID := chimw.GetReqID(r.Context())
+					if requestID == "" {
+						requestID = r.Header.Get("X-Request-ID")
+					}
+
+					root.Error("http_panic_recovered",
+						zap.String("request_id", requestID),
+						zap.String("http.request.method", r.Method),
+						zap.String("url.path", r.URL.Path),
+						zap.String("client.address", clientAddress(r.RemoteAddr)),
+						zap.String("user_agent.original", r.UserAgent()),
+						zap.Any("panic", recovered),
+						zap.Stack("stacktrace"),
+					)
+
+					http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+				}
+			}()
+
+			next.ServeHTTP(w, r)
+		})
+	}
+}

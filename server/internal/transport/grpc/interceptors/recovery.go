@@ -25,6 +25,7 @@ func UnaryRecovery(log *zap.Logger) grpc.UnaryServerInterceptor {
 				log.Error("grpc_panic_recovered",
 					zap.String("grpc.full_method", info.FullMethod),
 					zap.Any("panic", recovered),
+					zap.Stack("stacktrace"),
 				)
 				resp = nil
 				err = status.Error(codes.Internal, "internal server error")

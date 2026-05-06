@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"net"
 	"net/http"
 	"time"
 
@@ -27,9 +28,10 @@ func ZapRequestLogger(root *zap.Logger) func(http.Handler) http.Handler {
 			wrapped := chimw.NewWrapResponseWriter(w, r.ProtoMajor)
 			reqLog := root.With(
 				zap.String("request_id", requestID),
-				zap.String("http.method", r.Method),
-				zap.String("http.path", r.URL.Path),
-				zap.String("http.remote_ip", r.RemoteAddr),
+				zap.String("http.request.method", r.Method),
+				zap.String("url.path", r.URL.Path),
+				zap.String("client.address", clientAddress(r.RemoteAddr)),
+				zap.String("user_agent.original", r.UserAgent()),
 			)
 
 			ctx := logger.WithContext(r.Context(), reqLog)
@@ -47,7 +49,7 @@ func ZapRequestLogger(root *zap.Logger) func(http.Handler) http.Handler {
 
 			fields := []zap.Field{
 				zap.String("http.route", route),
-				zap.Int("http.status_code", status),
+				zap.Int("http.response.status_code", status),
 				zap.Int("http.bytes_written", wrapped.BytesWritten()),
 				zap.Float64("duration_ms", float64(time.Since(start).Microseconds())/1000),
 			}
@@ -62,4 +64,13 @@ func ZapRequestLogger(root *zap.Logger) func(http.Handler) http.Handler {
 			}
 		})
 	}
+}
+
+func clientAddress(remoteAddr string) string {
+	host, _, err := net.SplitHostPort(remoteAddr)
+	if err != nil {
+		return remoteAddr
+	}
+
+	return host
 }

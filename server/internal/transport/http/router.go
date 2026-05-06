@@ -32,7 +32,7 @@ func NewRouter(dep Dependencies) http.Handler {
 	r := chi.NewRouter()
 	r.Use(chimw.RequestID)
 	r.Use(chimw.RealIP)
-	r.Use(chimw.Recoverer)
+	r.Use(httpmiddleware.ZapRecoverer(dep.Log))
 	r.Use(chimw.Timeout(dep.RequestTimeout))
 	r.Use(httpmiddleware.ZapRequestLogger(dep.Log))
 
