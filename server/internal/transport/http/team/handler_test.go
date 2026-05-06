@@ -81,6 +81,23 @@ func TestCreateTeamRequiresBearerToken(t *testing.T) {
 	}
 }
 
+func TestGetTeamAcceptsSlugRef(t *testing.T) {
+	_, api := humatest.New(t)
+	repo := &handlerTeamRepository{}
+	NewHandler(appteam.NewService(repo), &handlerTokenVerifier{
+		claims: appauth.AccessTokenClaims{Subject: testUserID, Email: "user@example.com"},
+	}).RegisterRoutes(api)
+
+	res := api.Get("/teams/engineering", "Authorization: Bearer valid-token")
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", res.Code)
+	}
+	if repo.gotTeamRef != "engineering" {
+		t.Fatalf("expected slug ref, got %q", repo.gotTeamRef)
+	}
+}
+
 func TestDeleteTeamMapsNonOwnerToForbidden(t *testing.T) {
 	_, api := humatest.New(t)
 	NewHandler(appteam.NewService(&handlerTeamRepository{
@@ -89,7 +106,7 @@ func TestDeleteTeamMapsNonOwnerToForbidden(t *testing.T) {
 		claims: appauth.AccessTokenClaims{Subject: testUserID, Email: "user@example.com"},
 	}).RegisterRoutes(api)
 
-	res := api.Delete("/teams/"+testTeamID, "Authorization: Bearer valid-token")
+	res := api.Delete("/teams/engineering", "Authorization: Bearer valid-token")
 
 	if res.Code != http.StatusForbidden {
 		t.Fatalf("expected status 403, got %d", res.Code)
@@ -104,7 +121,7 @@ func TestAddMemberRejectsOwnerRoleAsForbidden(t *testing.T) {
 		claims: appauth.AccessTokenClaims{Subject: testUserID, Email: "user@example.com"},
 	}).RegisterRoutes(api)
 
-	res := api.Post("/teams/"+testTeamID+"/members", map[string]any{
+	res := api.Post("/teams/engineering/members", map[string]any{
 		"userId": testMemberID,
 		"role":   "owner",
 	}, "Authorization: Bearer valid-token")
@@ -128,6 +145,7 @@ func (v *handlerTokenVerifier) VerifyAccessToken(context.Context, string) (appau
 
 type handlerTeamRepository struct {
 	gotCreateInput      appteam.CreateTeamStorageInput
+	gotTeamRef          string
 	actorRole           domainteam.Role
 	gotSoftDeleteTeamID string
 }
@@ -155,7 +173,8 @@ func (r *handlerTeamRepository) ListTeamsForUser(context.Context, string) ([]dom
 	}}, nil
 }
 
-func (r *handlerTeamRepository) GetTeamForUser(context.Context, string, string) (domainteam.Team, error) {
+func (r *handlerTeamRepository) GetTeamForUser(_ context.Context, teamRef string, _ string) (domainteam.Team, error) {
+	r.gotTeamRef = teamRef
 	return domainteam.Team{
 		ID:              testTeamID,
 		Name:            "Engineering",

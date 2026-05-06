@@ -171,6 +171,37 @@ func (q *Queries) GetActiveTeamMemberRole(ctx context.Context, arg GetActiveTeam
 	return role, err
 }
 
+const getTeamBySlugForUser = `-- name: GetTeamBySlugForUser :one
+SELECT teams.id, teams.name, teams.slug, teams.created_by_user_id, teams.created_at, teams.updated_at, teams.deleted_at
+FROM teams
+JOIN team_members
+    ON team_members.team_id = teams.id
+    AND team_members.user_id = $2
+    AND team_members.deleted_at IS NULL
+WHERE teams.slug = $1
+  AND teams.deleted_at IS NULL
+`
+
+type GetTeamBySlugForUserParams struct {
+	Slug   string    `json:"slug"`
+	UserID uuid.UUID `json:"user_id"`
+}
+
+func (q *Queries) GetTeamBySlugForUser(ctx context.Context, arg GetTeamBySlugForUserParams) (Team, error) {
+	row := q.db.QueryRow(ctx, getTeamBySlugForUser, arg.Slug, arg.UserID)
+	var i Team
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Slug,
+		&i.CreatedByUserID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+	)
+	return i, err
+}
+
 const getTeamForUser = `-- name: GetTeamForUser :one
 SELECT teams.id, teams.name, teams.slug, teams.created_by_user_id, teams.created_at, teams.updated_at, teams.deleted_at
 FROM teams

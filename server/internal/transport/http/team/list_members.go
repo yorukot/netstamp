@@ -7,7 +7,7 @@ import (
 	domainteam "github.com/yorukot/netstamp/internal/domain/team"
 )
 
-func (h *Handler) listMembers(ctx context.Context, input *teamIDInput) (*listMembersOutput, error) {
+func (h *Handler) listMembers(ctx context.Context, input *teamRefInput) (*listMembersOutput, error) {
 	currentUserID, err := currentUserID(ctx)
 	if err != nil {
 		return nil, err
@@ -15,7 +15,7 @@ func (h *Handler) listMembers(ctx context.Context, input *teamIDInput) (*listMem
 
 	members, err := h.service.ListMembers(ctx, appteam.ListMembersInput{
 		CurrentUserID: currentUserID,
-		TeamID:        input.ID,
+		TeamRef:       input.Ref,
 	})
 	if err != nil {
 		return nil, mapTeamError(err, "list team members failed")

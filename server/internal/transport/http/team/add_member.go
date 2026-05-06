@@ -15,7 +15,7 @@ func (h *Handler) addMember(ctx context.Context, input *addMemberInput) (*member
 
 	member, err := h.service.AddMember(ctx, appteam.AddMemberInput{
 		CurrentUserID: currentUserID,
-		TeamID:        input.ID,
+		TeamRef:       input.Ref,
 		UserID:        input.Body.UserID,
 		Role:          domainteam.Role(input.Body.Role),
 	})
@@ -27,7 +27,7 @@ func (h *Handler) addMember(ctx context.Context, input *addMemberInput) (*member
 }
 
 type addMemberInput struct {
-	ID   string `path:"id" format:"uuid"`
+	Ref  string `path:"ref" minLength:"1" maxLength:"100" doc:"Team UUID or slug." example:"engineering"`
 	Body addMemberInputBody
 }
 

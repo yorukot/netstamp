@@ -15,7 +15,7 @@ func (h *Handler) updateMemberRole(ctx context.Context, input *updateMemberRoleI
 
 	member, err := h.service.UpdateMemberRole(ctx, appteam.UpdateMemberRoleInput{
 		CurrentUserID: currentUserID,
-		TeamID:        input.ID,
+		TeamRef:       input.Ref,
 		UserID:        input.UserID,
 		Role:          domainteam.Role(input.Body.Role),
 	})
@@ -27,7 +27,7 @@ func (h *Handler) updateMemberRole(ctx context.Context, input *updateMemberRoleI
 }
 
 type updateMemberRoleInput struct {
-	ID     string `path:"id" format:"uuid"`
+	Ref    string `path:"ref" minLength:"1" maxLength:"100" doc:"Team UUID or slug." example:"engineering"`
 	UserID string `path:"user_id" format:"uuid"`
 	Body   updateMemberRoleInputBody
 }

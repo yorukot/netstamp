@@ -57,7 +57,7 @@ func (h *Handler) RegisterRoutes(api huma.API) {
 	huma.Register(api, huma.Operation{
 		OperationID: "getTeam",
 		Method:      http.MethodGet,
-		Path:        "/teams/{id}",
+		Path:        "/teams/{ref}",
 		Summary:     "Get team",
 		Tags:        []string{"Teams"},
 		Security:    security,
@@ -68,7 +68,7 @@ func (h *Handler) RegisterRoutes(api huma.API) {
 	huma.Register(api, huma.Operation{
 		OperationID: "updateTeam",
 		Method:      http.MethodPatch,
-		Path:        "/teams/{id}",
+		Path:        "/teams/{ref}",
 		Summary:     "Update team",
 		Tags:        []string{"Teams"},
 		Security:    security,
@@ -79,7 +79,7 @@ func (h *Handler) RegisterRoutes(api huma.API) {
 	huma.Register(api, huma.Operation{
 		OperationID:   "deleteTeam",
 		Method:        http.MethodDelete,
-		Path:          "/teams/{id}",
+		Path:          "/teams/{ref}",
 		DefaultStatus: http.StatusNoContent,
 		Summary:       "Delete team",
 		Tags:          []string{"Teams"},
@@ -91,7 +91,7 @@ func (h *Handler) RegisterRoutes(api huma.API) {
 	huma.Register(api, huma.Operation{
 		OperationID: "listTeamMembers",
 		Method:      http.MethodGet,
-		Path:        "/teams/{id}/members",
+		Path:        "/teams/{ref}/members",
 		Summary:     "List team members",
 		Tags:        []string{"Team Members"},
 		Security:    security,
@@ -102,7 +102,7 @@ func (h *Handler) RegisterRoutes(api huma.API) {
 	huma.Register(api, huma.Operation{
 		OperationID:   "addTeamMember",
 		Method:        http.MethodPost,
-		Path:          "/teams/{id}/members",
+		Path:          "/teams/{ref}/members",
 		DefaultStatus: http.StatusCreated,
 		Summary:       "Add team member",
 		Tags:          []string{"Team Members"},
@@ -114,7 +114,7 @@ func (h *Handler) RegisterRoutes(api huma.API) {
 	huma.Register(api, huma.Operation{
 		OperationID: "updateTeamMemberRole",
 		Method:      http.MethodPatch,
-		Path:        "/teams/{id}/members/{user_id}",
+		Path:        "/teams/{ref}/members/{user_id}",
 		Summary:     "Update team member role",
 		Tags:        []string{"Team Members"},
 		Security:    security,

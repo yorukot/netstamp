@@ -6,7 +6,7 @@ import (
 	appteam "github.com/yorukot/netstamp/internal/application/team"
 )
 
-func (h *Handler) deleteTeam(ctx context.Context, input *teamIDInput) (*deleteTeamOutput, error) {
+func (h *Handler) deleteTeam(ctx context.Context, input *teamRefInput) (*deleteTeamOutput, error) {
 	currentUserID, err := currentUserID(ctx)
 	if err != nil {
 		return nil, err
@@ -14,7 +14,7 @@ func (h *Handler) deleteTeam(ctx context.Context, input *teamIDInput) (*deleteTe
 
 	if err := h.service.DeleteTeam(ctx, appteam.DeleteTeamInput{
 		CurrentUserID: currentUserID,
-		TeamID:        input.ID,
+		TeamRef:       input.Ref,
 	}); err != nil {
 		return nil, mapTeamError(err, "delete team failed")
 	}

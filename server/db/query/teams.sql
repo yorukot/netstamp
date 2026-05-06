@@ -39,6 +39,16 @@ JOIN team_members
 WHERE teams.id = $1
   AND teams.deleted_at IS NULL;
 
+-- name: GetTeamBySlugForUser :one
+SELECT teams.id, teams.name, teams.slug, teams.created_by_user_id, teams.created_at, teams.updated_at, teams.deleted_at
+FROM teams
+JOIN team_members
+    ON team_members.team_id = teams.id
+    AND team_members.user_id = $2
+    AND team_members.deleted_at IS NULL
+WHERE teams.slug = $1
+  AND teams.deleted_at IS NULL;
+
 -- name: GetActiveTeamMemberRole :one
 SELECT team_members.role
 FROM team_members

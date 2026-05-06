@@ -58,7 +58,7 @@ func TestDeleteTeamRequiresOwner(t *testing.T) {
 
 	err := service.DeleteTeam(context.Background(), DeleteTeamInput{
 		CurrentUserID: "admin-user",
-		TeamID:        "team-1",
+		TeamRef:       "team-1",
 	})
 	if !errors.Is(err, ErrForbidden) {
 		t.Fatalf("expected forbidden, got %v", err)
@@ -109,7 +109,7 @@ func TestAddMemberRoleRestrictions(t *testing.T) {
 
 			_, err := service.AddMember(context.Background(), AddMemberInput{
 				CurrentUserID: "actor-user",
-				TeamID:        "team-1",
+				TeamRef:       "team-1",
 				UserID:        "target-user",
 				Role:          tt.newRole,
 			})
@@ -199,7 +199,7 @@ func TestUpdateMemberRoleRestrictions(t *testing.T) {
 
 			_, err := service.UpdateMemberRole(context.Background(), UpdateMemberRoleInput{
 				CurrentUserID: "actor-user",
-				TeamID:        "team-1",
+				TeamRef:       "team-1",
 				UserID:        "target-user",
 				Role:          tt.newRole,
 			})

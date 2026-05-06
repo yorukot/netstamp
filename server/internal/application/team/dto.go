@@ -20,12 +20,12 @@ type ListTeamsInput struct {
 
 type GetTeamInput struct {
 	CurrentUserID string
-	TeamID        string
+	TeamRef       string
 }
 
 type UpdateTeamInput struct {
 	CurrentUserID string
-	TeamID        string
+	TeamRef       string
 	Name          *string
 	Slug          *string
 }
@@ -38,17 +38,17 @@ type UpdateTeamStorageInput struct {
 
 type DeleteTeamInput struct {
 	CurrentUserID string
-	TeamID        string
+	TeamRef       string
 }
 
 type ListMembersInput struct {
 	CurrentUserID string
-	TeamID        string
+	TeamRef       string
 }
 
 type AddMemberInput struct {
 	CurrentUserID string
-	TeamID        string
+	TeamRef       string
 	UserID        string
 	Role          domainteam.Role
 }
@@ -61,7 +61,7 @@ type AddMemberStorageInput struct {
 
 type UpdateMemberRoleInput struct {
 	CurrentUserID string
-	TeamID        string
+	TeamRef       string
 	UserID        string
 	Role          domainteam.Role
 }

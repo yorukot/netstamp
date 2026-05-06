@@ -6,7 +6,7 @@ import (
 	appteam "github.com/yorukot/netstamp/internal/application/team"
 )
 
-func (h *Handler) getTeam(ctx context.Context, input *teamIDInput) (*teamOutput, error) {
+func (h *Handler) getTeam(ctx context.Context, input *teamRefInput) (*teamOutput, error) {
 	currentUserID, err := currentUserID(ctx)
 	if err != nil {
 		return nil, err
@@ -14,7 +14,7 @@ func (h *Handler) getTeam(ctx context.Context, input *teamIDInput) (*teamOutput,
 
 	team, err := h.service.GetTeam(ctx, appteam.GetTeamInput{
 		CurrentUserID: currentUserID,
-		TeamID:        input.ID,
+		TeamRef:       input.Ref,
 	})
 	if err != nil {
 		return nil, mapTeamError(err, "get team failed")
@@ -23,6 +23,6 @@ func (h *Handler) getTeam(ctx context.Context, input *teamIDInput) (*teamOutput,
 	return &teamOutput{Body: teamOutputBody{Team: newTeamResponse(team)}}, nil
 }
 
-type teamIDInput struct {
-	ID string `path:"id" format:"uuid"`
+type teamRefInput struct {
+	Ref string `path:"ref" minLength:"1" maxLength:"100" doc:"Team UUID or slug." example:"engineering"`
 }

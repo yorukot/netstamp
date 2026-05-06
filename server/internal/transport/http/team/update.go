@@ -14,7 +14,7 @@ func (h *Handler) updateTeam(ctx context.Context, input *updateTeamInput) (*team
 
 	team, err := h.service.UpdateTeam(ctx, appteam.UpdateTeamInput{
 		CurrentUserID: currentUserID,
-		TeamID:        input.ID,
+		TeamRef:       input.Ref,
 		Name:          input.Body.Name,
 		Slug:          input.Body.Slug,
 	})
@@ -26,7 +26,7 @@ func (h *Handler) updateTeam(ctx context.Context, input *updateTeamInput) (*team
 }
 
 type updateTeamInput struct {
-	ID   string `path:"id" format:"uuid"`
+	Ref  string `path:"ref" minLength:"1" maxLength:"100" doc:"Team UUID or slug." example:"engineering"`
 	Body updateTeamInputBody
 }
 

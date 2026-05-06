@@ -9,7 +9,7 @@ import (
 type Repository interface {
 	CreateTeamWithOwner(ctx context.Context, input CreateTeamStorageInput) (domainteam.Team, error)
 	ListTeamsForUser(ctx context.Context, userID string) ([]domainteam.Team, error)
-	GetTeamForUser(ctx context.Context, teamID string, userID string) (domainteam.Team, error)
+	GetTeamForUser(ctx context.Context, teamRef string, userID string) (domainteam.Team, error)
 	GetMemberRole(ctx context.Context, teamID string, userID string) (domainteam.Role, error)
 	UpdateTeam(ctx context.Context, input UpdateTeamStorageInput) (domainteam.Team, error)
 	SoftDeleteTeam(ctx context.Context, teamID string) error

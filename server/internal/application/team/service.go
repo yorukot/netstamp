@@ -10,6 +10,10 @@ import (
 
 var slugPattern = regexp.MustCompile(`^[a-z0-9-]+$`)
 
+func IsValidSlug(value string) bool {
+	return slugPattern.MatchString(value)
+}
+
 type Service struct {
 	repo Repository
 }
@@ -40,16 +44,16 @@ func (s *Service) ListTeams(ctx context.Context, input ListTeamsInput) ([]domain
 }
 
 func (s *Service) GetTeam(ctx context.Context, input GetTeamInput) (domainteam.Team, error) {
-	return s.repo.GetTeamForUser(ctx, input.TeamID, input.CurrentUserID)
+	return s.repo.GetTeamForUser(ctx, input.TeamRef, input.CurrentUserID)
 }
 
 func (s *Service) UpdateTeam(ctx context.Context, input UpdateTeamInput) (domainteam.Team, error) {
-	team, err := s.repo.GetTeamForUser(ctx, input.TeamID, input.CurrentUserID)
+	team, err := s.repo.GetTeamForUser(ctx, input.TeamRef, input.CurrentUserID)
 	if err != nil {
 		return domainteam.Team{}, err
 	}
 
-	role, err := s.repo.GetMemberRole(ctx, input.TeamID, input.CurrentUserID)
+	role, err := s.repo.GetMemberRole(ctx, team.ID, input.CurrentUserID)
 	if err != nil {
 		return domainteam.Team{}, err
 	}
@@ -76,14 +80,19 @@ func (s *Service) UpdateTeam(ctx context.Context, input UpdateTeamInput) (domain
 	}
 
 	return s.repo.UpdateTeam(ctx, UpdateTeamStorageInput{
-		TeamID: input.TeamID,
+		TeamID: team.ID,
 		Name:   name,
 		Slug:   slug,
 	})
 }
 
 func (s *Service) DeleteTeam(ctx context.Context, input DeleteTeamInput) error {
-	role, err := s.repo.GetMemberRole(ctx, input.TeamID, input.CurrentUserID)
+	team, err := s.repo.GetTeamForUser(ctx, input.TeamRef, input.CurrentUserID)
+	if err != nil {
+		return err
+	}
+
+	role, err := s.repo.GetMemberRole(ctx, team.ID, input.CurrentUserID)
 	if err != nil {
 		return err
 	}
@@ -91,19 +100,29 @@ func (s *Service) DeleteTeam(ctx context.Context, input DeleteTeamInput) error {
 		return ErrForbidden
 	}
 
-	return s.repo.SoftDeleteTeam(ctx, input.TeamID)
+	return s.repo.SoftDeleteTeam(ctx, team.ID)
 }
 
 func (s *Service) ListMembers(ctx context.Context, input ListMembersInput) ([]domainteam.Member, error) {
-	if _, err := s.repo.GetMemberRole(ctx, input.TeamID, input.CurrentUserID); err != nil {
+	team, err := s.repo.GetTeamForUser(ctx, input.TeamRef, input.CurrentUserID)
+	if err != nil {
 		return nil, err
 	}
 
-	return s.repo.ListMembers(ctx, input.TeamID)
+	if _, err := s.repo.GetMemberRole(ctx, team.ID, input.CurrentUserID); err != nil {
+		return nil, err
+	}
+
+	return s.repo.ListMembers(ctx, team.ID)
 }
 
 func (s *Service) AddMember(ctx context.Context, input AddMemberInput) (domainteam.Member, error) {
-	actorRole, err := s.repo.GetMemberRole(ctx, input.TeamID, input.CurrentUserID)
+	team, err := s.repo.GetTeamForUser(ctx, input.TeamRef, input.CurrentUserID)
+	if err != nil {
+		return domainteam.Member{}, err
+	}
+
+	actorRole, err := s.repo.GetMemberRole(ctx, team.ID, input.CurrentUserID)
 	if err != nil {
 		return domainteam.Member{}, err
 	}
@@ -118,14 +137,19 @@ func (s *Service) AddMember(ctx context.Context, input AddMemberInput) (domainte
 	}
 
 	return s.repo.AddMember(ctx, AddMemberStorageInput{
-		TeamID: input.TeamID,
+		TeamID: team.ID,
 		UserID: input.UserID,
 		Role:   input.Role,
 	})
 }
 
 func (s *Service) UpdateMemberRole(ctx context.Context, input UpdateMemberRoleInput) (domainteam.Member, error) {
-	actorRole, err := s.repo.GetMemberRole(ctx, input.TeamID, input.CurrentUserID)
+	team, err := s.repo.GetTeamForUser(ctx, input.TeamRef, input.CurrentUserID)
+	if err != nil {
+		return domainteam.Member{}, err
+	}
+
+	actorRole, err := s.repo.GetMemberRole(ctx, team.ID, input.CurrentUserID)
 	if err != nil {
 		return domainteam.Member{}, err
 	}
@@ -139,7 +163,7 @@ func (s *Service) UpdateMemberRole(ctx context.Context, input UpdateMemberRoleIn
 		return domainteam.Member{}, ErrForbidden
 	}
 
-	member, err := s.repo.GetMember(ctx, input.TeamID, input.UserID)
+	member, err := s.repo.GetMember(ctx, team.ID, input.UserID)
 	if err != nil {
 		return domainteam.Member{}, err
 	}
@@ -147,7 +171,7 @@ func (s *Service) UpdateMemberRole(ctx context.Context, input UpdateMemberRoleIn
 		return domainteam.Member{}, ErrForbidden
 	}
 	if member.Role == domainteam.RoleOwner && input.Role != domainteam.RoleOwner {
-		owners, err := s.repo.CountOwners(ctx, input.TeamID)
+		owners, err := s.repo.CountOwners(ctx, team.ID)
 		if err != nil {
 			return domainteam.Member{}, err
 		}
@@ -157,7 +181,7 @@ func (s *Service) UpdateMemberRole(ctx context.Context, input UpdateMemberRoleIn
 	}
 
 	return s.repo.UpdateMemberRole(ctx, UpdateMemberRoleStorageInput{
-		TeamID: input.TeamID,
+		TeamID: team.ID,
 		UserID: input.UserID,
 		Role:   input.Role,
 	})
@@ -174,7 +198,7 @@ func normalizeRequired(value string) (string, error) {
 
 func normalizeSlug(value string) (string, error) {
 	value = strings.TrimSpace(value)
-	if value == "" || !slugPattern.MatchString(value) {
+	if value == "" || !IsValidSlug(value) {
 		return "", ErrInvalidInput
 	}
 

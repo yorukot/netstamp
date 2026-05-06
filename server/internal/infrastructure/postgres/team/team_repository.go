@@ -90,19 +90,31 @@ func (r *TeamRepository) ListTeamsForUser(ctx context.Context, userIDValue strin
 	return teams, nil
 }
 
-func (r *TeamRepository) GetTeamForUser(ctx context.Context, teamIDValue string, userIDValue string) (domainteam.Team, error) {
+func (r *TeamRepository) GetTeamForUser(ctx context.Context, teamRef string, userIDValue string) (domainteam.Team, error) {
 	ctx, span := postgres.StartDBSpan(ctx, pgteamTracer, "teams", "postgres.teams.select_for_user", "SELECT", "SELECT team for member")
 	defer span.End()
 
-	teamID, userID, err := parseTeamAndUserIDs(teamIDValue, userIDValue)
+	userID, err := postgres.ParseUUID(userIDValue, appteam.ErrUserNotFound)
 	if err != nil {
 		return domainteam.Team{}, err
 	}
 
-	row, err := r.queries.GetTeamForUser(ctx, sqlc.GetTeamForUserParams{
-		ID:     teamID,
-		UserID: userID,
-	})
+	var row sqlc.Team
+	teamID, parseErr := uuid.Parse(teamRef)
+	if parseErr == nil {
+		row, err = r.queries.GetTeamForUser(ctx, sqlc.GetTeamForUserParams{
+			ID:     teamID,
+			UserID: userID,
+		})
+	} else {
+		if !appteam.IsValidSlug(teamRef) {
+			return domainteam.Team{}, appteam.ErrTeamNotFound
+		}
+		row, err = r.queries.GetTeamBySlugForUser(ctx, sqlc.GetTeamBySlugForUserParams{
+			Slug:   teamRef,
+			UserID: userID,
+		})
+	}
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return domainteam.Team{}, appteam.ErrTeamNotFound
