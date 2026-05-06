@@ -1,0 +1,359 @@
+.shell {
+	min-height: 100svh;
+	display: grid;
+	grid-template-columns: 17rem minmax(0, 1fr);
+	color: var(--ns-text);
+	background:
+		linear-gradient(rgba(255, 122, 26, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 122, 26, 0.08) 1px, transparent 1px),
+		linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px), var(--ns-bg);
+	background-size:
+		8rem 8rem,
+		8rem 8rem,
+		2rem 2rem,
+		2rem 2rem,
+		100% 100%;
+}
+
+.sidebar {
+	position: sticky;
+	top: 0;
+	height: 100svh;
+	display: grid;
+	grid-template-rows: auto auto 1fr auto;
+	gap: 1.5rem;
+	padding: 1rem;
+	border-right: 1px solid var(--ns-border);
+	background: linear-gradient(135deg, rgba(255, 122, 26, 0.08) 0 1px, transparent 1px 0.75rem), linear-gradient(180deg, #0c0f14, #05070a);
+	background-size:
+		0.75rem 0.75rem,
+		100% 100%;
+}
+
+.brand {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	width: 100%;
+	padding: 0.75rem;
+	color: var(--ns-text);
+	background: transparent;
+	border: 1px solid transparent;
+	font-family: var(--ns-font-display);
+	font-size: 1rem;
+	font-weight: 800;
+	letter-spacing: 0.02em;
+	text-decoration: none;
+	text-transform: uppercase;
+}
+
+.brand:hover {
+	border-color: var(--ns-border);
+	background: rgba(255, 122, 26, 0.12);
+}
+
+.mark {
+	--ns-frame-color: var(--ns-accent-border);
+	position: relative;
+	width: 2rem;
+	height: 2rem;
+	border: 1px solid transparent;
+	background: #101217;
+	box-shadow: var(--ns-shadow-glow);
+	clip-path: polygon(0.5rem 0, 100% 0, 100% calc(100% - 0.5rem), calc(100% - 0.5rem) 100%, 0 100%, 0 0.5rem);
+}
+
+.mark::before,
+.teamFrame::before,
+.nav a::before,
+.userCard::before,
+.avatarFrame::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 2;
+	padding: 1px;
+	background: var(--ns-frame-color);
+	clip-path: inherit;
+	pointer-events: none;
+	mask:
+		linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	mask-composite: exclude;
+	-webkit-mask:
+		linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+}
+
+.mark::after {
+	content: "";
+	position: absolute;
+	inset: 0.5rem;
+	border: 1px solid var(--ns-accent);
+	transform: rotate(45deg);
+}
+
+.mark::after {
+	z-index: 1;
+}
+
+.mark::after {
+	inset: 0.75rem;
+	background: var(--ns-accent);
+}
+
+.teamSelect {
+	display: grid;
+	gap: 0.5rem;
+}
+
+.teamSelect > span:first-child {
+	color: var(--ns-text-low);
+	font-family: var(--ns-font-mono);
+	font-size: 0.6875rem;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+}
+
+.teamFrame {
+	--ns-frame-color: var(--ns-border);
+	position: relative;
+	display: block;
+	overflow: hidden;
+	clip-path: polygon(0.5rem 0, 100% 0, 100% calc(100% - 0.5rem), calc(100% - 0.5rem) 100%, 0 100%, 0 0.5rem);
+}
+
+.teamFrame:hover,
+.teamFrame:focus-within {
+	--ns-frame-color: var(--ns-accent-border);
+}
+
+.teamFrame::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	right: 0.75rem;
+	z-index: 3;
+	width: 0.5rem;
+	height: 0.5rem;
+	border-right: 2px solid var(--ns-accent-hover);
+	border-bottom: 2px solid var(--ns-accent-hover);
+	pointer-events: none;
+	transform: translateY(-65%) rotate(45deg);
+}
+
+.teamFrame select {
+	appearance: none;
+	width: 100%;
+	min-height: 2.75rem;
+	border: 1px solid transparent;
+	padding: 0.625rem 2.375rem 0.625rem 0.75rem;
+	color: var(--ns-text);
+	background: linear-gradient(90deg, rgba(255, 122, 26, 0.08) 1px, transparent 1px), #080a0e;
+	background-size:
+		1rem 100%,
+		100% 100%;
+	font-family: var(--ns-font-mono);
+	font-size: 0.75rem;
+	outline: none;
+}
+
+.teamFrame select option {
+	color: var(--ns-text);
+	background: #080a0e;
+}
+
+.nav {
+	display: grid;
+	align-content: start;
+	gap: 0.25rem;
+}
+
+.nav a {
+	--ns-frame-color: transparent;
+	position: relative;
+	display: block;
+	width: 100%;
+	min-height: 2.75rem;
+	padding: 0.75rem;
+	color: var(--ns-text-subtle);
+	background: transparent;
+	border: 1px solid transparent;
+	font-family: var(--ns-font-mono);
+	font-size: 0.75rem;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-align: left;
+	text-decoration: none;
+	text-transform: uppercase;
+	transition:
+		color var(--ns-transition),
+		background var(--ns-transition),
+		border-color var(--ns-transition);
+	clip-path: polygon(0.5rem 0, 100% 0, 100% calc(100% - 0.5rem), calc(100% - 0.5rem) 100%, 0 100%, 0 0.5rem);
+}
+
+.nav a:hover,
+.nav a.active {
+	--ns-frame-color: var(--ns-border);
+	color: var(--ns-text);
+	border-color: transparent;
+	background: linear-gradient(90deg, rgba(255, 122, 26, 0.14), transparent 70%), #080a0e;
+}
+
+.nav a.active {
+	--ns-frame-color: var(--ns-accent-border);
+	background: linear-gradient(90deg, rgba(255, 122, 26, 0.4) 0 0.25rem, transparent 0.25rem), linear-gradient(90deg, rgba(255, 122, 26, 0.16), rgba(255, 122, 26, 0.04) 65%), #030406;
+	box-shadow:
+		inset 0 0 0 1px rgba(0, 0, 0, 0.82),
+		0 0 1.5rem rgba(255, 122, 26, 0.08);
+}
+
+.userCard {
+	--ns-frame-color: var(--ns-border-faint);
+	position: relative;
+	display: grid;
+	gap: 0.5rem;
+	padding: 0.875rem;
+	border: 1px solid transparent;
+	color: var(--ns-text-low);
+	background: linear-gradient(135deg, rgba(255, 122, 26, 0.08) 0 1px, transparent 1px 0.75rem), #080a0e;
+	background-size:
+		0.75rem 0.75rem,
+		100% 100%;
+	font-family: var(--ns-font-mono);
+	font-size: 0.6875rem;
+	clip-path: polygon(0.75rem 0, 100% 0, 100% calc(100% - 0.75rem), calc(100% - 0.75rem) 100%, 0 100%, 0 0.75rem);
+}
+
+.userProfile {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+}
+
+.avatarFrame {
+	--ns-frame-color: rgba(255, 255, 255, 0.28);
+	position: relative;
+	flex: 0 0 auto;
+	width: 2.5rem;
+	height: 2.5rem;
+	overflow: hidden;
+	background: #020304;
+	clip-path: polygon(0.5rem 0, 100% 0, 100% calc(100% - 0.5rem), calc(100% - 0.5rem) 100%, 0 100%, 0 0.5rem);
+}
+
+.avatarFrame::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 3;
+	background:
+		repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.36) 0 1px, rgba(0, 0, 0, 0.34) 1px 3px), linear-gradient(90deg, rgba(255, 122, 26, 0.28), transparent 44%, rgba(255, 255, 255, 0.12));
+	mix-blend-mode: screen;
+	opacity: 0.46;
+	pointer-events: none;
+}
+
+.avatarFrame img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	filter: grayscale(1) contrast(2) brightness(0.58);
+}
+
+.userMeta {
+	display: grid;
+	gap: 0.125rem;
+}
+
+.userMeta strong {
+	color: var(--ns-text-muted);
+	font-size: 0.75rem;
+}
+
+.userMeta span {
+	color: var(--ns-text-low);
+	text-transform: uppercase;
+}
+
+.userActions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25rem;
+}
+
+.content {
+	min-width: 0;
+	min-height: 100svh;
+	display: grid;
+	grid-template-rows: minmax(0, 1fr) auto;
+	gap: 2rem;
+	padding: 3rem 1.5rem 1.5rem;
+}
+
+@media (max-width: 58rem) {
+	.shell {
+		grid-template-columns: 6rem minmax(0, 1fr);
+	}
+
+	.sidebar {
+		padding: 0.75rem 0.5rem;
+	}
+
+	.brand span:last-child,
+	.teamSelect > span:first-child,
+	.userMeta,
+	.userActions {
+		display: none;
+	}
+
+	.userCard {
+		justify-items: center;
+	}
+
+	.teamFrame select {
+		min-height: 2.5rem;
+		padding: 0.5rem;
+		font-size: 0.625rem;
+	}
+
+	.nav a {
+		min-height: 3rem;
+		padding: 0.5rem;
+		font-size: 0.625rem;
+		text-align: center;
+	}
+
+	.content {
+		padding: 1.5rem 1rem 1rem;
+	}
+}
+
+@media (max-width: 38rem) {
+	.shell {
+		grid-template-columns: 1fr;
+	}
+
+	.sidebar {
+		position: relative;
+		height: auto;
+		grid-template-columns: auto 1fr;
+		grid-template-rows: auto auto;
+		border-right: 0;
+		border-bottom: 1px solid var(--ns-border);
+	}
+
+	.teamSelect,
+	.userCard {
+		display: none;
+	}
+
+	.nav {
+		grid-column: 1 / -1;
+		grid-auto-flow: column;
+		grid-auto-columns: minmax(5.25rem, 1fr);
+		overflow-x: auto;
+	}
+}
