@@ -9,9 +9,11 @@ import (
 	"github.com/danielgtaylor/huma/v2/adapters/humachi"
 	"github.com/go-chi/chi/v5"
 	chimw "github.com/go-chi/chi/v5/middleware"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.uber.org/zap"
 
 	appauth "github.com/yorukot/netstamp/internal/application/auth"
+	"github.com/yorukot/netstamp/internal/observability/httptrace"
 	authhttp "github.com/yorukot/netstamp/internal/transport/http/auth"
 	httpmiddleware "github.com/yorukot/netstamp/internal/transport/http/middleware"
 )
@@ -32,6 +34,9 @@ func NewRouter(dep Dependencies) http.Handler {
 	r := chi.NewRouter()
 	r.Use(chimw.RequestID)
 	r.Use(chimw.RealIP)
+	r.Use(otelhttp.NewMiddleware("http.server",
+		otelhttp.WithSpanNameFormatter(httptrace.RequestSpanName),
+	))
 	r.Use(httpmiddleware.ZapRecoverer(dep.Log))
 	r.Use(chimw.Timeout(dep.RequestTimeout))
 	r.Use(httpmiddleware.ZapRequestLogger(dep.Log))

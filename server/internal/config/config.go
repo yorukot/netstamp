@@ -41,6 +41,7 @@ const (
 	keyAuthArgon2idMemoryKiB = "AUTH_ARGON2ID_MEMORY_KIB"
 	keyAuthArgon2idIter      = "AUTH_ARGON2ID_ITERATIONS"
 	keyAuthArgon2idParallel  = "AUTH_ARGON2ID_PARALLELISM"
+	keyOTLPTracesEndpoint    = "OTEL_EXPORTER_OTLP_TRACES_ENDPOINT"
 )
 
 var defaultSettings = map[string]any{
@@ -72,6 +73,7 @@ var defaultSettings = map[string]any{
 	keyAuthArgon2idMemoryKiB: 64 * 1024,
 	keyAuthArgon2idIter:      3,
 	keyAuthArgon2idParallel:  4,
+	keyOTLPTracesEndpoint:    "",
 }
 
 type Config struct {
@@ -85,6 +87,7 @@ type Config struct {
 	GRPC            GRPCConfig     `mapstructure:",squash"`
 	Database        DatabaseConfig `mapstructure:",squash"`
 	Auth            AuthConfig     `mapstructure:",squash"`
+	Tracing         TracingConfig  `mapstructure:",squash"`
 }
 
 type HTTPConfig struct {
@@ -119,6 +122,10 @@ type AuthConfig struct {
 	Argon2idMemoryKiB   int           `mapstructure:"AUTH_ARGON2ID_MEMORY_KIB"`
 	Argon2idIterations  int           `mapstructure:"AUTH_ARGON2ID_ITERATIONS"`
 	Argon2idParallelism int           `mapstructure:"AUTH_ARGON2ID_PARALLELISM"`
+}
+
+type TracingConfig struct {
+	OTLPTracesEndpoint string `mapstructure:"OTEL_EXPORTER_OTLP_TRACES_ENDPOINT"`
 }
 
 func (cfg DatabaseConfig) ConnectionString() string {
@@ -208,6 +215,9 @@ func validate(cfg Config) []error {
 	errs = append(errs, validatePositiveInt(keyAuthArgon2idMemoryKiB, cfg.Auth.Argon2idMemoryKiB)...)
 	errs = append(errs, validatePositiveInt(keyAuthArgon2idIter, cfg.Auth.Argon2idIterations)...)
 	errs = append(errs, validateUint8(keyAuthArgon2idParallel, cfg.Auth.Argon2idParallelism)...)
+
+	// Tracing settings
+	errs = append(errs, validateOptionalHTTPURL(keyOTLPTracesEndpoint, cfg.Tracing.OTLPTracesEndpoint)...)
 
 	return errs
 }

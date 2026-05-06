@@ -7,6 +7,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	"github.com/yorukot/netstamp/internal/logger"
 )
 
 func UnaryRecovery(log *zap.Logger) grpc.UnaryServerInterceptor {
@@ -22,11 +24,14 @@ func UnaryRecovery(log *zap.Logger) grpc.UnaryServerInterceptor {
 	) (resp any, err error) {
 		defer func() {
 			if recovered := recover(); recovered != nil {
-				log.Error("grpc_panic_recovered",
+				fields := []zap.Field{
 					zap.String("grpc.full_method", info.FullMethod),
 					zap.Any("panic", recovered),
 					zap.Stack("stacktrace"),
-				)
+				}
+				fields = append(fields, logger.TraceFields(ctx)...)
+
+				log.Error("grpc_panic_recovered", fields...)
 				resp = nil
 				err = status.Error(codes.Internal, "internal server error")
 			}

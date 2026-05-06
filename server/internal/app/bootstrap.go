@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"go.opentelemetry.io/otel"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
@@ -14,6 +15,7 @@ import (
 	"github.com/yorukot/netstamp/internal/infrastructure/postgres"
 	"github.com/yorukot/netstamp/internal/infrastructure/security"
 	"github.com/yorukot/netstamp/internal/logger"
+	"github.com/yorukot/netstamp/internal/observability/tracing"
 	grpcserver "github.com/yorukot/netstamp/internal/transport/grpc"
 	httpserver "github.com/yorukot/netstamp/internal/transport/http"
 )
@@ -24,6 +26,7 @@ type Application struct {
 	HTTPServer *http.Server
 	GRPCServer *grpc.Server
 	DBPool     *pgxpool.Pool
+	Tracing    *tracing.Provider
 }
 
 func New(ctx context.Context) (*Application, error) {
@@ -42,6 +45,21 @@ func New(ctx context.Context) (*Application, error) {
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create logger: %w", err)
+	}
+
+	// Setup
+	otel.SetErrorHandler(otel.ErrorHandlerFunc(func(err error) {
+		log.Warn("otel_error", zap.Error(err))
+	}))
+
+	tracingProvider, err := tracing.NewProvider(ctx, tracing.Config{
+		Env:                cfg.Env,
+		ServiceName:        cfg.ServiceName,
+		ServiceVersion:     cfg.Version,
+		OTLPTracesEndpoint: cfg.Tracing.OTLPTracesEndpoint,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("create tracing provider: %w", err)
 	}
 
 	// Open database connection pool.
@@ -86,6 +104,7 @@ func New(ctx context.Context) (*Application, error) {
 			Log:         log,
 			ServiceName: cfg.ServiceName,
 		}),
-		DBPool: dbPool,
+		DBPool:  dbPool,
+		Tracing: tracingProvider,
 	}, nil
 }

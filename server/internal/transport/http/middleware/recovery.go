@@ -5,6 +5,8 @@ import (
 
 	chimw "github.com/go-chi/chi/v5/middleware"
 	"go.uber.org/zap"
+
+	"github.com/yorukot/netstamp/internal/logger"
 )
 
 func ZapRecoverer(root *zap.Logger) func(http.Handler) http.Handler {
@@ -21,7 +23,7 @@ func ZapRecoverer(root *zap.Logger) func(http.Handler) http.Handler {
 						requestID = r.Header.Get("X-Request-ID")
 					}
 
-					root.Error("http_panic_recovered",
+					fields := []zap.Field{
 						zap.String("request_id", requestID),
 						zap.String("http.request.method", r.Method),
 						zap.String("url.path", r.URL.Path),
@@ -29,7 +31,10 @@ func ZapRecoverer(root *zap.Logger) func(http.Handler) http.Handler {
 						zap.String("user_agent.original", r.UserAgent()),
 						zap.Any("panic", recovered),
 						zap.Stack("stacktrace"),
-					)
+					}
+					fields = append(fields, logger.TraceFields(r.Context())...)
+
+					root.Error("http_panic_recovered", fields...)
 
 					http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 				}

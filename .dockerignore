@@ -1,0 +1,13 @@
+.git
+.gitignore
+.githooks
+
+**/node_modules
+**/.astro
+**/dist
+**/build
+**/bin
+**/coverage
+
+.DS_Store
+*.log

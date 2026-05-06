@@ -33,6 +33,9 @@ func ZapRequestLogger(root *zap.Logger) func(http.Handler) http.Handler {
 				zap.String("client.address", clientAddress(r.RemoteAddr)),
 				zap.String("user_agent.original", r.UserAgent()),
 			)
+			if traceFields := logger.TraceFields(r.Context()); len(traceFields) > 0 {
+				reqLog = reqLog.With(traceFields...)
+			}
 
 			ctx := logger.WithContext(r.Context(), reqLog)
 			next.ServeHTTP(wrapped, r.WithContext(ctx))

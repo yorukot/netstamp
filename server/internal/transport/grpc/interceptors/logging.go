@@ -31,6 +31,9 @@ func UnaryLogging(root *zap.Logger) grpc.UnaryServerInterceptor {
 			zap.String("request_id", requestID),
 			zap.String("grpc.full_method", info.FullMethod),
 		)
+		if traceFields := logger.TraceFields(ctx); len(traceFields) > 0 {
+			reqLog = reqLog.With(traceFields...)
+		}
 
 		ctx = logger.WithContext(ctx, reqLog)
 		resp, err := handler(ctx, req)

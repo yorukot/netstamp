@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -82,4 +83,21 @@ func validateDatabaseSSLMode(value string) []error {
 	default:
 		return []error{errors.New("DATABASE_SSLMODE must be one of disable, allow, prefer, require, verify-ca, or verify-full")}
 	}
+}
+
+func validateOptionalHTTPURL(key string, value string) []error {
+	trimmed := strings.TrimSpace(value)
+	if trimmed == "" {
+		return nil
+	}
+
+	parsed, err := url.ParseRequestURI(trimmed)
+	if err != nil || parsed.Scheme == "" || parsed.Host == "" {
+		return []error{fmt.Errorf("%s must be a valid HTTP URL", key)}
+	}
+	if parsed.Scheme != "http" && parsed.Scheme != "https" {
+		return []error{fmt.Errorf("%s must use http or https", key)}
+	}
+
+	return nil
 }

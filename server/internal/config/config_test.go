@@ -63,6 +63,7 @@ func TestLoadFromEnvironment(t *testing.T) {
 	t.Setenv(keyDatabaseName, "netstamp_prod")
 	t.Setenv(keyDatabaseSSLMode, "require")
 	t.Setenv(keyDBMaxConns, "12")
+	t.Setenv(keyOTLPTracesEndpoint, "http://victoria-traces:10428/insert/opentelemetry/v1/traces")
 
 	cfg, err := Load()
 	if err != nil {
@@ -104,6 +105,9 @@ func TestLoadFromEnvironment(t *testing.T) {
 	}
 	if cfg.Database.MaxConns != 12 {
 		t.Fatalf("expected DB max conns override, got %d", cfg.Database.MaxConns)
+	}
+	if cfg.Tracing.OTLPTracesEndpoint != "http://victoria-traces:10428/insert/opentelemetry/v1/traces" {
+		t.Fatalf("expected OTLP traces endpoint override, got %q", cfg.Tracing.OTLPTracesEndpoint)
 	}
 }
 
@@ -198,6 +202,7 @@ func TestValidateReturnsErrorsForInvalidValues(t *testing.T) {
 	cfg.Database.MinConns = 1
 	cfg.Database.MaxConnLifetime = 0
 	cfg.Database.MaxConnIdleTime = -time.Second
+	cfg.Tracing.OTLPTracesEndpoint = "victoria-traces:10428"
 
 	err := errors.Join(validate(cfg)...)
 	if err == nil {
@@ -228,6 +233,7 @@ func TestValidateReturnsErrorsForInvalidValues(t *testing.T) {
 		"DB_MIN_CONNS must not be greater than DB_MAX_CONNS",
 		"DB_MAX_CONN_LIFETIME must be greater than 0",
 		"DB_MAX_CONN_IDLE_TIME must be greater than 0",
+		"OTEL_EXPORTER_OTLP_TRACES_ENDPOINT must be a valid HTTP URL",
 	} {
 		if !strings.Contains(message, want) {
 			t.Fatalf("expected error to contain %q, got %q", want, message)
@@ -293,6 +299,7 @@ func validConfig() Config {
 			Argon2idIterations:  3,
 			Argon2idParallelism: 4,
 		},
+		Tracing: TracingConfig{},
 	}
 }
 

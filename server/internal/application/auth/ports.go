@@ -20,7 +20,7 @@ type TokenIssuer interface {
 	IssueAccessToken(ctx context.Context, input AccessTokenInput) (IssuedToken, error)
 }
 
-// Logging handleing
+// SecurityEventRecorder records security-relevant auth events.
 type SecurityEventRecorder interface {
 	RecordAuthEvent(ctx context.Context, event AuthEvent)
 }

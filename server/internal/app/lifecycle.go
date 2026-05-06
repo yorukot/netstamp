@@ -77,6 +77,11 @@ func (a *Application) shutdown() error {
 	if a.DBPool != nil {
 		a.DBPool.Close()
 	}
+	if a.Tracing != nil {
+		if err := a.Tracing.Shutdown(ctx); err != nil {
+			errs = append(errs, fmt.Errorf("shutdown tracing: %w", err))
+		}
+	}
 
 	if err := errors.Join(errs...); err != nil {
 		return err
