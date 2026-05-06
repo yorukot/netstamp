@@ -52,7 +52,7 @@ services:
       - ./vector/vector.yaml:/etc/vector/vector.yaml:ro
 
   grafana:
-    image: ${GRAFANA_IMAGE:-grafana/grafana:13.0.0}
+    image: ${GRAFANA_IMAGE:-grafana/grafana:13.0}
     restart: unless-stopped
     depends_on:
       victoria-traces:
