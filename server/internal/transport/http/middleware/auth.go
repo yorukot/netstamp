@@ -1,0 +1,73 @@
+package middleware
+
+import (
+	"context"
+	"encoding/json"
+	"net/http"
+	"strings"
+
+	"github.com/danielgtaylor/huma/v2"
+	chimw "github.com/go-chi/chi/v5/middleware"
+
+	appauth "github.com/yorukot/netstamp/internal/application/auth"
+)
+
+type accessTokenClaimsContextKey struct{}
+
+func RequireAuth(verifier appauth.TokenVerifier) func(huma.Context, func(huma.Context)) {
+	return func(ctx huma.Context, next func(huma.Context)) {
+		if verifier == nil {
+			writeHumaProblem(ctx, http.StatusInternalServerError, "auth verifier unavailable")
+			return
+		}
+
+		token, ok := bearerToken(ctx.Header("Authorization"))
+		if !ok {
+			writeHumaProblem(ctx, http.StatusUnauthorized, "missing bearer token")
+			return
+		}
+
+		claims, err := verifier.VerifyAccessToken(ctx.Context(), token)
+		if err != nil {
+			writeHumaProblem(ctx, http.StatusUnauthorized, "invalid access token")
+			return
+		}
+
+		next(huma.WithContext(ctx, WithAccessTokenClaims(ctx.Context(), claims)))
+	}
+}
+
+func WithAccessTokenClaims(ctx context.Context, claims appauth.AccessTokenClaims) context.Context {
+	return context.WithValue(ctx, accessTokenClaimsContextKey{}, claims)
+}
+
+func AccessTokenClaimsFromContext(ctx context.Context) (appauth.AccessTokenClaims, bool) {
+	claims, ok := ctx.Value(accessTokenClaimsContextKey{}).(appauth.AccessTokenClaims)
+	return claims, ok
+}
+
+func bearerToken(value string) (string, bool) {
+	parts := strings.Fields(value)
+	if len(parts) != 2 || !strings.EqualFold(parts[0], "Bearer") {
+		return "", false
+	}
+
+	return parts[1], true
+}
+
+func writeHumaProblem(ctx huma.Context, status int, detail string) {
+	if requestID := chimw.GetReqID(ctx.Context()); requestID != "" {
+		ctx.SetHeader("X-Request-ID", requestID)
+	}
+	if status == http.StatusUnauthorized {
+		ctx.SetHeader("WWW-Authenticate", "Bearer")
+	}
+	ctx.SetHeader("Content-Type", "application/problem+json")
+	ctx.SetStatus(status)
+
+	_ = json.NewEncoder(ctx.BodyWriter()).Encode(&huma.ErrorModel{
+		Status: status,
+		Title:  http.StatusText(status),
+		Detail: detail,
+	})
+}

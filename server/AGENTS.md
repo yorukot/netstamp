@@ -23,7 +23,7 @@ No backend public asset directory is currently defined.
 
 The backend is a single Go service with two listeners: HTTP on `HTTP_ADDR` and gRPC on `GRPC_ADDR`. `internal/app.New` loads validated configuration, creates a zap logger, initializes OpenTelemetry, opens a pgx pool, builds the auth service, and creates HTTP and gRPC servers. `internal/app.Run` starts both servers concurrently with `errgroup`.
 
-HTTP uses chi middleware plus Huma route registration under `/api/{version}`. `internal/app/bootstrap.go` currently passes `cfg.Version` (`APP_VERSION`) into the router. System routes are `/`, `/livez`, and `/readyz`. Auth routes are `/auth/register` and `/auth/login`.
+HTTP uses chi middleware plus Huma route registration under `/api/{version}`. `internal/app/bootstrap.go` currently passes `cfg.Version` (`APP_VERSION`) into the router. System routes are `/`, `/livez`, and `/readyz`. Auth routes are `/auth/register`, `/auth/login`, and `/auth/me`; `/auth/me` is protected by the Huma auth middleware in `internal/transport/http/middleware`.
 
 The current auth request flow is:
 

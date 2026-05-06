@@ -92,6 +92,7 @@ func New(ctx context.Context) (*Application, error) {
 		Log:            log,
 		APIVersion:     cfg.Version,
 		AuthService:    authSvc,
+		AuthVerifier:   tokenIssuer,
 		ReadinessCheck: readiness,
 		RequestTimeout: cfg.HTTP.RequestTimeout,
 	})

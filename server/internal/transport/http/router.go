@@ -22,6 +22,7 @@ type Dependencies struct {
 	Log            *zap.Logger
 	APIVersion     string
 	AuthService    *appauth.Service
+	AuthVerifier   appauth.TokenVerifier
 	ReadinessCheck func(context.Context) error
 	RequestTimeout time.Duration
 }
@@ -44,8 +45,10 @@ func NewRouter(dep Dependencies) http.Handler {
 	r.Route(dep.basePath(), func(apiRouter chi.Router) {
 		api := humachi.New(apiRouter, newHumaConfig(dep))
 		registerSystemRoutes(api, dep.ReadinessCheck)
+
+		// Auth handler
 		if dep.AuthService != nil {
-			authhttp.NewHandler(dep.AuthService).RegisterRoutes(api)
+			authhttp.NewHandler(dep.AuthService, dep.AuthVerifier).RegisterRoutes(api)
 		}
 	})
 
@@ -64,6 +67,14 @@ func newHumaConfig(dep Dependencies) huma.Config {
 	config := huma.DefaultConfig("Netstamp API", dep.APIVersion)
 	config.Info.Description = "Controller HTTP API for Netstamp."
 	config.Servers = []*huma.Server{{URL: dep.basePath()}}
+	if config.Components.SecuritySchemes == nil {
+		config.Components.SecuritySchemes = map[string]*huma.SecurityScheme{}
+	}
+	config.Components.SecuritySchemes["bearerAuth"] = &huma.SecurityScheme{
+		Type:         "http",
+		Scheme:       "bearer",
+		BearerFormat: "JWT",
+	}
 	return config
 }
 
