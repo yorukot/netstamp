@@ -7,4 +7,3 @@ Generated Go code should be written to:
 ```text
 internal/infrastructure/postgres/sqlc
 ```
-

@@ -13,9 +13,11 @@ import (
 	"go.uber.org/zap"
 
 	appauth "github.com/yorukot/netstamp/internal/application/auth"
+	appteam "github.com/yorukot/netstamp/internal/application/team"
 	"github.com/yorukot/netstamp/internal/observability/httptrace"
 	authhttp "github.com/yorukot/netstamp/internal/transport/http/auth"
 	httpmiddleware "github.com/yorukot/netstamp/internal/transport/http/middleware"
+	teamhttp "github.com/yorukot/netstamp/internal/transport/http/team"
 )
 
 type Dependencies struct {
@@ -23,6 +25,7 @@ type Dependencies struct {
 	APIVersion     string
 	AuthService    *appauth.Service
 	AuthVerifier   appauth.TokenVerifier
+	TeamService    *appteam.Service
 	ReadinessCheck func(context.Context) error
 	RequestTimeout time.Duration
 }
@@ -49,6 +52,10 @@ func NewRouter(dep Dependencies) http.Handler {
 		// Auth handler
 		if dep.AuthService != nil {
 			authhttp.NewHandler(dep.AuthService, dep.AuthVerifier).RegisterRoutes(api)
+		}
+		// Team handler
+		if dep.TeamService != nil {
+			teamhttp.NewHandler(dep.TeamService, dep.AuthVerifier).RegisterRoutes(api)
 		}
 	})
 

@@ -7,4 +7,3 @@ lint:
 breaking:
   use:
     - FILE
-

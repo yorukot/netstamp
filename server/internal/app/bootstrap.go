@@ -11,8 +11,10 @@ import (
 	"google.golang.org/grpc"
 
 	appauth "github.com/yorukot/netstamp/internal/application/auth"
+	appteam "github.com/yorukot/netstamp/internal/application/team"
 	"github.com/yorukot/netstamp/internal/config"
 	"github.com/yorukot/netstamp/internal/infrastructure/postgres"
+	pgteam "github.com/yorukot/netstamp/internal/infrastructure/postgres/team"
 	pguser "github.com/yorukot/netstamp/internal/infrastructure/postgres/user"
 	"github.com/yorukot/netstamp/internal/infrastructure/security"
 	"github.com/yorukot/netstamp/internal/logger"
@@ -86,6 +88,8 @@ func New(ctx context.Context) (*Application, error) {
 	authEvents := logger.NewAuthEventRecorder(log, cfg.LogPseudonymKey)
 
 	authSvc := appauth.NewService(userRepo, passwordHasher, tokenIssuer, authEvents)
+	teamRepo := pgteam.NewTeamRepository(dbPool)
+	teamSvc := appteam.NewService(teamRepo)
 	readiness := postgres.NewReadinessCheck(dbPool)
 
 	httpHandler := httpserver.NewRouter(httpserver.Dependencies{
@@ -93,6 +97,7 @@ func New(ctx context.Context) (*Application, error) {
 		APIVersion:     cfg.Version,
 		AuthService:    authSvc,
 		AuthVerifier:   tokenIssuer,
+		TeamService:    teamSvc,
 		ReadinessCheck: readiness,
 		RequestTimeout: cfg.HTTP.RequestTimeout,
 	})

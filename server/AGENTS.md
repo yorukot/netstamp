@@ -94,6 +94,8 @@ Go files use tabs and `gofmt` per root `.editorconfig`. `golangci.yml` enables g
 
 Follow existing feature file names: `service.go`, `ports.go`, `errors.go`, `trace.go`, `handler.go`, `register.go`, `login.go`, and `*_test.go`. Export only types needed across packages. Use sentinel errors named `Err...` and compare with `errors.Is`.
 
+For HTTP feature packages, keep `handler.go` focused on the `Handler` type, constructor, and Huma route registration. Put each operation handler and its request/response DTOs in a separate operation file, matching `internal/transport/http/auth` patterns such as `register.go`, `login.go`, and `me.go`. Put response DTOs and mappers in `response.go` only when they are shared by multiple operation files. Do not concentrate all endpoint handler logic and DTOs in one large `handler.go`.
+
 ## Testing Guidelines
 
 Tests use Go's standard `testing` package and live beside the code as `*_test.go`, for example `internal/application/auth/service_test.go` and `internal/logger/auth_events_test.go`. Existing tests use package-local fakes and zap observer cores rather than external test frameworks.

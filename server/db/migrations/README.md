@@ -9,4 +9,3 @@ Use timestamped filenames such as:
 ```
 
 Keep schema changes forward-compatible when they are deployed with application changes.
-
