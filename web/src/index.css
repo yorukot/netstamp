@@ -1,80 +1,58 @@
-@import '@netstamp/ui/styles';
+@import "@netstamp/ui/styles";
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+}
+
+html {
+	scroll-behavior: smooth;
+	background: var(--ns-bg);
+}
 
 :root {
-  --sans: var(--ns-font-sans);
-  --heading: var(--ns-font-sans);
-  --mono: var(--ns-font-mono);
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--ns-text);
-  background: var(--ns-bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+	font: 16px/1.5 var(--ns-font-sans);
+	color: var(--ns-text);
+	background: var(--ns-bg);
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  margin: 0;
+	min-width: 20rem;
+	min-height: 100svh;
+	/* overflow-x: hidden; */
+	color: var(--ns-text);
+	background: var(--ns-bg);
+}
+
+button,
+input,
+select,
+textarea {
+	font: inherit;
+}
+
+button,
+select {
+	cursor: pointer;
+}
+
+a {
+	color: inherit;
+}
+
+::selection {
+	color: var(--ns-text-on-accent);
+	background: var(--ns-accent);
 }
 
 #root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--ns-border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--ns-text);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-
-p {
-  margin: 0;
-}
-
-code {
-  font-family: var(--mono);
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--ns-bg-subtle);
-  border: 1px solid var(--ns-border);
-  border-radius: var(--ns-radius-xs);
-  color: var(--ns-accent);
-  display: inline-flex;
+	min-height: 100vh;
+	min-height: 100svh;
 }
