@@ -1,0 +1,45 @@
+.map {
+  position: relative;
+  min-height: 22rem;
+  overflow: hidden;
+	border: 1px solid var(--ns-border-faint);
+	background: #050505;
+  clip-path: polygon(1rem 0, 100% 0, 100% calc(100% - 1rem), calc(100% - 1rem) 100%, 0 100%, 0 1rem);
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.map :global(.maplibregl-canvas) {
+	outline: none;
+}
+
+.map :global(.maplibregl-ctrl-group) {
+	border: 1px solid rgba(255, 255, 255, 0.16);
+	background: rgba(7, 7, 7, 0.82);
+	box-shadow: 0 0 1rem rgba(0, 0, 0, 0.48);
+}
+
+.map :global(.maplibregl-ctrl button) {
+	background-color: transparent;
+	filter: invert(1) grayscale(1);
+}
+
+.map :global(.maplibregl-ctrl-attrib) {
+	color: rgba(255, 255, 255, 0.48);
+	background: rgba(0, 0, 0, 0.72);
+	font-family: var(--ns-font-mono);
+	font-size: 0.5625rem;
+}
+
+.map :global(.maplibregl-ctrl-attrib a) {
+	color: rgba(255, 255, 255, 0.72);
+}
+
+@media (max-width: 38rem) {
+  .map {
+    min-height: 18rem;
+  }
+}
