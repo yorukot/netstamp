@@ -1,8 +1,3 @@
-# Package manager lockfiles
-package-lock.json
-yarn.lock
-bun.lockb
-
 # Logs
 logs
 *.log
