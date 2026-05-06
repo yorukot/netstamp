@@ -1,0 +1,77 @@
+x-netstamp-log-labels: &netstamp-log-labels
+  netstamp.logs: enabled
+
+services:
+  migrate:
+    labels: *netstamp-log-labels
+
+  nginx:
+    labels: *netstamp-log-labels
+
+  postgres:
+    labels: *netstamp-log-labels
+
+  victoria-traces:
+    image: ${VICTORIA_TRACES_IMAGE:-victoriametrics/victoria-traces:v0.4.0}
+    restart: unless-stopped
+    command:
+      - -storageDataPath=/victoria-traces-data
+      - -retentionPeriod=${VICTORIA_TRACES_RETENTION_PERIOD:-7d}
+    volumes:
+      - netstamp-victoria-traces:/victoria-traces-data
+    labels: *netstamp-log-labels
+
+  backend:
+    depends_on:
+      victoria-traces:
+        condition: service_started
+    environment:
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://victoria-traces:10428/insert/opentelemetry/v1/traces
+    labels: *netstamp-log-labels
+
+  victoria-logs:
+    image: ${VICTORIA_LOGS_IMAGE:-victoriametrics/victoria-logs:v1.50.0}
+    restart: unless-stopped
+    command:
+      - -storageDataPath=/victoria-logs-data
+      - -retentionPeriod=${VICTORIA_LOGS_RETENTION_PERIOD:-14d}
+    volumes:
+      - netstamp-victoria-logs:/victoria-logs-data
+    labels: *netstamp-log-labels
+
+  vector:
+    image: ${VECTOR_IMAGE:-timberio/vector:0.55.0-alpine}
+    restart: unless-stopped
+    user: root
+    depends_on:
+      victoria-logs:
+        condition: service_started
+    command: ["--config", "/etc/vector/vector.yml"]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./vector/vector.yml:/etc/vector/vector.yml:ro
+
+  grafana:
+    image: ${GRAFANA_IMAGE:-grafana/grafana:13.0.0}
+    restart: unless-stopped
+    depends_on:
+      victoria-traces:
+        condition: service_started
+      victoria-logs:
+        condition: service_started
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GF_SECURITY_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD:?set GF_SECURITY_ADMIN_PASSWORD}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_INSTALL_PLUGINS: ${GF_INSTALL_PLUGINS:-victoriametrics-logs-datasource}
+    ports:
+      - "${GRAFANA_HTTP_ADDR:-127.0.0.1:3000}:3000"
+    volumes:
+      - netstamp-grafana:/var/lib/grafana
+      - ./grafana/provisioning.production:/etc/grafana/provisioning:ro
+    labels: *netstamp-log-labels
+
+volumes:
+  netstamp-victoria-traces:
+  netstamp-victoria-logs:
+  netstamp-grafana:

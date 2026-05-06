@@ -27,6 +27,13 @@ services:
     volumes:
       - netstamp-victoria-traces:/victoria-traces-data
 
+  backend:
+    depends_on:
+      victoria-traces:
+        condition: service_started
+    environment:
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://victoria-traces:10428/insert/opentelemetry/v1/traces
+
   grafana:
     image: grafana/grafana:latest
     restart: unless-stopped

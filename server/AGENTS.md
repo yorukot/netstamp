@@ -83,8 +83,9 @@ Commands below come from the root `Justfile`, root `package.json`, `server/.air.
 - `just backend-sqlc`: regenerate sqlc code from `sqlc.yaml`.
 - `just backend-migrate-status`, `just backend-migrate-up`, `just backend-migrate-down`: run `cmd/migrate`.
 - `just backend-buf-lint`, `just backend-buf-generate`: run Buf commands; verify Buf paths first.
-- `docker compose -f deployments/docker/docker-compose.yml up -d postgres victoria-traces grafana`: start local PostgreSQL/TimescaleDB and trace UI dependencies.
-- `docker compose -f deployments/docker/docker-compose.yml -f deployments/docker/docker-compose.production.yml up --build`: build and run backend plus migration service with the shared PostgreSQL and trace services.
+- `docker compose -f deployments/docker/docker-compose.yml -f deployments/docker/docker-compose.dev.yml up -d postgres victoria-traces grafana`: start local PostgreSQL/TimescaleDB and trace UI dependencies.
+- `docker compose -f deployments/docker/docker-compose.yml -f deployments/docker/docker-compose.observability.yml up --build`: build and run the Docker stack with PostgreSQL, VictoriaTraces, VictoriaLogs, Vector, Grafana, nginx, backend, and migrations.
+- Dokploy deployments should use the base and observability compose files through a custom Run Command; see `deployments/docker/DOKPLOY.md`.
 
 Use `server/.env.example` as the env template. `server/.gitignore` intentionally ignores `.env`, `.env.*`, `bin/`, `tmp/`, and `coverage.out`.
 
@@ -112,7 +113,7 @@ Application and domain packages define sentinel errors. Repositories translate p
 
 Secrets and runtime settings come from environment variables or `.env`; defaults and validation live in `internal/config/config.go`. Never commit real `.env` files, JWT secrets, database passwords, trace endpoints with credentials, or production pseudonym keys.
 
-Production compose requires `LOG_PSEUDONYM_KEY`, `DATABASE_PASSWORD`, and `AUTH_JWT_SECRET`. Passwords are hashed with Argon2id using `AUTH_ARGON2ID_*` settings. JWT access tokens use HS256 with `AUTH_JWT_SECRET` and `AUTH_ACCESS_TOKEN_TTL`. Configuration fields for login rate limits exist, but no rate-limiting middleware is currently wired.
+The observability compose setup requires `LOG_PSEUDONYM_KEY`, `DATABASE_PASSWORD`, `AUTH_JWT_SECRET`, and `GF_SECURITY_ADMIN_PASSWORD`. Passwords are hashed with Argon2id using `AUTH_ARGON2ID_*` settings. JWT access tokens use HS256 with `AUTH_JWT_SECRET` and `AUTH_ACCESS_TOKEN_TTL`. Configuration fields for login rate limits exist, but no rate-limiting middleware is currently wired.
 
 ## Database & Persistence
 
@@ -122,7 +123,7 @@ Add schema changes as timestamped Goose migrations under `db/migrations/`, follo
 
 ## External Integrations
 
-Current backend integrations are PostgreSQL/TimescaleDB and optional OTLP trace export to Victoria Traces, as shown in `deployments/docker/docker-compose.yml` and `docker-compose.production.yml`. No third-party API SDKs, queues, email services, payment providers, or object storage clients are currently implemented.
+Current backend integrations are PostgreSQL/TimescaleDB and optional OTLP trace export to VictoriaTraces, as shown in `deployments/docker/docker-compose.yml` and `docker-compose.observability.yml`. Docker observability also includes VictoriaLogs with Vector container log collection. No third-party API SDKs, queues, email services, payment providers, or object storage clients are currently implemented.
 
 ## Commit & Pull Request Guidelines
 

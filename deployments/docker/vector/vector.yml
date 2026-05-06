@@ -1,0 +1,23 @@
+sources:
+  docker:
+    type: docker_logs
+    include_labels:
+      - netstamp.logs=enabled
+
+sinks:
+  victoria_logs:
+    type: elasticsearch
+    inputs:
+      - docker
+    endpoints:
+      - http://victoria-logs:9428/insert/elasticsearch/
+    mode: bulk
+    api_version: v8
+    compression: gzip
+    healthcheck:
+      enabled: false
+    query:
+      _msg_field: message
+      _time_field: timestamp
+      _stream_fields: host,container_name,stream
+      ignore_fields: label
