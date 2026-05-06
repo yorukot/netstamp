@@ -2,8 +2,13 @@ import { Slot } from '@radix-ui/react-slot'
 import type { ComponentPropsWithoutRef } from 'react'
 import styles from './Button.module.css'
 
-export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost'
-export type ButtonSize = 'sm' | 'md' | 'lg'
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'outline'
+  | 'ghost'
+  | 'danger'
+export type ButtonSize = 'sm' | 'md' | 'lg' | 'xl'
 
 export interface ButtonProps extends ComponentPropsWithoutRef<'button'> {
   variant?: ButtonVariant
