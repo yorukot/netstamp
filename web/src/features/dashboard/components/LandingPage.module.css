@@ -1,0 +1,1100 @@
+.landing {
+	min-height: 100svh;
+	overflow: clip; /* clip without creating a scroll container — overflow-x: hidden would make overflow-y: auto, turning .landing into a nested scroller and breaking GSAP ScrollTrigger */
+	color: var(--ns-text);
+	background:
+		radial-gradient(circle at 72% 8%, rgba(255, 122, 26, 0.2), transparent 28rem), radial-gradient(circle at 18% 34%, rgba(168, 180, 199, 0.12), transparent 22rem),
+		linear-gradient(rgba(255, 122, 26, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 122, 26, 0.08) 1px, transparent 1px),
+		linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px), var(--ns-bg);
+	background-size:
+		100% 100%,
+		100% 100%,
+		8rem 8rem,
+		8rem 8rem,
+		2rem 2rem,
+		2rem 2rem,
+		100% 100%;
+}
+
+.landing::before {
+	content: "";
+	position: fixed;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+	background:
+		linear-gradient(115deg, transparent 0 42%, rgba(255, 122, 26, 0.08) 42.15% 42.35%, transparent 42.5% 100%),
+		linear-gradient(65deg, transparent 0 54%, rgba(255, 255, 255, 0.055) 54.15% 54.3%, transparent 54.45% 100%);
+	mask-image: linear-gradient(180deg, #000, transparent 82%);
+}
+
+.nav,
+.hero,
+.storySection,
+.featureStack,
+.trustSection {
+	position: relative;
+	z-index: 1;
+}
+
+/* ── Nav ──────────────────────────────────────────────────── */
+
+.nav {
+	position: sticky;
+	top: 0;
+	z-index: 20;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	min-height: 4.5rem;
+	padding: 0 1.5rem;
+	border-bottom: 1px solid var(--ns-border);
+	background: rgba(5, 7, 11, 0.92);
+	backdrop-filter: blur(1rem);
+}
+
+.brand {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.75rem;
+	color: var(--ns-text);
+	background: transparent;
+	border: 0;
+	font-family: var(--ns-font-display);
+	font-size: 1rem;
+	font-weight: 800;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	cursor: pointer;
+}
+
+.brand:focus-visible,
+.navLink:focus-visible {
+	outline: 2px solid var(--ns-accent);
+	outline-offset: 0.25rem;
+}
+
+.brandMark,
+.cardIcon {
+	--ns-frame-color: var(--ns-border);
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--ns-accent-hover);
+	border: 1px solid var(--ns-frame-color);
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent), #0d0d12;
+	background-size:
+		100% 100%,
+		100% 100%;
+	box-shadow: var(--ns-shadow-sm);
+	clip-path: polygon(var(--ns-cut-sm) 0, 100% 0, 100% calc(100% - var(--ns-cut-sm)), calc(100% - var(--ns-cut-sm)) 100%, 0 100%, 0 var(--ns-cut-sm));
+}
+
+.brandMark {
+	width: 2rem;
+	height: 2rem;
+}
+
+/* Chamfered border overlay — only on small, icon-sized elements where
+   there is no text content sitting beneath the pseudo-element */
+.brandMark::before,
+.heroTelemetry::before,
+.cardIcon::before,
+.checkGrid strong::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 2;
+	padding: 1px;
+	background: var(--ns-frame-color, var(--ns-border));
+	clip-path: inherit;
+	pointer-events: none;
+	mask:
+		linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	mask-composite: exclude;
+	-webkit-mask:
+		linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+}
+
+/* featureCard and trustLine have content children — the ::before border
+   overlay sits at z-index 2 but the inner content must be elevated above
+   it so it isn't washed out. */
+.featureCard::before,
+.trustLine::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 2;
+	padding: 1px;
+	background: var(--ns-frame-color, var(--ns-border));
+	clip-path: inherit;
+	pointer-events: none;
+	mask:
+		linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	mask-composite: exclude;
+	-webkit-mask:
+		linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+}
+
+/* Lift all direct children above the ::before border overlay */
+.featureCardMain,
+.probeRoster,
+.featureCard > .cardIcon,
+.featureCard > h2,
+.featureCard > p,
+.featureCard > .checkGrid,
+.featureCard > .signalList {
+	position: relative;
+	z-index: 3;
+}
+
+.trustLine > svg,
+.trustLine > span {
+	position: relative;
+	z-index: 3;
+}
+
+.navActions {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+}
+
+.navLink {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	color: var(--ns-text-subtle);
+	font-family: var(--ns-font-mono);
+	font-size: 0.75rem;
+	font-weight: 700;
+	letter-spacing: 0.09em;
+	text-decoration: none;
+	text-transform: uppercase;
+	transition: color var(--ns-transition);
+}
+
+.navLink:hover {
+	color: var(--ns-text);
+}
+
+/* ── Hero (unchanged) ─────────────────────────────────────── */
+
+.hero {
+	display: grid;
+	grid-template-columns: minmax(0, 0.92fr) minmax(28rem, 1.08fr);
+	align-items: center;
+	gap: 2rem;
+	min-height: calc(100svh - 4.5rem);
+	padding: clamp(4rem, 7vw, 7.5rem) 2rem 5rem;
+	perspective: 90rem;
+}
+
+.hero::after {
+	content: "";
+	position: absolute;
+	inset: auto 2rem 3.5rem 2rem;
+	height: 1px;
+	background: linear-gradient(90deg, transparent, var(--ns-accent-border), var(--ns-border-faint), transparent);
+}
+
+.heroCopy {
+	position: relative;
+	z-index: 3;
+	display: grid;
+	gap: 1.15rem;
+	max-width: 68rem;
+}
+
+.heroCopy h1,
+.storyCopy h2,
+.featureCard h2,
+.trustLeft h2 {
+	margin: 0;
+	color: var(--ns-text);
+	font-family: var(--ns-font-display);
+	font-weight: 650;
+	letter-spacing: -0.03em;
+}
+
+.heroCopy h1 {
+	max-width: 78rem;
+	font-size: clamp(2.4rem, 5.2vw, 6rem);
+	line-height: 0.9;
+	text-wrap: balance;
+}
+
+.heroCopy h1 span {
+	display: block;
+	color: var(--ns-text-muted);
+}
+
+.heroCopy p,
+.storyCopy p,
+.featureCard p,
+.trustLeft p {
+	margin: 0;
+	color: var(--ns-text-muted);
+	font-size: clamp(1rem, 1.4vw, 1.25rem);
+	line-height: 1.62;
+}
+
+.heroCopy p {
+	max-width: 42rem;
+}
+
+.heroActions,
+.ctaActions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	padding-top: 0.75rem;
+}
+
+.heroActions a,
+.ctaActions a {
+	color: inherit;
+	text-decoration: none;
+}
+
+/* Globe animation */
+
+.globalStage {
+	position: relative;
+	z-index: 2;
+	display: grid;
+	place-items: center;
+	min-height: min(45rem, 64vw);
+	transform-style: preserve-3d;
+}
+
+.globalStage::before,
+.globalStage::after {
+	content: "";
+	position: absolute;
+	pointer-events: none;
+}
+
+.globalStage::before {
+	inset: 4% 2% 7%;
+	background:
+		linear-gradient(90deg, transparent, rgba(255, 122, 26, 0.16), transparent) 50% 50% / 100% 1px no-repeat,
+		linear-gradient(0deg, transparent, rgba(255, 122, 26, 0.12), transparent) 50% 50% / 1px 100% no-repeat,
+		repeating-linear-gradient(90deg, transparent 0 3.8rem, rgba(255, 255, 255, 0.075) 3.8rem 3.85rem),
+		repeating-linear-gradient(0deg, transparent 0 3.8rem, rgba(255, 255, 255, 0.075) 3.8rem 3.85rem);
+	transform: rotateX(64deg) rotateZ(-18deg) translateZ(-6rem);
+	transform-origin: center;
+	mask-image: radial-gradient(ellipse at center, #000 0 48%, transparent 74%);
+}
+
+.globalStage::after {
+	inset: 16%;
+	background: radial-gradient(circle, rgba(255, 122, 26, 0.34), rgba(255, 122, 26, 0.08) 35%, transparent 68%);
+	filter: blur(2rem);
+	transform: translateZ(-7rem);
+	animation: pulseGlow 4.8s ease-in-out infinite;
+}
+
+.globeRig {
+	position: relative;
+	width: min(41rem, 78vw);
+	aspect-ratio: 1;
+	transform-style: preserve-3d;
+	transform: rotateX(58deg) rotateZ(-19deg);
+	animation: globeTilt 12s ease-in-out infinite;
+}
+
+.globeCore {
+	position: absolute;
+	inset: 12%;
+	background:
+		radial-gradient(circle at 38% 32%, rgba(255, 247, 236, 0.28), transparent 0.28rem), radial-gradient(circle at 62% 46%, rgba(255, 122, 26, 0.46), transparent 0.32rem),
+		radial-gradient(circle at 44% 66%, rgba(168, 180, 199, 0.24), transparent 0.24rem), repeating-radial-gradient(circle, rgba(255, 122, 26, 0.16) 0 1px, transparent 1px 2.6rem),
+		repeating-linear-gradient(90deg, rgba(255, 122, 26, 0.12) 0 1px, transparent 1px 3.1rem), repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.07) 0 1px, transparent 1px 3.4rem),
+		radial-gradient(circle at 50% 52%, rgba(255, 122, 26, 0.13), transparent 52%), #07090d;
+	border: 1px solid rgba(255, 122, 26, 0.3);
+	box-shadow:
+		inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+		inset 0 0 4rem rgba(255, 122, 26, 0.08),
+		0 0 5rem rgba(255, 122, 26, 0.16);
+	clip-path: polygon(50% 0, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+}
+
+.globeCore::before,
+.globeCore::after {
+	content: "";
+	position: absolute;
+	inset: 9%;
+	border: 1px solid rgba(255, 122, 26, 0.28);
+	clip-path: polygon(50% 0, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+}
+
+.globeCore::before {
+	transform: rotate(30deg) scale(0.82);
+}
+
+.globeCore::after {
+	inset: 21%;
+	transform: rotate(-30deg);
+	border-color: rgba(255, 255, 255, 0.13);
+}
+
+.orbitA,
+.orbitB,
+.orbitC {
+	position: absolute;
+	inset: 8%;
+	border: 1px solid rgba(255, 122, 26, 0.32);
+	transform-style: preserve-3d;
+	animation: orbitSpin 9s linear infinite;
+}
+
+.orbitA {
+	clip-path: ellipse(50% 26% at 50% 50%);
+}
+
+.orbitB {
+	inset: 16% 5%;
+	border-color: rgba(255, 255, 255, 0.16);
+	transform: rotateZ(58deg) rotateX(72deg);
+	animation-duration: 12s;
+	animation-direction: reverse;
+}
+
+.orbitC {
+	inset: 5% 18%;
+	border-color: rgba(255, 122, 26, 0.22);
+	transform: rotateZ(-62deg) rotateX(68deg);
+	animation-duration: 15s;
+}
+
+.networkNode {
+	position: absolute;
+	left: var(--x);
+	top: var(--y);
+	z-index: 4;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 2.3rem;
+	height: 1.3rem;
+	padding: 0 0.4rem;
+	color: var(--ns-text);
+	background: #05070b;
+	border: 1px solid rgba(255, 122, 26, 0.64);
+	box-shadow:
+		0 0 0 0.25rem rgba(255, 122, 26, 0.08),
+		0 0 1.5rem rgba(255, 122, 26, 0.34);
+	font-family: var(--ns-font-mono);
+	font-size: 0.62rem;
+	font-weight: 800;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	transform: translate(-50%, -50%) rotateZ(19deg) rotateX(-58deg);
+	animation: nodeBlink 3.4s ease-in-out infinite;
+}
+
+.networkNode:nth-of-type(2) { animation-delay: 0.35s; }
+.networkNode:nth-of-type(3) { animation-delay: 0.8s; }
+.networkNode:nth-of-type(4) { animation-delay: 1.2s; }
+.networkNode:nth-of-type(5) { animation-delay: 1.65s; }
+
+.packetOne,
+.packetTwo,
+.packetThree {
+	position: absolute;
+	z-index: 5;
+	width: 0.62rem;
+	height: 0.62rem;
+	background: var(--ns-accent-hover);
+	box-shadow:
+		0 0 0 0.25rem rgba(255, 122, 26, 0.14),
+		0 0 1.3rem rgba(255, 122, 26, 0.8);
+	transform: translate(-50%, -50%);
+}
+
+.packetOne  { animation: packetRouteOne   3.7s linear infinite; }
+.packetTwo  { animation: packetRouteTwo   4.4s linear infinite 0.7s; }
+.packetThree { animation: packetRouteThree 5.2s linear infinite 1.2s; }
+
+.depthPlane {
+	position: absolute;
+	inset: auto 7% 9%;
+	height: 18%;
+	background: radial-gradient(ellipse, rgba(255, 122, 26, 0.18), transparent 62%);
+	filter: blur(1.2rem);
+	transform: rotateX(72deg) translateZ(-10rem);
+}
+
+.heroTelemetry {
+	--ns-frame-color: var(--ns-border);
+	position: absolute;
+	right: clamp(1rem, 4vw, 5rem);
+	bottom: clamp(2rem, 6vw, 5rem);
+	z-index: 4;
+	display: grid;
+	gap: 0.25rem;
+	min-width: 12rem;
+	padding: 0.9rem 1rem;
+	border: 1px solid var(--ns-frame-color);
+	background: #08080b;
+	box-shadow: var(--ns-shadow-md);
+	clip-path: polygon(var(--ns-cut-sm) 0, 100% 0, 100% calc(100% - var(--ns-cut-sm)), calc(100% - var(--ns-cut-sm)) 100%, 0 100%, 0 var(--ns-cut-sm));
+}
+
+.heroTelemetry span {
+	color: var(--ns-text-low);
+	font-family: var(--ns-font-mono);
+	font-size: 0.65rem;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+}
+
+.heroTelemetry strong {
+	color: var(--ns-accent-hover);
+	font-family: var(--ns-font-display);
+	font-size: 2.4rem;
+	line-height: 1;
+}
+
+/* ── Story Section ────────────────────────────────────────── */
+
+.storySection {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	min-height: 42rem;
+	border-top: 1px solid var(--ns-border-faint);
+	border-bottom: 1px solid var(--ns-border-faint);
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 60%), #06070a;
+	overflow: hidden;
+}
+
+.storyCopy {
+	display: grid;
+	align-content: center;
+	gap: 1.5rem;
+	padding: clamp(4rem, 6vw, 6.5rem) clamp(2rem, 4vw, 4.5rem);
+	border-right: 1px solid var(--ns-border-faint);
+}
+
+.storyCopy h2 {
+	font-size: clamp(2rem, 3.2vw, 4rem);
+	line-height: 0.95;
+	text-wrap: balance;
+}
+
+.storyCopy p {
+	max-width: 44ch;
+}
+
+.storyViz {
+	position: relative;
+	overflow: hidden;
+}
+
+.storyViz::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	background: radial-gradient(ellipse at 55% 50%, rgba(255, 122, 26, 0.07), transparent 64%);
+	pointer-events: none;
+}
+
+/* Subtle grid lines behind the Three.js canvas */
+.storyViz::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background:
+		repeating-linear-gradient(90deg, transparent 0 5rem, rgba(255, 255, 255, 0.028) 5rem 5.05rem),
+		repeating-linear-gradient(0deg,  transparent 0 5rem, rgba(255, 255, 255, 0.028) 5rem 5.05rem);
+	pointer-events: none;
+}
+
+.networkScene {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.probeScene {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.storyVizLabel {
+	position: absolute;
+	bottom: 1.5rem;
+	left: 1.5rem;
+	z-index: 4;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	color: var(--ns-text-low);
+	font-family: var(--ns-font-mono);
+	font-size: 0.62rem;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+}
+
+.storyVizDot {
+	display: inline-block;
+	width: 0.4rem;
+	height: 0.4rem;
+	background: var(--ns-success);
+	border-radius: 50%;
+	box-shadow: 0 0 0.5rem var(--ns-success);
+	animation: nodeBlink 2.4s ease-in-out infinite;
+}
+
+/* ── Feature Stack ────────────────────────────────────────── */
+
+.featureStack {
+	padding: clamp(4rem, 8vw, 8rem) 2rem;
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1rem;
+}
+
+.featureHeader {
+	grid-column: 1 / -1;
+	display: flex;
+	align-items: center;
+	gap: 1.25rem;
+	margin-bottom: 0.25rem;
+}
+
+.featureLabel {
+	flex: 0 0 auto;
+	margin: 0;
+	color: var(--ns-text-low);
+	font-family: var(--ns-font-mono);
+	font-size: 0.68rem;
+	font-weight: 700;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+.featureHeaderRule {
+	flex: 1;
+	height: 1px;
+	background: linear-gradient(90deg, var(--ns-border-faint), transparent);
+}
+
+.featureCard {
+	--ns-frame-color: var(--ns-border);
+	position: relative;
+	display: grid;
+	align-content: start;
+	gap: 1rem;
+	padding: clamp(1.5rem, 2.6vw, 2.25rem);
+	background: linear-gradient(160deg, rgba(255, 255, 255, 0.032), transparent 55%), #0c0c11;
+	border: 1px solid var(--ns-frame-color);
+	box-shadow: var(--ns-shadow-sm);
+	clip-path: polygon(var(--ns-cut-lg) 0, 100% 0, 100% calc(100% - var(--ns-cut-lg)), calc(100% - var(--ns-cut-lg)) 100%, 0 100%, 0 var(--ns-cut-lg));
+	transition:
+		border-color var(--ns-transition),
+		box-shadow var(--ns-transition);
+	overflow: hidden;
+}
+
+.featureCard:hover {
+	--ns-frame-color: var(--ns-border-strong);
+	box-shadow: var(--ns-shadow-md);
+}
+
+/* First card: full-width, two-column with 3D visualization on the right.
+   Styled consistently with cards 2 and 3. */
+.featureCard:first-of-type {
+	--ns-frame-color: var(--ns-accent-border);
+	grid-column: 1 / -1;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 0;
+	align-items: stretch;
+	padding: 0;
+	overflow: hidden;
+}
+
+.featureCard:first-of-type::before {
+	display: none; /* accent ::before re-rendered via clip-path + border on the card */
+}
+
+/* Left content column inside first card */
+.featureCard:first-of-type .featureCardMain {
+	padding: clamp(1.5rem, 2.6vw, 2.25rem);
+	border-right: 1px solid var(--ns-accent-border);
+}
+
+/* Right visualization column */
+.probeSceneCol {
+	position: relative;
+	min-height: 22rem;
+}
+
+.featureCard:first-of-type .featureBadge {
+	position: absolute;
+	top: 1.25rem;
+	right: 1.5rem;
+	z-index: 3;
+}
+
+.featureCardMain {
+	display: grid;
+	align-content: start;
+	gap: 1rem;
+}
+
+.cardIcon {
+	width: 3rem;
+	height: 3rem;
+	box-shadow: none;
+}
+
+.featureCard h2 {
+	font-size: clamp(1.25rem, 2vw, 1.875rem);
+	line-height: 1.1;
+	text-wrap: balance;
+}
+
+/* Corner badge */
+.featureBadge {
+	position: absolute;
+	top: 1.25rem;
+	right: 1.5rem;
+	z-index: 3; /* above ::before border overlay */
+	color: rgba(255, 122, 26, 0.18);
+	font-family: var(--ns-font-display);
+	font-size: clamp(3rem, 4.5vw, 5rem);
+	font-weight: 800;
+	line-height: 1;
+	letter-spacing: -0.03em;
+	pointer-events: none;
+	user-select: none;
+}
+
+/* Probe roster */
+.probeRoster {
+	display: grid;
+	align-content: start;
+	gap: 0.15rem;
+	padding: 0.75rem 0 0;
+}
+
+.rosterHeading {
+	margin: 0 0 0.6rem;
+	color: var(--ns-text-low);
+	font-family: var(--ns-font-mono);
+	font-size: 0.62rem;
+	font-weight: 700;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+}
+
+.rosterRow {
+	display: grid;
+	grid-template-columns: 0.6rem 1fr auto;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 0.55rem 0.75rem;
+	border-left: 1px solid var(--ns-border-faint);
+	transition: border-color var(--ns-transition);
+}
+
+.rosterRow:hover {
+	border-left-color: var(--ns-accent-border);
+}
+
+.rosterDot {
+	display: block;
+	width: 0.38rem;
+	height: 0.38rem;
+	background: var(--ns-success);
+	border-radius: 50%;
+	box-shadow: 0 0 0.4rem var(--ns-success);
+	animation: nodeBlink 2.8s ease-in-out infinite;
+}
+
+.rosterRow:nth-child(2) .rosterDot { animation-delay: 0.3s; }
+.rosterRow:nth-child(3) .rosterDot { animation-delay: 0.6s; }
+.rosterRow:nth-child(4) .rosterDot { animation-delay: 0.9s; }
+.rosterRow:nth-child(5) .rosterDot { animation-delay: 1.2s; }
+.rosterRow:nth-child(6) .rosterDot { animation-delay: 1.5s; }
+.rosterRow:nth-child(7) .rosterDot { animation-delay: 1.8s; }
+
+.rosterName {
+	color: var(--ns-text);
+	font-family: var(--ns-font-mono);
+	font-size: 0.78rem;
+	font-weight: 700;
+	letter-spacing: 0.09em;
+	text-transform: uppercase;
+}
+
+.rosterLat {
+	color: var(--ns-accent-hover);
+	font-family: var(--ns-font-mono);
+	font-size: 0.78rem;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+}
+
+.checkGrid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 0.5rem;
+	margin: 0.25rem 0;
+}
+
+.checkGrid strong {
+	--ns-frame-color: var(--ns-border-faint);
+	position: relative;
+	display: grid;
+	place-items: center;
+	min-height: 4.8rem;
+	padding: 0.75rem;
+	color: var(--ns-accent-hover);
+	background: #090910;
+	border: 1px solid var(--ns-frame-color);
+	font-family: var(--ns-font-mono);
+	font-size: 0.85rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	clip-path: polygon(var(--ns-cut-sm) 0, 100% 0, 100% calc(100% - var(--ns-cut-sm)), calc(100% - var(--ns-cut-sm)) 100%, 0 100%, 0 var(--ns-cut-sm));
+}
+
+.signalList {
+	display: grid;
+	gap: 0.7rem;
+	margin: 0.25rem 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.signalList li {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.65rem;
+	color: var(--ns-text-muted);
+	font-size: 1rem;
+	line-height: 1.45;
+}
+
+.signalList svg {
+	flex: 0 0 auto;
+	margin-top: 0.2rem;
+	color: var(--ns-success);
+}
+
+/* ── Trust / CTA Section ──────────────────────────────────── */
+
+.trustSection {
+	padding: clamp(5rem, 9vw, 9rem) 2rem clamp(5rem, 9vw, 8rem);
+	border-top: 1px solid var(--ns-border-faint);
+	background: linear-gradient(180deg, #060709, var(--ns-bg) 80%);
+}
+
+/* Subtle scan-line texture */
+.trustSection::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: repeating-linear-gradient(
+		0deg,
+		transparent 0 2px,
+		rgba(255, 255, 255, 0.012) 2px 4px
+	);
+	pointer-events: none;
+}
+
+.trustInner {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 4rem 7rem;
+	align-items: center;
+	max-width: 90rem;
+	margin: 0 auto;
+}
+
+.trustLeft {
+	display: grid;
+	align-content: start;
+	gap: 1.4rem;
+}
+
+.trustLeft h2 {
+	font-size: clamp(2.2rem, 3.6vw, 4.2rem);
+	line-height: 0.95;
+	text-wrap: balance;
+}
+
+.trustLeft p {
+	max-width: 46ch;
+}
+
+.trustRight {
+	display: grid;
+	align-content: start;
+}
+
+.trustGrid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 0.75rem;
+}
+
+.trustLine {
+	--ns-frame-color: var(--ns-border-faint);
+	position: relative;
+	display: flex;
+	align-items: flex-start;
+	gap: 0.75rem;
+	padding: 1.1rem 1rem;
+	color: var(--ns-text-muted);
+	background: linear-gradient(160deg, rgba(255, 255, 255, 0.025), transparent), #09090e;
+	border: 1px solid var(--ns-frame-color);
+	font-size: 0.9rem;
+	line-height: 1.5;
+	clip-path: polygon(var(--ns-cut-sm) 0, 100% 0, 100% calc(100% - var(--ns-cut-sm)), calc(100% - var(--ns-cut-sm)) 100%, 0 100%, 0 var(--ns-cut-sm));
+	transition: border-color var(--ns-transition);
+}
+
+.trustLine:hover {
+	--ns-frame-color: var(--ns-border);
+}
+
+.trustLine svg {
+	flex: 0 0 auto;
+	margin-top: 0.1rem;
+	color: var(--ns-accent-hover);
+}
+
+/* ── Keyframes ────────────────────────────────────────────── */
+
+@keyframes globeTilt {
+	0%, 100% { transform: rotateX(58deg) rotateZ(-19deg) translateY(0); }
+	50%       { transform: rotateX(61deg) rotateZ(-14deg) translateY(-0.75rem); }
+}
+
+@keyframes orbitSpin {
+	from { transform: rotateZ(0deg) rotateX(70deg); }
+	to   { transform: rotateZ(360deg) rotateX(70deg); }
+}
+
+@keyframes pulseGlow {
+	0%, 100% { opacity: 0.58; transform: translateZ(-7rem) scale(0.95); }
+	50%       { opacity: 0.9;  transform: translateZ(-7rem) scale(1.08); }
+}
+
+@keyframes nodeBlink {
+	0%, 100% { opacity: 0.72; }
+	50%       { opacity: 1; }
+}
+
+@keyframes packetRouteOne {
+	0%          { left: 8%;  top: 38%; opacity: 0; }
+	10%, 88%    { opacity: 1; }
+	42%         { left: 43%; top: 8%; }
+	100%        { left: 92%; top: 64%; opacity: 0; }
+}
+
+@keyframes packetRouteTwo {
+	0%          { left: 7%;  top: 66%; opacity: 0; }
+	12%, 86%    { opacity: 1; }
+	50%         { left: 43%; top: 8%; }
+	100%        { left: 90%; top: 27%; opacity: 0; }
+}
+
+@keyframes packetRouteThree {
+	0%          { left: 90%; top: 27%; opacity: 0; }
+	12%, 84%    { opacity: 1; }
+	48%         { left: 7%;  top: 66%; }
+	100%        { left: 8%;  top: 38%; opacity: 0; }
+}
+
+/* ── Reduced Motion ───────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+	.globeRig,
+	.orbitA,
+	.orbitB,
+	.orbitC,
+	.globalStage::after,
+	.networkNode,
+	.packetOne,
+	.packetTwo,
+	.packetThree,
+	.rosterDot,
+	.storyVizDot {
+		animation: none;
+	}
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+
+@media (max-width: 76rem) {
+	.hero {
+		grid-template-columns: 1fr;
+		min-height: auto;
+		padding-top: 4rem;
+	}
+
+	.heroCopy {
+		max-width: none;
+	}
+
+	.globalStage {
+		order: -1;
+		min-height: 32rem;
+	}
+
+	.heroTelemetry {
+		right: 2rem;
+		bottom: 2rem;
+	}
+
+	.storySection {
+		grid-template-columns: 1fr;
+		min-height: auto;
+	}
+
+	.storyCopy {
+		border-right: none;
+		border-bottom: 1px solid var(--ns-border-faint);
+	}
+
+	.storyViz {
+		min-height: 28rem;
+	}
+
+	.featureCard:first-of-type {
+		grid-template-columns: 1fr;
+	}
+
+	.featureCard:first-of-type .featureCardMain {
+		border-right: none;
+		border-bottom: 1px solid var(--ns-accent-border);
+	}
+
+	.probeSceneCol {
+		min-height: 18rem;
+	}
+
+	.featureStack,
+	.trustGrid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.trustInner {
+		grid-template-columns: 1fr;
+		gap: 3rem;
+	}
+
+	.trustLeft h2 {
+		font-size: clamp(2rem, 5vw, 3rem);
+	}
+}
+
+@media (max-width: 48rem) {
+	.nav {
+		padding: 0 1rem;
+	}
+
+	.navActions {
+		gap: 0.5rem;
+	}
+
+	.navLink span {
+		display: none;
+	}
+
+	.hero,
+	.featureStack,
+	.trustSection {
+		padding-right: 1rem;
+		padding-left: 1rem;
+	}
+
+	.hero {
+		padding-top: 3rem;
+		gap: 1.5rem;
+	}
+
+	.heroCopy h1 {
+		font-size: clamp(1.8rem, 9vw, 2.9rem);
+	}
+
+	.globalStage {
+		min-height: 23rem;
+		margin: 0 -1rem;
+	}
+
+	.heroTelemetry {
+		position: relative;
+		right: auto;
+		bottom: auto;
+		width: fit-content;
+		margin-top: 0.5rem;
+	}
+
+	.storyCopy {
+		padding: 2.5rem 1.25rem;
+	}
+
+	.storyViz {
+		min-height: 22rem;
+	}
+
+	.featureStack {
+		grid-template-columns: 1fr;
+	}
+
+	.featureCard:first-of-type {
+		grid-column: auto;
+	}
+
+	.checkGrid,
+	.trustGrid {
+		grid-template-columns: 1fr;
+	}
+
+	.featureBadge {
+		font-size: 3rem;
+	}
+
+	.trustSection {
+		padding-top: 4rem;
+		padding-bottom: 4rem;
+	}
+}
+
+@media (max-width: 28rem) {
+	.brand > span:last-child,
+	.navCtaText {
+		display: none;
+	}
+
+	.heroActions,
+	.ctaActions {
+		display: grid;
+	}
+
+	.globalStage {
+		min-height: 18rem;
+	}
+}
