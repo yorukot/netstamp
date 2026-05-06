@@ -15,8 +15,9 @@ func TestMeReturnsAuthenticatedUser(t *testing.T) {
 	_, api := humatest.New(t)
 	NewHandler(nil, &staticTokenVerifier{
 		claims: appauth.AccessTokenClaims{
-			Subject: "11111111-1111-1111-1111-111111111111",
-			Email:   "user@example.com",
+			Subject:     "11111111-1111-1111-1111-111111111111",
+			Email:       "user@example.com",
+			DisplayName: stringPtr("Example User"),
 		},
 	}).RegisterRoutes(api)
 
@@ -39,6 +40,9 @@ func TestMeReturnsAuthenticatedUser(t *testing.T) {
 	if body.User.Email != "user@example.com" {
 		t.Fatalf("expected user email, got %q", body.User.Email)
 	}
+	if body.User.DisplayName == nil || *body.User.DisplayName != "Example User" {
+		t.Fatalf("expected display name, got %#v", body.User.DisplayName)
+	}
 }
 
 type staticTokenVerifier struct {
@@ -47,4 +51,8 @@ type staticTokenVerifier struct {
 
 func (v *staticTokenVerifier) VerifyAccessToken(context.Context, string) (appauth.AccessTokenClaims, error) {
 	return v.claims, nil
+}
+
+func stringPtr(value string) *string {
+	return &value
 }

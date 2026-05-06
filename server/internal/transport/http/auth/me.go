@@ -18,8 +18,9 @@ func (h *Handler) me(ctx context.Context, _ *meInput) (*meOutput, error) {
 		Body: meOutputBody{
 			Authenticated: true,
 			User: userResponse{
-				ID:    claims.Subject,
-				Email: claims.Email,
+				ID:          claims.Subject,
+				Email:       claims.Email,
+				DisplayName: claims.DisplayName,
 			},
 		},
 	}, nil

@@ -12,6 +12,7 @@ var (
 type User struct {
 	ID           string
 	Email        string
+	DisplayName  *string
 	PasswordHash string
 	IsActive     bool
 	CreatedAt    time.Time

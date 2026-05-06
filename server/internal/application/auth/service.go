@@ -4,9 +4,12 @@ import (
 	"context"
 	"errors"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/yorukot/netstamp/internal/domain/identity"
 )
+
+const maxDisplayNameLength = 100
 
 type Service struct {
 	users  UserRepository
@@ -27,8 +30,16 @@ func NewService(users UserRepository, hasher PasswordHasher, tokens TokenIssuer,
 // Register is the service entry for the register action
 func (s *Service) Register(ctx context.Context, input RegisterInput) (AuthAccessResult, error) {
 	email := normalizeEmail(input.Email)
+	displayName := normalizeDisplayName(input.DisplayName)
 	ctx, flow := s.startAuthFlow(ctx, "auth.register", AuthActionRegister, email)
 	defer flow.End()
+
+	if displayName == "" {
+		return AuthAccessResult{}, flow.BusinessFailure(AuthEventRegisterFailure, AuthReasonDisplayNameInvalid, ErrDisplayNameRequired)
+	}
+	if utf8.RuneCountInString(displayName) > maxDisplayNameLength {
+		return AuthAccessResult{}, flow.BusinessFailure(AuthEventRegisterFailure, AuthReasonDisplayNameInvalid, ErrDisplayNameTooLong)
+	}
 
 	passwordHash, err := s.hashPassword(ctx, input.Password)
 	if err != nil {
@@ -37,6 +48,7 @@ func (s *Service) Register(ctx context.Context, input RegisterInput) (AuthAccess
 
 	user, err := s.createUser(ctx, CreateUserInput{
 		Email:        email,
+		DisplayName:  displayName,
 		PasswordHash: passwordHash,
 	})
 	if errors.Is(err, ErrEmailAlreadyExists) {
@@ -95,8 +107,9 @@ func (s *Service) issueAccessResult(ctx context.Context, user identity.User) (Au
 	defer span.End()
 
 	token, err := s.tokens.IssueAccessToken(ctx, AccessTokenInput{
-		Subject: user.ID,
-		Email:   user.Email,
+		Subject:     user.ID,
+		Email:       user.Email,
+		DisplayName: user.DisplayName,
 	})
 	if err != nil {
 		recordSpanError(span, err, AuthReasonAccessTokenIssueFail)
@@ -106,6 +119,7 @@ func (s *Service) issueAccessResult(ctx context.Context, user identity.User) (Au
 	return AuthAccessResult{
 		UserID:      user.ID,
 		Email:       user.Email,
+		DisplayName: user.DisplayName,
 		AccessToken: token.Value,
 		TokenType:   token.TokenType,
 		ExpiresIn:   token.ExpiresIn,
@@ -164,4 +178,8 @@ func (s *Service) getUserByEmail(ctx context.Context, email string) (identity.Us
 
 func normalizeEmail(value string) string {
 	return strings.ToLower(strings.TrimSpace(value))
+}
+
+func normalizeDisplayName(value string) string {
+	return strings.TrimSpace(value)
 }

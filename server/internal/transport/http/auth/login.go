@@ -26,8 +26,9 @@ func (h *Handler) login(ctx context.Context, input *loginInput) (*loginOutput, e
 	return &loginOutput{
 		Body: loginOutputBody{
 			User: userResponse{
-				ID:    result.UserID,
-				Email: result.Email,
+				ID:          result.UserID,
+				Email:       result.Email,
+				DisplayName: result.DisplayName,
 			},
 			TokenType:   result.TokenType,
 			AccessToken: result.AccessToken,

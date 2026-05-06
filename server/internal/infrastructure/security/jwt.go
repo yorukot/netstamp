@@ -17,7 +17,8 @@ type JWTIssuer struct {
 }
 
 type accessTokenClaims struct {
-	Email string `json:"email"`
+	Email       string  `json:"email"`
+	DisplayName *string `json:"displayName,omitempty"`
 	jwt.RegisteredClaims
 }
 
@@ -37,7 +38,8 @@ func (i *JWTIssuer) IssueAccessToken(ctx context.Context, input appauth.AccessTo
 	now := i.now().UTC()
 	expiresAt := now.Add(i.ttl)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, accessTokenClaims{
-		Email: input.Email,
+		Email:       input.Email,
+		DisplayName: input.DisplayName,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Subject:   input.Subject,
 			IssuedAt:  jwt.NewNumericDate(now),
@@ -77,7 +79,8 @@ func (i *JWTIssuer) VerifyAccessToken(ctx context.Context, value string) (appaut
 	}
 
 	return appauth.AccessTokenClaims{
-		Subject: claims.Subject,
-		Email:   claims.Email,
+		Subject:     claims.Subject,
+		Email:       claims.Email,
+		DisplayName: claims.DisplayName,
 	}, nil
 }

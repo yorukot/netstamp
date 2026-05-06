@@ -13,30 +13,33 @@ import (
 )
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO users (email, password_hash)
-VALUES ($1, $2)
-RETURNING id, email, is_active, created_at, updated_at
+INSERT INTO users (email, password_hash, display_name)
+VALUES ($1, $2, $3)
+RETURNING id, email, display_name, is_active, created_at, updated_at
 `
 
 type CreateUserParams struct {
-	Email        string `json:"email"`
-	PasswordHash string `json:"password_hash"`
+	Email        string  `json:"email"`
+	PasswordHash string  `json:"password_hash"`
+	DisplayName  *string `json:"display_name"`
 }
 
 type CreateUserRow struct {
-	ID        uuid.UUID          `json:"id"`
-	Email     string             `json:"email"`
-	IsActive  bool               `json:"is_active"`
-	CreatedAt pgtype.Timestamptz `json:"created_at"`
-	UpdatedAt pgtype.Timestamptz `json:"updated_at"`
+	ID          uuid.UUID          `json:"id"`
+	Email       string             `json:"email"`
+	DisplayName *string            `json:"display_name"`
+	IsActive    bool               `json:"is_active"`
+	CreatedAt   pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt   pgtype.Timestamptz `json:"updated_at"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error) {
-	row := q.db.QueryRow(ctx, createUser, arg.Email, arg.PasswordHash)
+	row := q.db.QueryRow(ctx, createUser, arg.Email, arg.PasswordHash, arg.DisplayName)
 	var i CreateUserRow
 	err := row.Scan(
 		&i.ID,
 		&i.Email,
+		&i.DisplayName,
 		&i.IsActive,
 		&i.CreatedAt,
 		&i.UpdatedAt,
@@ -45,18 +48,29 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateU
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, email, password_hash, is_active, created_at, updated_at
+SELECT id, email, password_hash, display_name, is_active, created_at, updated_at
 FROM users
 WHERE email = $1
 `
 
-func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
+type GetUserByEmailRow struct {
+	ID           uuid.UUID          `json:"id"`
+	Email        string             `json:"email"`
+	PasswordHash string             `json:"password_hash"`
+	DisplayName  *string            `json:"display_name"`
+	IsActive     bool               `json:"is_active"`
+	CreatedAt    pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt    pgtype.Timestamptz `json:"updated_at"`
+}
+
+func (q *Queries) GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error) {
 	row := q.db.QueryRow(ctx, getUserByEmail, email)
-	var i User
+	var i GetUserByEmailRow
 	err := row.Scan(
 		&i.ID,
 		&i.Email,
 		&i.PasswordHash,
+		&i.DisplayName,
 		&i.IsActive,
 		&i.CreatedAt,
 		&i.UpdatedAt,

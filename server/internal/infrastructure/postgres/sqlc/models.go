@@ -423,6 +423,8 @@ type ProbeStatus struct {
 	AgentVersion *string            `json:"agent_version"`
 	IpFamilies   []IpFamily         `json:"ip_families"`
 	UpdatedAt    pgtype.Timestamptz `json:"updated_at"`
+	PublicIp     *netip.Addr        `json:"public_ip"`
+	Asn          *int64             `json:"asn"`
 }
 
 type Team struct {
@@ -496,4 +498,5 @@ type User struct {
 	IsActive     bool               `json:"is_active"`
 	CreatedAt    pgtype.Timestamptz `json:"created_at"`
 	UpdatedAt    pgtype.Timestamptz `json:"updated_at"`
+	DisplayName  *string            `json:"display_name"`
 }

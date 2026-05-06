@@ -28,6 +28,7 @@ func (r *UserRepository) CreateUser(ctx context.Context, input appauth.CreateUse
 
 	row, err := r.queries.CreateUser(ctx, sqlc.CreateUserParams{
 		Email:        input.Email,
+		DisplayName:  &input.DisplayName,
 		PasswordHash: input.PasswordHash,
 	})
 	if err != nil {
@@ -39,11 +40,12 @@ func (r *UserRepository) CreateUser(ctx context.Context, input appauth.CreateUse
 	}
 
 	return identity.User{
-		ID:        row.ID.String(),
-		Email:     row.Email,
-		IsActive:  row.IsActive,
-		CreatedAt: row.CreatedAt.Time,
-		UpdatedAt: row.UpdatedAt.Time,
+		ID:          row.ID.String(),
+		Email:       row.Email,
+		DisplayName: row.DisplayName,
+		IsActive:    row.IsActive,
+		CreatedAt:   row.CreatedAt.Time,
+		UpdatedAt:   row.UpdatedAt.Time,
 	}, nil
 }
 
@@ -64,6 +66,7 @@ func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (iden
 	return identity.User{
 		ID:           row.ID.String(),
 		Email:        row.Email,
+		DisplayName:  row.DisplayName,
 		PasswordHash: row.PasswordHash,
 		IsActive:     row.IsActive,
 		CreatedAt:    row.CreatedAt.Time,

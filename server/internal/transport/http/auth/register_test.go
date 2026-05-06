@@ -1,0 +1,170 @@
+package auth
+
+import (
+	"context"
+	"encoding/json"
+	"net/http"
+	"testing"
+
+	"github.com/danielgtaylor/huma/v2/humatest"
+
+	appauth "github.com/yorukot/netstamp/internal/application/auth"
+	"github.com/yorukot/netstamp/internal/domain/identity"
+)
+
+func TestRegisterReturnsCreatedUserWithDisplayName(t *testing.T) {
+	_, api := humatest.New(t)
+	repo := &handlerUserRepository{}
+	tokenIssuer := &handlerTokenIssuer{
+		token: appauth.IssuedToken{
+			Value:     "access-token",
+			TokenType: "Bearer",
+			ExpiresIn: 3600,
+		},
+	}
+	NewHandler(newTestAuthService(repo, &handlerPasswordHasher{}, tokenIssuer), nil).RegisterRoutes(api)
+
+	res := api.Post("/auth/register", map[string]any{
+		"email":       " User@Example.COM ",
+		"displayName": "  Example User  ",
+		"password":    "correct-password",
+	})
+
+	if res.Code != http.StatusCreated {
+		t.Fatalf("expected status 201, got %d", res.Code)
+	}
+
+	var body registerOutputBody
+	if err := json.NewDecoder(res.Body).Decode(&body); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if body.User.ID != "created-user" {
+		t.Fatalf("expected user id, got %q", body.User.ID)
+	}
+	if body.User.Email != "user@example.com" {
+		t.Fatalf("expected normalized email, got %q", body.User.Email)
+	}
+	if body.User.DisplayName == nil || *body.User.DisplayName != "Example User" {
+		t.Fatalf("expected display name, got %#v", body.User.DisplayName)
+	}
+	if body.AccessToken != "access-token" {
+		t.Fatalf("expected access token, got %q", body.AccessToken)
+	}
+	if body.TokenType != "Bearer" {
+		t.Fatalf("expected token type, got %q", body.TokenType)
+	}
+	if body.ExpiresIn != 3600 {
+		t.Fatalf("expected expiry, got %d", body.ExpiresIn)
+	}
+	if repo.gotCreateInput.DisplayName != "Example User" {
+		t.Fatalf("expected display name in create input, got %q", repo.gotCreateInput.DisplayName)
+	}
+	if tokenIssuer.gotInput.DisplayName == nil || *tokenIssuer.gotInput.DisplayName != "Example User" {
+		t.Fatalf("expected display name in token input, got %#v", tokenIssuer.gotInput.DisplayName)
+	}
+}
+
+func TestRegisterRejectsMissingDisplayName(t *testing.T) {
+	_, api := humatest.New(t)
+	NewHandler(newTestAuthService(&handlerUserRepository{}, &handlerPasswordHasher{}, &handlerTokenIssuer{}), nil).RegisterRoutes(api)
+
+	res := api.Post("/auth/register", map[string]any{
+		"email":    "user@example.com",
+		"password": "correct-password",
+	})
+
+	if res.Code != http.StatusUnprocessableEntity {
+		t.Fatalf("expected status 422, got %d", res.Code)
+	}
+}
+
+func TestRegisterMapsDuplicateEmailToConflict(t *testing.T) {
+	_, api := humatest.New(t)
+	NewHandler(newTestAuthService(
+		&handlerUserRepository{createErr: appauth.ErrEmailAlreadyExists},
+		&handlerPasswordHasher{},
+		&handlerTokenIssuer{},
+	), nil).RegisterRoutes(api)
+
+	res := api.Post("/auth/register", map[string]any{
+		"email":       "user@example.com",
+		"displayName": "Example User",
+		"password":    "correct-password",
+	})
+
+	if res.Code != http.StatusConflict {
+		t.Fatalf("expected status 409, got %d", res.Code)
+	}
+}
+
+func newTestAuthService(repo appauth.UserRepository, hasher appauth.PasswordHasher, tokens appauth.TokenIssuer) *appauth.Service {
+	return appauth.NewService(repo, hasher, tokens, handlerSecurityEventRecorder{})
+}
+
+type handlerUserRepository struct {
+	user           identity.User
+	createdUser    identity.User
+	getErr         error
+	createErr      error
+	gotEmail       string
+	gotCreateInput appauth.CreateUserInput
+}
+
+func (r *handlerUserRepository) CreateUser(_ context.Context, input appauth.CreateUserInput) (identity.User, error) {
+	r.gotCreateInput = input
+	if r.createErr != nil {
+		return identity.User{}, r.createErr
+	}
+	if r.createdUser.ID != "" {
+		return r.createdUser, nil
+	}
+	return identity.User{
+		ID:           "created-user",
+		Email:        input.Email,
+		DisplayName:  &input.DisplayName,
+		PasswordHash: input.PasswordHash,
+		IsActive:     true,
+	}, nil
+}
+
+func (r *handlerUserRepository) GetUserByEmail(_ context.Context, email string) (identity.User, error) {
+	r.gotEmail = email
+	if r.getErr != nil {
+		return identity.User{}, r.getErr
+	}
+	return r.user, nil
+}
+
+type handlerPasswordHasher struct {
+	hashErr    error
+	compareErr error
+}
+
+func (h *handlerPasswordHasher) Hash(password string) (string, error) {
+	if h.hashErr != nil {
+		return "", h.hashErr
+	}
+	return "hashed:" + password, nil
+}
+
+func (h *handlerPasswordHasher) Compare(_ string, _ string) error {
+	return h.compareErr
+}
+
+type handlerTokenIssuer struct {
+	token    appauth.IssuedToken
+	err      error
+	gotInput appauth.AccessTokenInput
+}
+
+func (i *handlerTokenIssuer) IssueAccessToken(_ context.Context, input appauth.AccessTokenInput) (appauth.IssuedToken, error) {
+	i.gotInput = input
+	if i.err != nil {
+		return appauth.IssuedToken{}, i.err
+	}
+	return i.token, nil
+}
+
+type handlerSecurityEventRecorder struct{}
+
+func (handlerSecurityEventRecorder) RecordAuthEvent(context.Context, appauth.AuthEvent) {}
