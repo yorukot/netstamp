@@ -1,0 +1,330 @@
+.shell {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  background:
+    radial-gradient(circle at 18% 24%, rgba(255, 255, 255, 0.2) 0 1px, transparent 1px),
+    radial-gradient(circle at 82% 18%, rgba(255, 122, 26, 0.26) 0 1px, transparent 1px),
+    radial-gradient(circle at 64% 76%, rgba(255, 255, 255, 0.14) 0 1px, transparent 1px),
+    linear-gradient(rgba(255, 122, 26, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 122, 26, 0.08) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    var(--ns-bg);
+  background-size: 22rem 22rem, 18rem 18rem, 26rem 26rem, 8rem 8rem, 8rem 8rem, 2rem 2rem, 2rem 2rem, 100% 100%;
+}
+
+.console {
+  width: min(58rem, 100%);
+  overflow: hidden;
+  border: 1px solid var(--ns-border);
+  background: #030507;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.88),
+    0 1.5rem 5rem rgba(0, 0, 0, 0.62),
+    0 0 4rem rgba(255, 122, 26, 0.08);
+  clip-path: polygon(0.875rem 0, 100% 0, 100% calc(100% - 0.875rem), calc(100% - 0.875rem) 100%, 0 100%, 0 0.875rem);
+}
+
+.consoleBar {
+  display: grid;
+  grid-template-columns: repeat(3, 0.625rem) minmax(0, 1fr);
+  gap: 0.5rem;
+  align-items: center;
+  min-height: 2.625rem;
+  padding: 0 0.875rem;
+  border-bottom: 1px solid var(--ns-border-faint);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent), #090c11;
+}
+
+.consoleBar span {
+  width: 0.625rem;
+  height: 0.625rem;
+  border: 1px solid var(--ns-border-strong);
+  background: #0f131a;
+}
+
+.consoleBar strong {
+  margin-left: 0.25rem;
+  color: var(--ns-accent-hover);
+  font-family: var(--ns-font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.consoleBody {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 1.25rem;
+  color: var(--ns-text-muted);
+  font-family: var(--ns-font-mono);
+  transform: scaleY(0);
+  transform-origin: top;
+  opacity: 0;
+  animation: consoleBodyOpen 700ms cubic-bezier(0.2, 0.8, 0.2, 1) 260ms forwards;
+}
+
+.scanline {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 4px);
+  opacity: 0.34;
+  pointer-events: none;
+}
+
+.scriptLog,
+.tuiForm,
+.inviteSection,
+.inviteList,
+.successView {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.scriptLog {
+  min-height: 8.5rem;
+  align-content: start;
+}
+
+.scriptLine,
+.answerRow {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 0.875rem;
+  align-items: baseline;
+}
+
+.scriptPrompt,
+.answerPrompt {
+  color: var(--ns-accent-hover);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.scriptPrompt::before,
+.answerPrompt::before {
+  content: "> ";
+  color: var(--ns-text-low);
+}
+
+.scriptText {
+  min-height: 1.45rem;
+  color: var(--ns-text);
+  font-size: clamp(1rem, 2.2vw, 1.35rem);
+  line-height: 1.45;
+}
+
+.cursor {
+  display: inline-block;
+  width: 0.65ch;
+  height: 1em;
+  margin-left: 0.08rem;
+  background: var(--ns-accent-hover);
+  vertical-align: -0.12em;
+  animation: cursorBlink 0.78s step-end infinite;
+}
+
+.tuiForm {
+  min-height: 13rem;
+  align-content: start;
+}
+
+.inviteSection {
+  min-height: 0;
+}
+
+.inviteList {
+  max-height: min(14rem, 32svh);
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.35rem;
+  overscroll-behavior: contain;
+}
+
+.inviteList::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+.inviteList::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.inviteList::-webkit-scrollbar-thumb {
+  background: var(--ns-border-strong);
+}
+
+.inviteList::-webkit-scrollbar-thumb:hover {
+  background: var(--ns-accent-border);
+}
+
+.answerRow {
+  padding: 0.7rem 0.75rem;
+  border: 1px solid var(--ns-border-faint);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.answerRow input {
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  color: var(--ns-text);
+  caret-color: var(--ns-accent-hover);
+  background: transparent;
+  font: inherit;
+}
+
+.answerRow input::placeholder {
+  color: var(--ns-text-low);
+}
+
+.answerRow:focus-within {
+  border-color: var(--ns-accent-border);
+  box-shadow: inset 0 0 0 1px rgba(255, 122, 26, 0.18);
+}
+
+.answerRow small {
+  grid-column: 2;
+  color: var(--ns-text-low);
+  font-size: 0.75rem;
+}
+
+.inviteHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 0.25rem;
+}
+
+.inviteHeader p,
+.successView p {
+  margin: 0;
+  color: var(--ns-text-low);
+  font-size: 0.8125rem;
+}
+
+.inviteRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: stretch;
+}
+
+.inviteRow > .tuiMiniButton {
+  height: 100%;
+}
+
+.tuiButton,
+.tuiMiniButton {
+  border: 1px solid var(--ns-accent-border);
+  color: var(--ns-accent-hover);
+  background: rgba(255, 122, 26, 0.08);
+  font-family: var(--ns-font-mono);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.tuiButton {
+  justify-self: start;
+  min-height: 2.75rem;
+  padding: 0.75rem 1rem;
+}
+
+.tuiMiniButton {
+  min-height: 2.25rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+.tuiButton:hover,
+.tuiMiniButton:hover {
+  color: var(--ns-text-on-accent);
+  background: var(--ns-accent-hover);
+}
+
+.tuiButton:disabled {
+  opacity: 0.54;
+  cursor: not-allowed;
+}
+
+.successView {
+	min-height: 22rem;
+	align-content: center;
+	animation: successFadeIn 360ms ease-out;
+}
+
+.successView .scriptText {
+	color: var(--ns-success);
+}
+
+@keyframes consoleBodyOpen {
+  from {
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    transform: scaleY(0);
+    opacity: 0;
+  }
+
+  to {
+    max-height: 54rem;
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+@keyframes cursorBlink {
+	50% {
+		opacity: 0;
+	}
+}
+
+@keyframes successFadeIn {
+	from {
+		transform: translateY(0.5rem);
+		opacity: 0;
+	}
+
+	to {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+@media (max-width: 42rem) {
+  .shell {
+    padding: 1rem;
+  }
+
+  .consoleBody {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .scriptLine,
+  .answerRow,
+  .inviteRow {
+    grid-template-columns: 1fr;
+  }
+
+  .answerRow small {
+    grid-column: auto;
+  }
+
+  .inviteHeader {
+    display: grid;
+  }
+}
