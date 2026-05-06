@@ -1,0 +1,48 @@
+.card {
+	position: relative;
+	display: grid;
+	align-content: space-between;
+	gap: 1rem;
+	min-height: 9rem;
+	padding: 1.25rem;
+	overflow: hidden;
+	--ns-frame-color: var(--ns-border);
+	border: 1px solid var(--ns-frame-color);
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent), #141419;
+	background-size: 100% 100%;
+	box-shadow: var(--ns-shadow-sm);
+	clip-path: polygon(var(--ns-cut-lg) 0, 100% 0, 100% calc(100% - var(--ns-cut-lg)), calc(100% - var(--ns-cut-lg)) 100%, 0 100%, 0 var(--ns-cut-lg));
+}
+
+.card::before {
+	display: none;
+}
+
+.card::after {
+	content: "";
+	position: absolute;
+	right: 1rem;
+	bottom: 1rem;
+	width: 2rem;
+	height: 2rem;
+	border-right: 1px solid var(--ns-border-faint);
+	border-bottom: 1px solid var(--ns-border-faint);
+	pointer-events: none;
+}
+
+.label {
+	color: var(--ns-accent-hover);
+	font-family: var(--ns-font-mono);
+	font-size: 0.6875rem;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+}
+
+.card strong {
+	color: var(--ns-text);
+	font-family: var(--ns-font-display);
+	font-size: clamp(2rem, 4vw, 3.25rem);
+	font-weight: 650;
+	line-height: 0.95;
+}
