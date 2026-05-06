@@ -33,3 +33,8 @@ type IssuedToken struct {
 	TokenType string
 	ExpiresIn int
 }
+
+type AccessTokenClaims struct {
+	Subject string
+	Email   string
+}

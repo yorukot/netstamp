@@ -76,6 +76,13 @@ func TestAuthEventRecorderLevels(t *testing.T) {
 		Email:   "user@example.com",
 	})
 	recorder.RecordAuthEvent(context.Background(), appauth.AuthEvent{
+		Name:    appauth.AuthEventLoginFailure,
+		Action:  appauth.AuthActionLogin,
+		Outcome: appauth.AuthOutcomeFailure,
+		Reason:  appauth.AuthReasonUserInactive,
+		Email:   "user@example.com",
+	})
+	recorder.RecordAuthEvent(context.Background(), appauth.AuthEvent{
 		Name:    appauth.AuthEventTokenIssueFailure,
 		Action:  appauth.AuthActionLogin,
 		Outcome: appauth.AuthOutcomeFailure,
@@ -85,16 +92,19 @@ func TestAuthEventRecorderLevels(t *testing.T) {
 	})
 
 	logs := observed.All()
-	if len(logs) != 2 {
-		t.Fatalf("expected two log entries, got %d", len(logs))
+	if len(logs) != 3 {
+		t.Fatalf("expected three log entries, got %d", len(logs))
 	}
 	if logs[0].Level != zapcore.WarnLevel {
 		t.Fatalf("expected credentials failure to be warn, got %s", logs[0].Level)
 	}
-	if logs[1].Level != zapcore.ErrorLevel {
-		t.Fatalf("expected token issue failure to be error, got %s", logs[1].Level)
+	if logs[1].Level != zapcore.WarnLevel {
+		t.Fatalf("expected inactive user failure to be warn, got %s", logs[1].Level)
 	}
-	assertField(t, logs[1].ContextMap(), "error", "sign token")
+	if logs[2].Level != zapcore.ErrorLevel {
+		t.Fatalf("expected token issue failure to be error, got %s", logs[2].Level)
+	}
+	assertField(t, logs[2].ContextMap(), "error", "sign token")
 }
 
 func assertField(t *testing.T, fields map[string]any, key string, want any) {

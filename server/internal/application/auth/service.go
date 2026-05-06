@@ -5,15 +5,8 @@ import (
 	"errors"
 	"strings"
 
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/codes"
-	"go.opentelemetry.io/otel/trace"
-
 	"github.com/yorukot/netstamp/internal/domain/identity"
 )
-
-var authTracer = otel.Tracer("github.com/yorukot/netstamp/internal/application/auth")
 
 type Service struct {
 	users  UserRepository
@@ -31,156 +24,68 @@ func NewService(users UserRepository, hasher PasswordHasher, tokens TokenIssuer,
 	}
 }
 
+// Register is the service entry for the register action
 func (s *Service) Register(ctx context.Context, input RegisterInput) (AuthAccessResult, error) {
-	ctx, span := authTracer.Start(ctx, "auth.register", trace.WithAttributes(
-		attribute.String("auth.action", "register"),
-	))
-	defer span.End()
-
 	email := normalizeEmail(input.Email)
+	ctx, flow := s.startAuthFlow(ctx, "auth.register", AuthActionRegister, email)
+	defer flow.End()
 
 	passwordHash, err := s.hashPassword(ctx, input.Password)
 	if err != nil {
-		recordSpanError(span, err, string(AuthReasonPasswordHashFailed))
-		s.events.RecordAuthEvent(ctx, AuthEvent{
-			Name:    AuthEventRegisterFailure,
-			Action:  AuthActionRegister,
-			Outcome: AuthOutcomeFailure,
-			Reason:  AuthReasonPasswordHashFailed,
-			Email:   email,
-			Err:     err,
-		})
-		return AuthAccessResult{}, err
+		return AuthAccessResult{}, flow.TechnicalFailure(AuthEventRegisterFailure, AuthReasonPasswordHashFailed, err)
 	}
 
 	user, err := s.createUser(ctx, CreateUserInput{
 		Email:        email,
 		PasswordHash: passwordHash,
 	})
-	if err != nil {
-		event := AuthEvent{
-			Name:    AuthEventRegisterFailure,
-			Action:  AuthActionRegister,
-			Outcome: AuthOutcomeFailure,
-			Reason:  AuthReasonUserCreateFailed,
-			Email:   email,
-			Err:     err,
-		}
-		if errors.Is(err, ErrEmailAlreadyExists) {
-			event.Reason = AuthReasonEmailAlreadyExists
-			event.Err = nil
-		}
-		s.events.RecordAuthEvent(ctx, event)
-		span.SetAttributes(attribute.String("auth.failure.reason", string(event.Reason)))
-		if event.Err != nil {
-			recordSpanError(span, event.Err, string(event.Reason))
-		}
-		return AuthAccessResult{}, err
+	if errors.Is(err, ErrEmailAlreadyExists) {
+		return AuthAccessResult{}, flow.BusinessFailure(AuthEventRegisterFailure, AuthReasonEmailAlreadyExists, err)
 	}
-	span.SetAttributes(attribute.String("user.id", user.ID))
+	if err != nil {
+		return AuthAccessResult{}, flow.TechnicalFailure(AuthEventRegisterFailure, AuthReasonUserCreateFailed, err)
+	}
+	flow.SetUser(user)
 
 	result, err := s.issueAccessResult(ctx, user)
 	if err != nil {
-		recordSpanError(span, err, string(AuthReasonAccessTokenIssueFail))
-		s.events.RecordAuthEvent(ctx, AuthEvent{
-			Name:    AuthEventTokenIssueFailure,
-			Action:  AuthActionRegister,
-			Outcome: AuthOutcomeFailure,
-			Reason:  AuthReasonAccessTokenIssueFail,
-			UserID:  user.ID,
-			Email:   user.Email,
-			Err:     err,
-		})
-		return AuthAccessResult{}, err
+		return AuthAccessResult{}, flow.TechnicalFailure(AuthEventTokenIssueFailure, AuthReasonAccessTokenIssueFail, err)
 	}
 
-	span.SetAttributes(attribute.String("auth.outcome", "success"))
-	s.events.RecordAuthEvent(ctx, AuthEvent{
-		Name:    AuthEventRegisterSuccess,
-		Action:  AuthActionRegister,
-		Outcome: AuthOutcomeSuccess,
-		UserID:  user.ID,
-		Email:   user.Email,
-	})
+	flow.Success(AuthEventRegisterSuccess)
 
 	return result, nil
 }
 
+// Login is the enrty for the login action
 func (s *Service) Login(ctx context.Context, input LoginInput) (AuthAccessResult, error) {
-	ctx, span := authTracer.Start(ctx, "auth.login", trace.WithAttributes(
-		attribute.String("auth.action", "login"),
-	))
-	defer span.End()
-
 	email := normalizeEmail(input.Email)
+	ctx, flow := s.startAuthFlow(ctx, "auth.login", AuthActionLogin, email)
+	defer flow.End()
+
 	user, err := s.getUserByEmail(ctx, email)
 	if errors.Is(err, identity.ErrUserNotFound) {
-		span.SetAttributes(
-			attribute.String("auth.outcome", "failure"),
-			attribute.String("auth.failure.reason", string(AuthReasonCredentialsInvalid)),
-		)
-		s.events.RecordAuthEvent(ctx, AuthEvent{
-			Name:    AuthEventLoginFailure,
-			Action:  AuthActionLogin,
-			Outcome: AuthOutcomeFailure,
-			Reason:  AuthReasonCredentialsInvalid,
-			Email:   email,
-		})
-		return AuthAccessResult{}, ErrCredentialsInvalid
+		return AuthAccessResult{}, flow.BusinessFailure(AuthEventLoginFailure, AuthReasonCredentialsInvalid, ErrCredentialsInvalid)
 	}
 	if err != nil {
-		recordSpanError(span, err, string(AuthReasonUserLookupFailed))
-		s.events.RecordAuthEvent(ctx, AuthEvent{
-			Name:    AuthEventLoginFailure,
-			Action:  AuthActionLogin,
-			Outcome: AuthOutcomeFailure,
-			Reason:  AuthReasonUserLookupFailed,
-			Email:   email,
-			Err:     err,
-		})
-		return AuthAccessResult{}, err
+		return AuthAccessResult{}, flow.TechnicalFailure(AuthEventLoginFailure, AuthReasonUserLookupFailed, err)
 	}
-	span.SetAttributes(attribute.String("user.id", user.ID))
+	flow.SetUser(user)
 
 	if err := s.comparePassword(ctx, input.Password, user.PasswordHash); err != nil {
-		span.SetAttributes(
-			attribute.String("auth.outcome", "failure"),
-			attribute.String("auth.failure.reason", string(AuthReasonCredentialsInvalid)),
-		)
-		s.events.RecordAuthEvent(ctx, AuthEvent{
-			Name:    AuthEventLoginFailure,
-			Action:  AuthActionLogin,
-			Outcome: AuthOutcomeFailure,
-			Reason:  AuthReasonCredentialsInvalid,
-			UserID:  user.ID,
-			Email:   user.Email,
-		})
-		return AuthAccessResult{}, ErrCredentialsInvalid
+		return AuthAccessResult{}, flow.BusinessFailure(AuthEventLoginFailure, AuthReasonCredentialsInvalid, ErrCredentialsInvalid)
+	}
+
+	if !user.IsActive {
+		return AuthAccessResult{}, flow.BusinessFailure(AuthEventLoginFailure, AuthReasonUserInactive, ErrUserInactive)
 	}
 
 	result, err := s.issueAccessResult(ctx, user)
 	if err != nil {
-		recordSpanError(span, err, string(AuthReasonAccessTokenIssueFail))
-		s.events.RecordAuthEvent(ctx, AuthEvent{
-			Name:    AuthEventTokenIssueFailure,
-			Action:  AuthActionLogin,
-			Outcome: AuthOutcomeFailure,
-			Reason:  AuthReasonAccessTokenIssueFail,
-			UserID:  user.ID,
-			Email:   user.Email,
-			Err:     err,
-		})
-		return AuthAccessResult{}, err
+		return AuthAccessResult{}, flow.TechnicalFailure(AuthEventTokenIssueFailure, AuthReasonAccessTokenIssueFail, err)
 	}
 
-	span.SetAttributes(attribute.String("auth.outcome", "success"))
-	s.events.RecordAuthEvent(ctx, AuthEvent{
-		Name:    AuthEventLoginSuccess,
-		Action:  AuthActionLogin,
-		Outcome: AuthOutcomeSuccess,
-		UserID:  user.ID,
-		Email:   user.Email,
-	})
+	flow.Success(AuthEventLoginSuccess)
 
 	return result, nil
 }
@@ -194,7 +99,7 @@ func (s *Service) issueAccessResult(ctx context.Context, user identity.User) (Au
 		Email:   user.Email,
 	})
 	if err != nil {
-		recordSpanError(span, err, string(AuthReasonAccessTokenIssueFail))
+		recordSpanError(span, err, AuthReasonAccessTokenIssueFail)
 		return AuthAccessResult{}, err
 	}
 
@@ -213,7 +118,7 @@ func (s *Service) hashPassword(ctx context.Context, password string) (string, er
 
 	passwordHash, err := s.hasher.Hash(password)
 	if err != nil {
-		recordSpanError(span, err, string(AuthReasonPasswordHashFailed))
+		recordSpanError(span, err, AuthReasonPasswordHashFailed)
 		return "", err
 	}
 
@@ -224,16 +129,7 @@ func (s *Service) comparePassword(ctx context.Context, password string, password
 	_, span := authTracer.Start(ctx, "auth.password_compare")
 	defer span.End()
 
-	err := s.hasher.Compare(password, passwordHash)
-	if err != nil {
-		span.SetAttributes(
-			attribute.String("auth.outcome", "failure"),
-			attribute.String("auth.failure.reason", string(AuthReasonCredentialsInvalid)),
-		)
-		return err
-	}
-
-	return nil
+	return s.hasher.Compare(password, passwordHash)
 }
 
 func (s *Service) createUser(ctx context.Context, input CreateUserInput) (identity.User, error) {
@@ -242,18 +138,12 @@ func (s *Service) createUser(ctx context.Context, input CreateUserInput) (identi
 
 	user, err := s.users.CreateUser(ctx, input)
 	if err != nil {
-		reason := AuthReasonUserCreateFailed
-		if errors.Is(err, ErrEmailAlreadyExists) {
-			reason = AuthReasonEmailAlreadyExists
-		}
-		span.SetAttributes(attribute.String("auth.failure.reason", string(reason)))
-		if reason != AuthReasonEmailAlreadyExists {
-			recordSpanError(span, err, string(reason))
+		if !errors.Is(err, ErrEmailAlreadyExists) {
+			recordSpanError(span, err, AuthReasonUserCreateFailed)
 		}
 		return identity.User{}, err
 	}
 
-	span.SetAttributes(attribute.String("user.id", user.ID))
 	return user, nil
 }
 
@@ -263,29 +153,15 @@ func (s *Service) getUserByEmail(ctx context.Context, email string) (identity.Us
 
 	user, err := s.users.GetUserByEmail(ctx, email)
 	if err != nil {
-		reason := AuthReasonUserLookupFailed
-		if errors.Is(err, identity.ErrUserNotFound) {
-			reason = AuthReasonCredentialsInvalid
-		}
-		span.SetAttributes(attribute.String("auth.failure.reason", string(reason)))
-		if reason != AuthReasonCredentialsInvalid {
-			recordSpanError(span, err, string(reason))
+		if !errors.Is(err, identity.ErrUserNotFound) {
+			recordSpanError(span, err, AuthReasonUserLookupFailed)
 		}
 		return identity.User{}, err
 	}
 
-	span.SetAttributes(attribute.String("user.id", user.ID))
 	return user, nil
 }
 
 func normalizeEmail(value string) string {
 	return strings.ToLower(strings.TrimSpace(value))
-}
-
-func recordSpanError(span trace.Span, err error, description string) {
-	span.RecordError(err)
-	span.SetStatus(codes.Error, description)
-	span.SetAttributes(
-		attribute.String("error.reason", description),
-	)
 }

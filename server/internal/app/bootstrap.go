@@ -13,6 +13,7 @@ import (
 	appauth "github.com/yorukot/netstamp/internal/application/auth"
 	"github.com/yorukot/netstamp/internal/config"
 	"github.com/yorukot/netstamp/internal/infrastructure/postgres"
+	pguser "github.com/yorukot/netstamp/internal/infrastructure/postgres/user"
 	"github.com/yorukot/netstamp/internal/infrastructure/security"
 	"github.com/yorukot/netstamp/internal/logger"
 	"github.com/yorukot/netstamp/internal/observability/tracing"
@@ -75,7 +76,7 @@ func New(ctx context.Context) (*Application, error) {
 	}
 
 	// Initialize application services and handlers
-	userRepo := postgres.NewUserRepository(dbPool)
+	userRepo := pguser.NewUserRepository(dbPool)
 	passwordHasher := security.NewArgon2idPasswordHasher(security.Argon2idConfig{
 		MemoryKiB:   cfg.Auth.Argon2idMemoryKiB,
 		Iterations:  cfg.Auth.Argon2idIterations,

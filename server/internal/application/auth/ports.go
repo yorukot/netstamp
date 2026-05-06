@@ -20,6 +20,10 @@ type TokenIssuer interface {
 	IssueAccessToken(ctx context.Context, input AccessTokenInput) (IssuedToken, error)
 }
 
+type TokenVerifier interface {
+	VerifyAccessToken(ctx context.Context, value string) (AccessTokenClaims, error)
+}
+
 // SecurityEventRecorder records security-relevant auth events.
 type SecurityEventRecorder interface {
 	RecordAuthEvent(ctx context.Context, event AuthEvent)
@@ -54,6 +58,7 @@ type AuthEventReason string
 const (
 	AuthReasonCredentialsInvalid   AuthEventReason = "credentials_invalid"
 	AuthReasonEmailAlreadyExists   AuthEventReason = "email_already_exists"
+	AuthReasonUserInactive         AuthEventReason = "user_inactive"
 	AuthReasonPasswordHashFailed   AuthEventReason = "password_hash_failed"
 	AuthReasonUserCreateFailed     AuthEventReason = "user_create_failed"
 	AuthReasonUserLookupFailed     AuthEventReason = "user_lookup_failed"

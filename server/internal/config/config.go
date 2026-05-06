@@ -16,6 +16,7 @@ const (
 	keyAppEnv                = "APP_ENV"
 	keyServiceName           = "SERVICE_NAME"
 	keyAppVersion            = "APP_VERSION"
+	keyAPIVersion            = "API_VERSION"
 	keyLogLevel              = "LOG_LEVEL"
 	keyLogPseudonymKey       = "LOG_PSEUDONYM_KEY"
 	keyShutdownTimeout       = "SHUTDOWN_TIMEOUT"
@@ -38,6 +39,8 @@ const (
 	keyDBMaxConnIdleTime     = "DB_MAX_CONN_IDLE_TIME"
 	keyAuthJWTSecret         = "AUTH_JWT_SECRET"
 	keyAuthAccessTokenTTL    = "AUTH_ACCESS_TOKEN_TTL"
+	keyAuthLoginRateLimit    = "AUTH_LOGIN_RATE_LIMIT"
+	keyAuthLoginRateWindow   = "AUTH_LOGIN_RATE_WINDOW"
 	keyAuthArgon2idMemoryKiB = "AUTH_ARGON2ID_MEMORY_KIB"
 	keyAuthArgon2idIter      = "AUTH_ARGON2ID_ITERATIONS"
 	keyAuthArgon2idParallel  = "AUTH_ARGON2ID_PARALLELISM"
@@ -47,7 +50,8 @@ const (
 var defaultSettings = map[string]any{
 	keyAppEnv:                "local",
 	keyServiceName:           "netstamp-api",
-	keyAppVersion:            "v1",
+	keyAppVersion:            "0.1.0",
+	keyAPIVersion:            "v1",
 	keyLogLevel:              "info",
 	keyLogPseudonymKey:       "local-development-log-pseudonym-key-change-before-production",
 	keyShutdownTimeout:       10 * time.Second,
@@ -70,6 +74,8 @@ var defaultSettings = map[string]any{
 	keyDBMaxConnIdleTime:     30 * time.Minute,
 	keyAuthJWTSecret:         "local-development-jwt-secret-change-before-production",
 	keyAuthAccessTokenTTL:    12 * time.Hour,
+	keyAuthLoginRateLimit:    10,
+	keyAuthLoginRateWindow:   time.Minute,
 	keyAuthArgon2idMemoryKiB: 64 * 1024,
 	keyAuthArgon2idIter:      3,
 	keyAuthArgon2idParallel:  4,
@@ -80,6 +86,7 @@ type Config struct {
 	Env             string         `mapstructure:"APP_ENV"`
 	ServiceName     string         `mapstructure:"SERVICE_NAME"`
 	Version         string         `mapstructure:"APP_VERSION"`
+	APIVersion      string         `mapstructure:"API_VERSION"`
 	LogLevel        string         `mapstructure:"LOG_LEVEL"`
 	LogPseudonymKey string         `mapstructure:"LOG_PSEUDONYM_KEY"`
 	ShutdownTimeout time.Duration  `mapstructure:"SHUTDOWN_TIMEOUT"`
@@ -119,6 +126,8 @@ type DatabaseConfig struct {
 type AuthConfig struct {
 	JWTSecret           string        `mapstructure:"AUTH_JWT_SECRET"`
 	AccessTokenTTL      time.Duration `mapstructure:"AUTH_ACCESS_TOKEN_TTL"`
+	LoginRateLimit      int           `mapstructure:"AUTH_LOGIN_RATE_LIMIT"`
+	LoginRateWindow     time.Duration `mapstructure:"AUTH_LOGIN_RATE_WINDOW"`
 	Argon2idMemoryKiB   int           `mapstructure:"AUTH_ARGON2ID_MEMORY_KIB"`
 	Argon2idIterations  int           `mapstructure:"AUTH_ARGON2ID_ITERATIONS"`
 	Argon2idParallelism int           `mapstructure:"AUTH_ARGON2ID_PARALLELISM"`
@@ -169,12 +178,10 @@ func validate(cfg Config) []error {
 	errs = append(errs, validateRequiredString(keyAppEnv, cfg.Env)...)
 	errs = append(errs, validateRequiredString(keyServiceName, cfg.ServiceName)...)
 	errs = append(errs, validateRequiredString(keyAppVersion, cfg.Version)...)
+	errs = append(errs, validateAPIVersion(cfg.APIVersion)...)
 	errs = append(errs, validateLogLevel(cfg.LogLevel)...)
 	errs = append(errs, validateRequiredString(keyLogPseudonymKey, cfg.LogPseudonymKey)...)
 	errs = append(errs, validatePositiveDuration(keyShutdownTimeout, cfg.ShutdownTimeout)...)
-	if strings.TrimSpace(cfg.Version) != "" && !strings.HasPrefix(cfg.Version, "v") {
-		errs = append(errs, fmt.Errorf("APP_VERSION must start with 'v'"))
-	}
 
 	// HTTP settings
 	errs = append(errs, validateListenAddr(keyHTTPAddr, cfg.HTTP.Addr)...)
@@ -212,6 +219,8 @@ func validate(cfg Config) []error {
 	// Auth settings
 	errs = append(errs, validateRequiredString(keyAuthJWTSecret, cfg.Auth.JWTSecret)...)
 	errs = append(errs, validatePositiveDuration(keyAuthAccessTokenTTL, cfg.Auth.AccessTokenTTL)...)
+	errs = append(errs, validatePositiveInt(keyAuthLoginRateLimit, cfg.Auth.LoginRateLimit)...)
+	errs = append(errs, validatePositiveDuration(keyAuthLoginRateWindow, cfg.Auth.LoginRateWindow)...)
 	errs = append(errs, validatePositiveInt(keyAuthArgon2idMemoryKiB, cfg.Auth.Argon2idMemoryKiB)...)
 	errs = append(errs, validatePositiveInt(keyAuthArgon2idIter, cfg.Auth.Argon2idIterations)...)
 	errs = append(errs, validateUint8(keyAuthArgon2idParallel, cfg.Auth.Argon2idParallelism)...)
@@ -227,6 +236,7 @@ func newSettings() (*viper.Viper, error) {
 	settings.SetConfigName(".env")
 	settings.SetConfigType("env")
 	settings.AddConfigPath(".")
+	settings.AddConfigPath("server")
 	settings.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
 	settings.AutomaticEnv()
 

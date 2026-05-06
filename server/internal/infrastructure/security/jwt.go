@@ -2,6 +2,7 @@ package security
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -53,5 +54,30 @@ func (i *JWTIssuer) IssueAccessToken(ctx context.Context, input appauth.AccessTo
 		Value:     value,
 		TokenType: "Bearer",
 		ExpiresIn: int(i.ttl.Seconds()),
+	}, nil
+}
+
+func (i *JWTIssuer) VerifyAccessToken(ctx context.Context, value string) (appauth.AccessTokenClaims, error) {
+	if err := ctx.Err(); err != nil {
+		return appauth.AccessTokenClaims{}, err
+	}
+
+	var claims accessTokenClaims
+	token, err := jwt.ParseWithClaims(value, &claims, func(token *jwt.Token) (any, error) {
+		if token.Method != jwt.SigningMethodHS256 {
+			return nil, appauth.ErrAccessTokenInvalid
+		}
+		return i.secret, nil
+	})
+	if err != nil {
+		return appauth.AccessTokenClaims{}, errors.Join(appauth.ErrAccessTokenInvalid, err)
+	}
+	if token == nil || !token.Valid || claims.Subject == "" || claims.Email == "" {
+		return appauth.AccessTokenClaims{}, appauth.ErrAccessTokenInvalid
+	}
+
+	return appauth.AccessTokenClaims{
+		Subject: claims.Subject,
+		Email:   claims.Email,
 	}, nil
 }

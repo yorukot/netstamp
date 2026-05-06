@@ -74,6 +74,40 @@ func TestLoginRecordsInvalidCredentialFailure(t *testing.T) {
 	})
 }
 
+func TestLoginRecordsInactiveUserFailure(t *testing.T) {
+	recorder := &recordingSecurityEventRecorder{}
+	service := NewService(
+		&fakeUserRepository{
+			user: identity.User{
+				ID:           "user-1",
+				Email:        "user@example.com",
+				PasswordHash: "password-hash",
+				IsActive:     false,
+			},
+		},
+		&fakePasswordHasher{},
+		&fakeTokenIssuer{},
+		recorder,
+	)
+
+	_, err := service.Login(context.Background(), LoginInput{
+		Email:    "User@Example.COM",
+		Password: "correct-password",
+	})
+	if !errors.Is(err, ErrUserInactive) {
+		t.Fatalf("expected inactive user, got %v", err)
+	}
+
+	assertRecordedEvent(t, recorder, AuthEvent{
+		Name:    AuthEventLoginFailure,
+		Action:  AuthActionLogin,
+		Outcome: AuthOutcomeFailure,
+		Reason:  AuthReasonUserInactive,
+		UserID:  "user-1",
+		Email:   "user@example.com",
+	})
+}
+
 func TestRegisterRecordsDuplicateEmailFailure(t *testing.T) {
 	recorder := &recordingSecurityEventRecorder{}
 	service := NewService(
