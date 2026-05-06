@@ -4,7 +4,7 @@
 	--ns-frame-color: var(--ns-border-faint);
 	position: relative;
 	border: 1px solid transparent;
-	background: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px), #27292C;
+	background: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px), #27292c;
 	background-size:
 		1rem 1rem,
 		100% 100%;

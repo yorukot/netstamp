@@ -18,10 +18,7 @@
 	gap: 1rem;
 	padding: clamp(1.25rem, 3vw, 2rem);
 	border: 1px solid var(--ns-border-faint);
-	background:
-		linear-gradient(135deg, rgba(255, 122, 26, 0.08) 0 1px, transparent 1px 0.875rem),
-		linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent),
-		#05070a;
+	background: linear-gradient(135deg, rgba(255, 122, 26, 0.08) 0 1px, transparent 1px 0.875rem), linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent), #05070a;
 	background-size:
 		0.875rem 0.875rem,
 		100% 100%,

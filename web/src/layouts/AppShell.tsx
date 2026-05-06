@@ -27,11 +27,7 @@ export function AppShell() {
 
 				<nav className={styles.nav} aria-label="Primary app navigation">
 					{sidebarItems.map(item => (
-						<NavLink
-							key={item.route}
-							to={pathForRoute(item.route)}
-							className={({ isActive }) => (isActive ? styles.active : undefined)}
-						>
+						<NavLink key={item.route} to={pathForRoute(item.route)} className={({ isActive }) => (isActive ? styles.active : undefined)}>
 							{item.label}
 						</NavLink>
 					))}

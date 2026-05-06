@@ -402,10 +402,18 @@
 	animation: nodeBlink 3.4s ease-in-out infinite;
 }
 
-.networkNode:nth-of-type(2) { animation-delay: 0.35s; }
-.networkNode:nth-of-type(3) { animation-delay: 0.8s; }
-.networkNode:nth-of-type(4) { animation-delay: 1.2s; }
-.networkNode:nth-of-type(5) { animation-delay: 1.65s; }
+.networkNode:nth-of-type(2) {
+	animation-delay: 0.35s;
+}
+.networkNode:nth-of-type(3) {
+	animation-delay: 0.8s;
+}
+.networkNode:nth-of-type(4) {
+	animation-delay: 1.2s;
+}
+.networkNode:nth-of-type(5) {
+	animation-delay: 1.65s;
+}
 
 .packetOne,
 .packetTwo,
@@ -421,9 +429,15 @@
 	transform: translate(-50%, -50%);
 }
 
-.packetOne  { animation: packetRouteOne   3.7s linear infinite; }
-.packetTwo  { animation: packetRouteTwo   4.4s linear infinite 0.7s; }
-.packetThree { animation: packetRouteThree 5.2s linear infinite 1.2s; }
+.packetOne {
+	animation: packetRouteOne 3.7s linear infinite;
+}
+.packetTwo {
+	animation: packetRouteTwo 4.4s linear infinite 0.7s;
+}
+.packetThree {
+	animation: packetRouteThree 5.2s linear infinite 1.2s;
+}
 
 .depthPlane {
 	position: absolute;
@@ -516,8 +530,7 @@
 	position: absolute;
 	inset: 0;
 	background:
-		repeating-linear-gradient(90deg, transparent 0 5rem, rgba(255, 255, 255, 0.028) 5rem 5.05rem),
-		repeating-linear-gradient(0deg,  transparent 0 5rem, rgba(255, 255, 255, 0.028) 5rem 5.05rem);
+		repeating-linear-gradient(90deg, transparent 0 5rem, rgba(255, 255, 255, 0.028) 5rem 5.05rem), repeating-linear-gradient(0deg, transparent 0 5rem, rgba(255, 255, 255, 0.028) 5rem 5.05rem);
 	pointer-events: none;
 }
 
@@ -730,12 +743,24 @@
 	animation: nodeBlink 2.8s ease-in-out infinite;
 }
 
-.rosterRow:nth-child(2) .rosterDot { animation-delay: 0.3s; }
-.rosterRow:nth-child(3) .rosterDot { animation-delay: 0.6s; }
-.rosterRow:nth-child(4) .rosterDot { animation-delay: 0.9s; }
-.rosterRow:nth-child(5) .rosterDot { animation-delay: 1.2s; }
-.rosterRow:nth-child(6) .rosterDot { animation-delay: 1.5s; }
-.rosterRow:nth-child(7) .rosterDot { animation-delay: 1.8s; }
+.rosterRow:nth-child(2) .rosterDot {
+	animation-delay: 0.3s;
+}
+.rosterRow:nth-child(3) .rosterDot {
+	animation-delay: 0.6s;
+}
+.rosterRow:nth-child(4) .rosterDot {
+	animation-delay: 0.9s;
+}
+.rosterRow:nth-child(5) .rosterDot {
+	animation-delay: 1.2s;
+}
+.rosterRow:nth-child(6) .rosterDot {
+	animation-delay: 1.5s;
+}
+.rosterRow:nth-child(7) .rosterDot {
+	animation-delay: 1.8s;
+}
 
 .rosterName {
 	color: var(--ns-text);
@@ -814,11 +839,7 @@
 	content: "";
 	position: absolute;
 	inset: 0;
-	background: repeating-linear-gradient(
-		0deg,
-		transparent 0 2px,
-		rgba(255, 255, 255, 0.012) 2px 4px
-	);
+	background: repeating-linear-gradient(0deg, transparent 0 2px, rgba(255, 255, 255, 0.012) 2px 4px);
 	pointer-events: none;
 }
 
@@ -887,44 +908,107 @@
 /* ── Keyframes ────────────────────────────────────────────── */
 
 @keyframes globeTilt {
-	0%, 100% { transform: rotateX(58deg) rotateZ(-19deg) translateY(0); }
-	50%       { transform: rotateX(61deg) rotateZ(-14deg) translateY(-0.75rem); }
+	0%,
+	100% {
+		transform: rotateX(58deg) rotateZ(-19deg) translateY(0);
+	}
+	50% {
+		transform: rotateX(61deg) rotateZ(-14deg) translateY(-0.75rem);
+	}
 }
 
 @keyframes orbitSpin {
-	from { transform: rotateZ(0deg) rotateX(70deg); }
-	to   { transform: rotateZ(360deg) rotateX(70deg); }
+	from {
+		transform: rotateZ(0deg) rotateX(70deg);
+	}
+	to {
+		transform: rotateZ(360deg) rotateX(70deg);
+	}
 }
 
 @keyframes pulseGlow {
-	0%, 100% { opacity: 0.58; transform: translateZ(-7rem) scale(0.95); }
-	50%       { opacity: 0.9;  transform: translateZ(-7rem) scale(1.08); }
+	0%,
+	100% {
+		opacity: 0.58;
+		transform: translateZ(-7rem) scale(0.95);
+	}
+	50% {
+		opacity: 0.9;
+		transform: translateZ(-7rem) scale(1.08);
+	}
 }
 
 @keyframes nodeBlink {
-	0%, 100% { opacity: 0.72; }
-	50%       { opacity: 1; }
+	0%,
+	100% {
+		opacity: 0.72;
+	}
+	50% {
+		opacity: 1;
+	}
 }
 
 @keyframes packetRouteOne {
-	0%          { left: 8%;  top: 38%; opacity: 0; }
-	10%, 88%    { opacity: 1; }
-	42%         { left: 43%; top: 8%; }
-	100%        { left: 92%; top: 64%; opacity: 0; }
+	0% {
+		left: 8%;
+		top: 38%;
+		opacity: 0;
+	}
+	10%,
+	88% {
+		opacity: 1;
+	}
+	42% {
+		left: 43%;
+		top: 8%;
+	}
+	100% {
+		left: 92%;
+		top: 64%;
+		opacity: 0;
+	}
 }
 
 @keyframes packetRouteTwo {
-	0%          { left: 7%;  top: 66%; opacity: 0; }
-	12%, 86%    { opacity: 1; }
-	50%         { left: 43%; top: 8%; }
-	100%        { left: 90%; top: 27%; opacity: 0; }
+	0% {
+		left: 7%;
+		top: 66%;
+		opacity: 0;
+	}
+	12%,
+	86% {
+		opacity: 1;
+	}
+	50% {
+		left: 43%;
+		top: 8%;
+	}
+	100% {
+		left: 90%;
+		top: 27%;
+		opacity: 0;
+	}
 }
 
 @keyframes packetRouteThree {
-	0%          { left: 90%; top: 27%; opacity: 0; }
-	12%, 84%    { opacity: 1; }
-	48%         { left: 7%;  top: 66%; }
-	100%        { left: 8%;  top: 38%; opacity: 0; }
+	0% {
+		left: 90%;
+		top: 27%;
+		opacity: 0;
+	}
+	12%,
+	84% {
+		opacity: 1;
+	}
+	48% {
+		left: 7%;
+		top: 66%;
+	}
+	100% {
+		left: 8%;
+		top: 38%;
+		opacity: 0;
+	}
 }
 
 /* ── Reduced Motion ───────────────────────────────────────── */

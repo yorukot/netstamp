@@ -1632,16 +1632,16 @@ select.toolbarControl {
 	.insightColumns,
 	.graphList,
 	.alertGrid,
-		.filters,
-		.checkListFilters,
-		.formGrid,
-		.checkEditForm,
-		.orgInfoGrid,
+	.filters,
+	.checkListFilters,
+	.formGrid,
+	.checkEditForm,
+	.orgInfoGrid,
 	.formGridThree,
 	.steps,
 	.tagCreate,
 	.entityDetailGrid,
-		.keyValueGrid {
+	.keyValueGrid {
 		grid-template-columns: 1fr;
 	}
 

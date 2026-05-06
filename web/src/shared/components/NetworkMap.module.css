@@ -1,15 +1,15 @@
 .map {
-  position: relative;
-  min-height: 22rem;
-  overflow: hidden;
+	position: relative;
+	min-height: 22rem;
+	overflow: hidden;
 	border: 1px solid var(--ns-border-faint);
 	background: #050505;
-  clip-path: polygon(1rem 0, 100% 0, 100% calc(100% - 1rem), calc(100% - 1rem) 100%, 0 100%, 0 1rem);
+	clip-path: polygon(1rem 0, 100% 0, 100% calc(100% - 1rem), calc(100% - 1rem) 100%, 0 100%, 0 1rem);
 }
 
 .canvas {
-  position: absolute;
-  inset: 0;
+	position: absolute;
+	inset: 0;
 }
 
 .map :global(.maplibregl-canvas) {
@@ -39,7 +39,7 @@
 }
 
 @media (max-width: 38rem) {
-  .map {
-    min-height: 18rem;
-  }
+	.map {
+		min-height: 18rem;
+	}
 }

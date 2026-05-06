@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { Button, DataTable, Panel, SelectField, TextField, type DataColumn } from "@netstamp/ui";
+import { useState } from "react";
 import { ScreenHeader } from "../../../shared/components/ScreenHeader";
 import { members } from "../../../shared/utils/mockData";
 import styles from "./ProductPages.module.css";

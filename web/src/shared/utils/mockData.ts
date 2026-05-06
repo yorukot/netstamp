@@ -85,7 +85,7 @@ export const installCommand = `curl -fsSL https://get.netstamp.dev/install.sh | 
 sudo netstamp register --controller https://controller.netstamp.io --token NSTP_xxxxx
 sudo systemctl enable --now netstamp-probe`;
 
-	export const sidebarItems: SidebarItem[] = [
+export const sidebarItems: SidebarItem[] = [
 	{ label: "Dashboard", route: "dashboard" },
 	{ label: "Probes", route: "probes" },
 	{ label: "Insight", route: "insight" },

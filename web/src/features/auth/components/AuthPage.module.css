@@ -1,89 +1,91 @@
 .authShell {
-  min-height: 100svh;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(24rem, 31rem);
-  gap: 1rem;
-  align-items: center;
-  padding: 2rem;
-  background:
-    linear-gradient(rgba(255, 122, 26, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 122, 26, 0.08) 1px, transparent 1px),
-    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    var(--ns-bg);
-  background-size: 8rem 8rem, 8rem 8rem, 2rem 2rem, 2rem 2rem, 100% 100%;
+	min-height: 100svh;
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(24rem, 31rem);
+	gap: 1rem;
+	align-items: center;
+	padding: 2rem;
+	background:
+		linear-gradient(rgba(255, 122, 26, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 122, 26, 0.08) 1px, transparent 1px),
+		linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px), var(--ns-bg);
+	background-size:
+		8rem 8rem,
+		8rem 8rem,
+		2rem 2rem,
+		2rem 2rem,
+		100% 100%;
 }
 
 .authHero {
-  display: grid;
-  gap: 1.5rem;
-  max-width: 47rem;
+	display: grid;
+	gap: 1.5rem;
+	max-width: 47rem;
 }
 
 .authHero h1 {
-  margin: 0;
-  color: var(--ns-text);
-  font-family: var(--ns-font-display);
-  font-size: clamp(3rem, 5vw, 7rem);
-  font-weight: 650;
-  line-height: 0.9;
+	margin: 0;
+	color: var(--ns-text);
+	font-family: var(--ns-font-display);
+	font-size: clamp(3rem, 5vw, 7rem);
+	font-weight: 650;
+	line-height: 0.9;
 }
 
 .authHero p {
-  max-width: 42rem;
-  margin: 0;
-  color: var(--ns-text-muted);
-  font-size: 1.125rem;
+	max-width: 42rem;
+	margin: 0;
+	color: var(--ns-text-muted);
+	font-size: 1.125rem;
 }
 
 .authCard {
-  align-self: stretch;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+	align-self: stretch;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 }
 
 .form {
-  display: grid;
-  gap: 1rem;
+	display: grid;
+	gap: 1rem;
 }
 
 .modeLink {
-  justify-self: center;
-  align-self: center;
-  margin-top: 1rem;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--ns-text-muted);
-  cursor: pointer;
-  font: inherit;
-  text-decoration: underline;
-  text-underline-offset: 0.25rem;
+	justify-self: center;
+	align-self: center;
+	margin-top: 1rem;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: var(--ns-text-muted);
+	cursor: pointer;
+	font: inherit;
+	text-decoration: underline;
+	text-underline-offset: 0.25rem;
 }
 
 .modeLink:hover {
-  color: var(--ns-text);
+	color: var(--ns-text);
 }
 
 .modeLink:focus-visible {
-  outline: 2px solid var(--ns-accent);
-  outline-offset: 0.25rem;
+	outline: 2px solid var(--ns-accent);
+	outline-offset: 0.25rem;
 }
 
 .homeAction {
-  display: grid;
-  margin-top: auto;
-  padding-top: 2rem;
+	display: grid;
+	margin-top: auto;
+	padding-top: 2rem;
 }
 
 .homeButton {
-  width: 100%;
+	width: 100%;
 }
 
 @media (max-width: 56rem) {
-  .authShell {
-    grid-template-columns: 1fr;
-    padding: 1rem;
-  }
+	.authShell {
+		grid-template-columns: 1fr;
+		padding: 1rem;
+	}
 }

@@ -1,11 +1,13 @@
 # Frontend Agent Notes
 
 ## Scope
+
 - The frontend app is `@netstamp/web` in `web`; shared React UI is `@netstamp/ui` in `packages/ui` and is consumed through package exports, not TS path aliases.
 - Use pnpm only; root `package.json` has `preinstall: npx only-allow pnpm`.
 - Workspace config lists `web`, `docs`, and `packages/*`, but `pnpm-lock.yaml` still has old `apps/web` and `apps/docs` importers; avoid incidental `pnpm install`/lockfile churn unless changing dependencies.
 
 ## Commands
+
 - Dev server: `pnpm dev:web` from the repo root, or `pnpm --filter @netstamp/web dev`.
 - Lint frontend: `pnpm --filter @netstamp/web lint`.
 - Typecheck frontend: `pnpm --filter @netstamp/web exec tsc -p tsconfig.json --noEmit`; there is no `typecheck` script.
@@ -16,6 +18,7 @@
 - The repo hook installed by root `prepare` is `.githooks/pre-push`; it only formats staged files and re-adds them, so run lint/typecheck yourself.
 
 ## App Wiring
+
 - `web/src/main.tsx` mounts `App` inside `HelmetProvider`; route/page metadata uses `react-helmet-async`.
 - Browser routing lives in `web/src/routes/AppRouter.tsx` and `web/src/routes/routePaths.ts`; dashboard routes render inside `AppShell`.
 - Adding a route usually requires updating the `Route` unions in `web/src/shared/utils/mockData.ts`, `routePaths`, `AppRouter`, and `sidebarItems` if it belongs in the shell sidebar.
@@ -23,6 +26,7 @@
 - Dashboard data and route types are mock-driven from `web/src/shared/utils/mockData.ts`; auth is mocked in `web/src/features/auth/services/authService.ts` and returns `controller: "waiting-for-api"`.
 
 ## UI And Styles
+
 - Global CSS imports shared tokens once via `@import "@netstamp/ui/styles";` in `web/src/index.css`; do not duplicate token imports in component CSS.
 - Shared UI components live under `packages/ui/src/components/*` with colocated CSS modules and must be exported from `packages/ui/src/index.ts` for `@netstamp/ui` consumers.
 - Preserve the existing visual system: `--ns-*` tokens, dark surfaces, orange accent, mono labels, square/cut-corner frames, and CSS modules per component/page.

@@ -1,6 +1,22 @@
-import { Badge, Button, DataTable, MetricCard, Panel, SelectField, Terminal, TextAreaField, TextField, type BadgeTone, type ButtonSize, type ButtonVariant, type DataColumn, type PanelTone } from "@netstamp/ui";
+import {
+	Badge,
+	Button,
+	DataTable,
+	MetricCard,
+	Panel,
+	SelectField,
+	Terminal,
+	TextAreaField,
+	TextField,
+	type BadgeTone,
+	type ButtonSize,
+	type ButtonVariant,
+	type DataColumn,
+	type PanelTone
+} from "@netstamp/ui";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { pathForRoute } from "../../../routes/routePaths";
 import { ChartPanel } from "../../../shared/components/ChartPanel";
 import { FleetMatrix } from "../../../shared/components/FleetMatrix";
 import { NetworkMap } from "../../../shared/components/NetworkMap";
@@ -8,7 +24,6 @@ import { ScreenHeader } from "../../../shared/components/ScreenHeader";
 import { SystemStateGrid } from "../../../shared/components/SystemStateGrid";
 import { barChartOption, lineChartOption } from "../../../shared/utils/chartOptions";
 import { latencyData, lossData, probes, toneForStatus } from "../../../shared/utils/mockData";
-import { pathForRoute } from "../../../routes/routePaths";
 import styles from "./ComponentDemoPage.module.css";
 
 interface ComponentRow {
@@ -142,7 +157,13 @@ netstamp results tail --check api-latency`}
 				<Panel tone="glass" eyebrow="Charts" title="Latency and packet loss">
 					<div className={styles.chartGrid}>
 						<ChartPanel option={lineChartOption("latency", latencyData)} height="12rem" />
-						<ChartPanel option={barChartOption(lossData.map(value => value * 100), "loss")} height="12rem" />
+						<ChartPanel
+							option={barChartOption(
+								lossData.map(value => value * 100),
+								"loss"
+							)}
+							height="12rem"
+						/>
 					</div>
 				</Panel>
 

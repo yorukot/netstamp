@@ -56,9 +56,7 @@ export function AuthPage({ mode = "login", navigate }: AuthPageProps) {
 
 			<Panel className={styles.authCard} tone="glass" eyebrow="Account" title={isRegister ? "Sign up" : "Log in"}>
 				<form className={styles.form} onSubmit={handleSubmit}>
-					{isRegister ? (
-						<TextField label="Display Name" name="displayName" type="text" autoComplete="name" />
-					) : null}
+					{isRegister ? <TextField label="Display Name" name="displayName" type="text" autoComplete="name" /> : null}
 					<TextField
 						label="Email"
 						name="email"
@@ -75,9 +73,7 @@ export function AuthPage({ mode = "login", navigate }: AuthPageProps) {
 						autoComplete={isRegister ? "new-password" : "current-password"}
 						helper={isRegister ? "Choose a password for controller access." : "Enter your account password."}
 					/>
-					{isRegister ? (
-						<TextField label="Password, again" name="passwordAgain" type="password" placeholder="***" autoComplete="new-password" />
-					) : null}
+					{isRegister ? <TextField label="Password, again" name="passwordAgain" type="password" placeholder="***" autoComplete="new-password" /> : null}
 					<Button type="submit" size="lg" disabled={submitting}>
 						{submitting ? "Submitting" : isRegister ? "Create workspace" : "Log in"}
 					</Button>

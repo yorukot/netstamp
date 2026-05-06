@@ -4,4 +4,4 @@
  * @typedef {'critical' | 'warning' | 'info'} AlertSeverity
  */
 
-export const measurementFamilies = ['Ping', 'Traceroute', 'DNS']
+export const measurementFamilies = ["Ping", "Traceroute", "DNS"];

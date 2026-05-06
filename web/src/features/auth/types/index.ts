@@ -1,4 +1,4 @@
-export const authModes = ['login', 'register', 'onboarding']
+export const authModes = ["login", "register", "onboarding"];
 
 /**
  * @typedef {{ displayName?: string, email: string, password: string }} AuthCredentials

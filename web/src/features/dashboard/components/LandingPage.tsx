@@ -1,5 +1,3 @@
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Badge, Button } from "@netstamp/ui";
 import { ArrowUpRightIcon } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
 import { CheckCircleIcon } from "@phosphor-icons/react/dist/csr/CheckCircle";
@@ -9,23 +7,12 @@ import { NetworkIcon } from "@phosphor-icons/react/dist/csr/Network";
 import { PulseIcon } from "@phosphor-icons/react/dist/csr/Pulse";
 import { RocketLaunchIcon } from "@phosphor-icons/react/dist/csr/RocketLaunch";
 import { ShieldCheckIcon } from "@phosphor-icons/react/dist/csr/ShieldCheck";
-import {
-	BufferGeometry,
-	Clock,
-	Line,
-	LineBasicMaterial,
-	Mesh,
-	MeshBasicMaterial,
-	OctahedronGeometry,
-	PerspectiveCamera,
-	Scene,
-	SphereGeometry,
-	Vector3,
-	WebGLRenderer,
-} from "three";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { CSSProperties } from "react";
 import { useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
+import { BufferGeometry, Clock, Line, LineBasicMaterial, Mesh, MeshBasicMaterial, OctahedronGeometry, PerspectiveCamera, Scene, SphereGeometry, Vector3, WebGLRenderer } from "three";
 import { GlobalFooter } from "../../../shared/components/GlobalFooter";
 import type { Navigate } from "../../../shared/utils/mockData";
 import styles from "./LandingPage.module.css";
@@ -36,20 +23,9 @@ const githubUrl = "https://github.com/yorukot/netstamp";
 
 const checks = ["Ping", "DNS", "Traceroute"];
 
-const routeSignals = [
-	"See latency.",
-	"See packet loss.",
-	"See DNS failures.",
-	"See path changes.",
-	"See where traffic takes the long way around.",
-];
+const routeSignals = ["See latency.", "See packet loss.", "See DNS failures.", "See path changes.", "See where traffic takes the long way around."];
 
-const trustSignals = [
-	"Some regions do not get enough bandwidth.",
-	"Some routes are inefficient.",
-	"Some links are fragile.",
-	"Some failures are political, physical, or economic.",
-];
+const trustSignals = ["Some regions do not get enough bandwidth.", "Some routes are inefficient.", "Some links are fragile.", "Some failures are political, physical, or economic."];
 
 interface LandingPageProps {
 	navigate: Navigate;
@@ -71,8 +47,8 @@ export function LandingPage({ navigate }: LandingPageProps) {
 				ease: "power3.out",
 				scrollTrigger: {
 					trigger: "[data-gs='story']",
-					start: "top 80%",
-				},
+					start: "top 80%"
+				}
 			});
 
 			// Feature label
@@ -83,8 +59,8 @@ export function LandingPage({ navigate }: LandingPageProps) {
 				ease: "power2.out",
 				scrollTrigger: {
 					trigger: "[data-gs='feature-label']",
-					start: "top 82%",
-				},
+					start: "top 82%"
+				}
 			});
 
 			// Feature cards stagger
@@ -98,8 +74,8 @@ export function LandingPage({ navigate }: LandingPageProps) {
 					stagger: 0.14,
 					scrollTrigger: {
 						trigger: cards[0],
-						start: "top 80%",
-					},
+						start: "top 80%"
+					}
 				});
 			}
 
@@ -111,8 +87,8 @@ export function LandingPage({ navigate }: LandingPageProps) {
 				ease: "power3.out",
 				scrollTrigger: {
 					trigger: "[data-gs='trust']",
-					start: "top 80%",
-				},
+					start: "top 80%"
+				}
 			});
 
 			// Trust signal cards
@@ -127,8 +103,8 @@ export function LandingPage({ navigate }: LandingPageProps) {
 					stagger: 0.1,
 					scrollTrigger: {
 						trigger: trustItems[0],
-						start: "top 82%",
-					},
+						start: "top 82%"
+					}
 				});
 			}
 		}, landingRef);
@@ -234,9 +210,7 @@ export function LandingPage({ navigate }: LandingPageProps) {
 								<GlobeHemisphereWestIcon size={24} weight="duotone" />
 							</div>
 							<h2>Probes everywhere.</h2>
-							<p>
-								Install Netstamp probes on VPS nodes, servers, internal hosts, edge locations, classrooms, labs, or community networks.
-							</p>
+							<p>Install Netstamp probes on VPS nodes, servers, internal hosts, edge locations, classrooms, labs, or community networks.</p>
 							<p>Each probe measures the Internet from its own point of view.</p>
 						</div>
 						<div className={styles.probeSceneCol} aria-hidden="true">
@@ -292,10 +266,7 @@ export function LandingPage({ navigate }: LandingPageProps) {
 								<br />
 								Because trust needs visibility.
 							</h2>
-							<p>
-								Netstamp is built in the open — for operators, researchers, students, communities, and anyone who wants to understand
-								how the Internet actually behaves.
-							</p>
+							<p>Netstamp is built in the open — for operators, researchers, students, communities, and anyone who wants to understand how the Internet actually behaves.</p>
 							<p>Gives communities a way to measure, prove, and discuss what is happening.</p>
 							<div className={styles.ctaActions}>
 								<Button size="xl" onClick={() => navigate("register")}>
@@ -365,7 +336,7 @@ function NetworkScene() {
 			[-0.1, -2.0, 0.6], // 6 tok
 			[-1.7, -0.9, -0.3], // 7 sgp
 			[-2.4, 0.1, 0.5], // 8 cdg
-			[0.2, 0.1, -0.9], // 9 IX hub
+			[0.2, 0.1, -0.9] // 9 IX hub
 		];
 
 		const nodeGeo = new OctahedronGeometry(0.072, 0);
@@ -392,7 +363,7 @@ function NetworkScene() {
 			[9, 5, 0.5],
 			[9, 7, 0.5],
 			[2, 9, 0.55],
-			[4, 9, 0.5],
+			[4, 9, 0.5]
 		];
 
 		connDefs.forEach(([a, b, opacity]) => {
@@ -506,7 +477,7 @@ function ProbeScene() {
 				angle: (i / innerCount) * Math.PI * 2,
 				speed: 0.38,
 				tiltX: 0.3,
-				tiltZ: 0.15,
+				tiltZ: 0.15
 			});
 		}
 		for (let i = 0; i < outerCount; i++) {
@@ -518,7 +489,7 @@ function ProbeScene() {
 				angle: (i / outerCount) * Math.PI * 2,
 				speed: 0.22,
 				tiltX: -0.2,
-				tiltZ: 0.25,
+				tiltZ: 0.25
 			});
 		}
 
@@ -528,11 +499,7 @@ function ProbeScene() {
 			const segments = 64;
 			const pts = Array.from({ length: segments + 1 }, (_, i) => {
 				const a = (i / segments) * Math.PI * 2;
-				return new Vector3(
-					Math.cos(a) * radius,
-					Math.sin(a) * radius * Math.sin(tiltX),
-					Math.sin(a) * radius * Math.cos(tiltX),
-				);
+				return new Vector3(Math.cos(a) * radius, Math.sin(a) * radius * Math.sin(tiltX), Math.sin(a) * radius * Math.cos(tiltX));
 			});
 			const geo = new BufferGeometry().setFromPoints(pts);
 			return new Line(geo, ringMat);
@@ -576,11 +543,7 @@ function ProbeScene() {
 			// Move probe nodes along their orbits
 			probeNodes.forEach((p, i) => {
 				const a = p.angle + elapsed * p.speed;
-				p.mesh.position.set(
-					Math.cos(a) * p.radius,
-					Math.sin(a) * p.radius * Math.sin(p.tiltX),
-					Math.sin(a) * p.radius * Math.cos(p.tiltX),
-				);
+				p.mesh.position.set(Math.cos(a) * p.radius, Math.sin(a) * p.radius * Math.sin(p.tiltX), Math.sin(a) * p.radius * Math.cos(p.tiltX));
 				p.mesh.scale.setScalar(1 + Math.sin(elapsed * 1.4 + i * 0.7) * 0.12);
 
 				// Update connection line
@@ -642,7 +605,7 @@ function GlobalNetworkAnimation() {
 					["fra", 43, 8],
 					["sin", 92, 64],
 					["nyc", 7, 66],
-					["sfo", 90, 27],
+					["sfo", 90, 27]
 				].map(([name, x, y]) => (
 					<span key={name} className={styles.networkNode} style={{ "--x": `${x}%`, "--y": `${y}%` } as CSSProperties}>
 						{name}

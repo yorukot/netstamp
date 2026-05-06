@@ -1,137 +1,132 @@
 .field {
-  display: grid;
-  gap: 0.5rem;
-  min-width: 0;
+	display: grid;
+	gap: 0.5rem;
+	min-width: 0;
 }
 
 .label {
-  color: var(--ns-text-muted);
-  font-family: var(--ns-font-mono);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.11em;
-  line-height: 1.2;
-  text-transform: uppercase;
+	color: var(--ns-text-muted);
+	font-family: var(--ns-font-mono);
+	font-size: 0.6875rem;
+	font-weight: 700;
+	letter-spacing: 0.11em;
+	line-height: 1.2;
+	text-transform: uppercase;
 }
 
 .controlFrame {
-  --ns-frame-color: var(--ns-border);
-  position: relative;
-  display: block;
-  min-width: 0;
-  overflow: hidden;
-  padding: 1px;
-  background: var(--ns-frame-color);
-  clip-path: polygon(
-    var(--ns-cut-sm) 0,
-    100% 0,
-    100% calc(100% - var(--ns-cut-sm)),
-    calc(100% - var(--ns-cut-sm)) 100%,
-    0 100%,
-    0 var(--ns-cut-sm)
-  );
-  transition: background var(--ns-transition), box-shadow var(--ns-transition);
+	--ns-frame-color: var(--ns-border);
+	position: relative;
+	display: block;
+	min-width: 0;
+	overflow: hidden;
+	padding: 1px;
+	background: var(--ns-frame-color);
+	clip-path: polygon(var(--ns-cut-sm) 0, 100% 0, 100% calc(100% - var(--ns-cut-sm)), calc(100% - var(--ns-cut-sm)) 100%, 0 100%, 0 var(--ns-cut-sm));
+	transition:
+		background var(--ns-transition),
+		box-shadow var(--ns-transition);
 }
 
 .controlFrame::before,
 .controlFrame::after {
-  content: '';
-  position: absolute;
-  z-index: 2;
-  width: calc(var(--ns-cut-sm) * 1.41421356);
-  height: 1px;
-  background: var(--ns-frame-color);
-  pointer-events: none;
+	content: "";
+	position: absolute;
+	z-index: 2;
+	width: calc(var(--ns-cut-sm) * 1.41421356);
+	height: 1px;
+	background: var(--ns-frame-color);
+	pointer-events: none;
 }
 
 .controlFrame::before {
-  top: var(--ns-cut-sm);
-  left: 0;
-  transform: rotate(-45deg);
-  transform-origin: left center;
+	top: var(--ns-cut-sm);
+	left: 0;
+	transform: rotate(-45deg);
+	transform-origin: left center;
 }
 
 .controlFrame::after {
-  right: 0;
-  bottom: var(--ns-cut-sm);
-  transform: rotate(-45deg);
-  transform-origin: right center;
+	right: 0;
+	bottom: var(--ns-cut-sm);
+	transform: rotate(-45deg);
+	transform-origin: right center;
 }
 
 .controlFrame:focus-within {
-  --ns-frame-color: var(--ns-accent-border);
-  box-shadow: inset 0 0 0 1px rgba(255, 122, 26, 0.32);
+	--ns-frame-color: var(--ns-accent-border);
+	box-shadow: inset 0 0 0 1px rgba(255, 122, 26, 0.32);
 }
 
 .controlFrame:hover:not(:focus-within) {
-  --ns-frame-color: var(--ns-border-strong);
+	--ns-frame-color: var(--ns-border-strong);
 }
 
-.controlFrame[data-invalid='true'] {
-  --ns-frame-color: rgba(255, 69, 58, 0.64);
-  box-shadow: 0 0 0 0.25rem rgba(255, 69, 58, 0.08);
+.controlFrame[data-invalid="true"] {
+	--ns-frame-color: rgba(255, 69, 58, 0.64);
+	box-shadow: 0 0 0 0.25rem rgba(255, 69, 58, 0.08);
 }
 
 .control {
-  width: 100%;
-  min-height: 2.75rem;
-  border: 0;
-  padding: 0.75rem 0.875rem;
-  color: var(--ns-text);
-  background: #05070a;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.8);
-  font-family: var(--ns-font-sans);
-  font-size: 0.875rem;
-  outline: none;
-  transition:
-    box-shadow var(--ns-transition),
-    background var(--ns-transition);
+	width: 100%;
+	min-height: 2.75rem;
+	border: 0;
+	padding: 0.75rem 0.875rem;
+	color: var(--ns-text);
+	background: #05070a;
+	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.8);
+	font-family: var(--ns-font-sans);
+	font-size: 0.875rem;
+	outline: none;
+	transition:
+		box-shadow var(--ns-transition),
+		background var(--ns-transition);
 }
 
 .control::placeholder {
-  color: var(--ns-text-low);
+	color: var(--ns-text-low);
 }
 
 .control:focus {
-  box-shadow: inset 0 0 0 1px rgba(255, 122, 26, 0.2);
+	box-shadow: inset 0 0 0 1px rgba(255, 122, 26, 0.2);
 }
 
-.control[aria-invalid='true'] {
-  box-shadow: inset 0 0 0 1px rgba(255, 69, 58, 0.18);
+.control[aria-invalid="true"] {
+	box-shadow: inset 0 0 0 1px rgba(255, 69, 58, 0.18);
 }
 
 .area {
-  min-height: 7rem;
-  resize: vertical;
+	min-height: 7rem;
+	resize: vertical;
 }
 
 .select {
-  appearance: none;
-  padding-right: 2.75rem;
-  color: var(--ns-text);
-  background:
-    linear-gradient(45deg, transparent 50%, var(--ns-accent-hover) 50%) calc(100% - 1.18rem) 50% / 0.42rem 0.42rem no-repeat,
-    linear-gradient(135deg, var(--ns-accent-hover) 50%, transparent 50%) calc(100% - 0.9rem) 50% / 0.42rem 0.42rem no-repeat,
-    #05070a;
-  cursor: pointer;
+	appearance: none;
+	padding-right: 2.75rem;
+	color: var(--ns-text);
+	background:
+		linear-gradient(45deg, transparent 50%, var(--ns-accent-hover) 50%) calc(100% - 1.18rem) 50% / 0.42rem 0.42rem no-repeat,
+		linear-gradient(135deg, var(--ns-accent-hover) 50%, transparent 50%) calc(100% - 0.9rem) 50% / 0.42rem 0.42rem no-repeat,
+		#05070a;
+	cursor: pointer;
 }
 
 .select option {
-  color: var(--ns-text);
-  background: #080a0e;
+	color: var(--ns-text);
+	background: #080a0e;
 }
 
 .helper,
 .error {
-  font-family: var(--ns-font-mono);
-  font-size: 0.75rem;
-  line-height: 1.5;
+	font-family: var(--ns-font-mono);
+	font-size: 0.75rem;
+	line-height: 1.5;
 }
 
 .helper {
-  color: var(--ns-text-low);
+	color: var(--ns-text-low);
 }
 
 .error {
-  color: #ffb8ad;
+	color: #ffb8ad;
 }
