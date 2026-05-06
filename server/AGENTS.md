@@ -78,20 +78,19 @@ Commands below come from the root `Justfile`, root `package.json`, `server/.air.
 - `just backend-build` or `pnpm build:server`: build `server/bin/api` from `./cmd/api`.
 - `just backend-test` or `pnpm test:server`: run `go test ./...` inside `server/`.
 - `just backend-fmt`: run `go fmt ./...`.
-- `just golangci-lint`: run `golangci-lint` with `../golangci.yml`.
+- `just golangci-lint`: run `golangci-lint` with `../golangci.yaml`.
 - `just golangci-fmt`: run configured golangci formatters.
 - `just backend-sqlc`: regenerate sqlc code from `sqlc.yaml`.
 - `just backend-migrate-status`, `just backend-migrate-up`, `just backend-migrate-down`: run `cmd/migrate`.
 - `just backend-buf-lint`, `just backend-buf-generate`: run Buf commands; verify Buf paths first.
-- `docker compose -f deployments/docker/docker-compose.yml -f deployments/docker/docker-compose.dev.yml up -d postgres victoria-traces grafana`: start local PostgreSQL/TimescaleDB and trace UI dependencies.
-- `docker compose -f deployments/docker/docker-compose.yml -f deployments/docker/docker-compose.observability.yml up --build`: build and run the Docker stack with PostgreSQL, VictoriaTraces, VictoriaLogs, Vector, Grafana, nginx, backend, and migrations.
-- Dokploy deployments should use the base and observability compose files through a custom Run Command; see `deployments/docker/DOKPLOY.md`.
+- `docker compose -f deployments/docker/compose.yaml -f deployments/docker/compose.dev.yaml up -d postgres victoria-traces grafana`: start local PostgreSQL/TimescaleDB and trace UI dependencies.
+- `docker compose -f deployments/docker/compose.yaml -f deployments/docker/compose.observability.yaml up --build`: build and run the Docker stack with PostgreSQL, VictoriaTraces, VictoriaLogs, Vector, Grafana, nginx, backend, and migrations.
 
 Use `server/.env.example` as the env template. `server/.gitignore` intentionally ignores `.env`, `.env.*`, `bin/`, `tmp/`, and `coverage.out`.
 
 ## Coding Style & Naming Conventions
 
-Go files use tabs and `gofmt` per root `.editorconfig`. `golangci.yml` enables gofumpt, goimports, and gci formatting with local imports grouped under `github.com/yorukot/netstamp`. Keep package names short and lowercase, matching existing packages such as `auth`, `postgres`, `httpserver`, and `grpcserver`.
+Go files use tabs and `gofmt` per root `.editorconfig`. `golangci.yaml` enables gofumpt, goimports, and gci formatting with local imports grouped under `github.com/yorukot/netstamp`. Keep package names short and lowercase, matching existing packages such as `auth`, `postgres`, `httpserver`, and `grpcserver`.
 
 Follow existing feature file names: `service.go`, `ports.go`, `errors.go`, `trace.go`, `handler.go`, `register.go`, `login.go`, and `*_test.go`. Export only types needed across packages. Use sentinel errors named `Err...` and compare with `errors.Is`.
 
@@ -123,7 +122,7 @@ Add schema changes as timestamped Goose migrations under `db/migrations/`, follo
 
 ## External Integrations
 
-Current backend integrations are PostgreSQL/TimescaleDB and optional OTLP trace export to VictoriaTraces, as shown in `deployments/docker/docker-compose.yml` and `docker-compose.observability.yml`. Docker observability also includes VictoriaLogs with Vector container log collection. No third-party API SDKs, queues, email services, payment providers, or object storage clients are currently implemented.
+Current backend integrations are PostgreSQL/TimescaleDB and optional OTLP trace export to VictoriaTraces, as shown in `deployments/docker/compose.yaml` and `compose.observability.yaml`. Docker observability also includes VictoriaLogs with Vector container log collection. No third-party API SDKs, queues, email services, payment providers, or object storage clients are currently implemented.
 
 ## Commit & Pull Request Guidelines
 

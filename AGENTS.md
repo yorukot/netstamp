@@ -31,7 +31,7 @@ Only proceed from root guidance when the task is clearly limited to workspace me
 
 ## Repository Conventions
 
-Follow `.editorconfig` and local tool formatters. JavaScript, TypeScript, JSX, CSS, JSON, and Astro files use tabs with width 2 and Prettier. Go files use `gofmt`; backend linting is configured in `golangci.yml`. Keep generated, migration, and API changes scoped to the relevant subproject.
+Follow `.editorconfig` and local tool formatters. JavaScript, TypeScript, JSX, CSS, JSON, and Astro files use tabs with width 2 and Prettier. Go files use `gofmt`; backend linting is configured in `golangci.yaml`. Keep generated, migration, and API changes scoped to the relevant subproject.
 
 When code, commands, architecture, configuration, or project structure changes make an `AGENTS.md` inaccurate, update the affected guide in the same change.
 

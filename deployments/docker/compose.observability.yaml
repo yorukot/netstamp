@@ -46,10 +46,10 @@ services:
     depends_on:
       victoria-logs:
         condition: service_started
-    command: ["--config", "/etc/vector/vector.yml"]
+    command: ["--config", "/etc/vector/vector.yaml"]
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./vector/vector.yml:/etc/vector/vector.yml:ro
+      - ./vector/vector.yaml:/etc/vector/vector.yaml:ro
 
   grafana:
     image: ${GRAFANA_IMAGE:-grafana/grafana:13.0.0}

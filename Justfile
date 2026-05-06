@@ -118,12 +118,12 @@ backend-migrate-down:
 
 # Run golangci-lint on backend code.
 golangci-lint:
-    cd {{ server_dir }} && golangci-lint run --config ../golangci.yml ./...
+    cd {{ server_dir }} && golangci-lint run --config ../golangci.yaml ./...
 
 # Format backend code with golangci formatters.
 golangci-fmt:
-    cd {{ server_dir }} && golangci-lint fmt --config ../golangci.yml
+    cd {{ server_dir }} && golangci-lint fmt --config ../golangci.yaml
 
 # Apply safe golangci-lint fixes.
 golangci-fix:
-    cd {{ server_dir }} && golangci-lint run --fix --config ../golangci.yml ./...
+    cd {{ server_dir }} && golangci-lint run --fix --config ../golangci.yaml ./...
