@@ -1,6 +1,7 @@
 services:
   postgres:
     image: timescale/timescaledb:latest-pg16
+    restart: unless-stopped
     environment:
       POSTGRES_DB: netstamp
       POSTGRES_USER: netstamp
@@ -15,5 +16,33 @@ services:
       timeout: 5s
       retries: 10
 
+  victoria-traces:
+    image: victoriametrics/victoria-traces:latest
+    restart: unless-stopped
+    command:
+      - -storageDataPath=/victoria-traces-data
+      - -retentionPeriod=7d
+    ports:
+      - "10428:10428"
+    volumes:
+      - netstamp-victoria-traces:/victoria-traces-data
+
+  grafana:
+    image: grafana/grafana:latest
+    restart: unless-stopped
+    depends_on:
+      - victoria-traces
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    ports:
+      - "3000:3000"
+    volumes:
+      - netstamp-grafana:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+
 volumes:
   netstamp-postgres:
+  netstamp-victoria-traces:
+  netstamp-grafana:
