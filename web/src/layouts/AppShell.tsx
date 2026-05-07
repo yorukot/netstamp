@@ -1,10 +1,10 @@
+import { pathForRoute } from "@/routes/routePaths";
+import { GlobalFooter } from "@/shared/components/GlobalFooter";
+import { classNames } from "@/shared/utils/classNames";
+import { currentUser, sidebarItems } from "@/shared/utils/mockData";
 import netstampLogo from "@netstamp/brand/assets/netstamp-logo-light.svg";
 import { Button, PageShell, Select, SignalAvatar } from "@netstamp/ui";
 import { Link, NavLink, Outlet } from "react-router-dom";
-import { pathForRoute } from "../routes/routePaths";
-import { GlobalFooter } from "../shared/components/GlobalFooter";
-import { classNames } from "../shared/utils/classNames";
-import { currentUser, sidebarItems } from "../shared/utils/mockData";
 import styles from "./AppShell.module.css";
 
 export function AppShell() {

@@ -1,6 +1,6 @@
+import { classNames } from "@/shared/utils/classNames";
 import { Select } from "@netstamp/ui";
 import { useState } from "react";
-import { classNames } from "../../../shared/utils/classNames";
 import styles from "./RoleSelect.module.css";
 
 interface RoleSelectProps {

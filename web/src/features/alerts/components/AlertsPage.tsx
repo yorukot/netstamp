@@ -1,9 +1,9 @@
+import { ActionRow } from "@/shared/components/ActionRow";
+import { KeyValueGrid } from "@/shared/components/KeyValueGrid";
+import { PageStack } from "@/shared/components/PageStack";
+import { ScreenHeader } from "@/shared/components/ScreenHeader";
+import { alerts, toneForStatus, type AlertRecord } from "@/shared/utils/mockData";
 import { Badge, Button, DataTable, Panel, type DataColumn } from "@netstamp/ui";
-import { ActionRow } from "../../../shared/components/ActionRow";
-import { KeyValueGrid } from "../../../shared/components/KeyValueGrid";
-import { PageStack } from "../../../shared/components/PageStack";
-import { ScreenHeader } from "../../../shared/components/ScreenHeader";
-import { alerts, toneForStatus, type AlertRecord } from "../../../shared/utils/mockData";
 import styles from "./AlertsPage.module.css";
 
 const alertColumns: DataColumn<AlertRecord>[] = [

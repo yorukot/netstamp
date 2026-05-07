@@ -1,8 +1,8 @@
+import { FleetMatrix } from "@/shared/components/FleetMatrix";
+import { PageStack } from "@/shared/components/PageStack";
+import { ScreenHeader } from "@/shared/components/ScreenHeader";
+import { type Navigate } from "@/shared/utils/mockData";
 import { Badge, Button, MetricCard, Panel, Surface, type BadgeTone } from "@netstamp/ui";
-import { FleetMatrix } from "../../../shared/components/FleetMatrix";
-import { PageStack } from "../../../shared/components/PageStack";
-import { ScreenHeader } from "../../../shared/components/ScreenHeader";
-import { type Navigate } from "../../../shared/utils/mockData";
 import styles from "./DashboardPage.module.css";
 
 interface DashboardPageProps {

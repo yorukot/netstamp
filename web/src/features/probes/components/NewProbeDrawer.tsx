@@ -1,8 +1,8 @@
+import { pathForRoute } from "@/routes/routePaths";
+import { classNames } from "@/shared/utils/classNames";
 import { Badge, Button, Terminal, TextField } from "@netstamp/ui";
 import { type FormEvent, type MouseEvent, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { pathForRoute } from "../../../routes/routePaths";
-import { classNames } from "../../../shared/utils/classNames";
 import styles from "./NewProbeDrawer.module.css";
 
 const defaultProbeTags = ["Edge", "Home", "VPS", "Bare metal", "IPv6", "Web3", "Lab"];

@@ -1,6 +1,6 @@
+import { classNames } from "@/shared/utils/classNames";
 import { Surface } from "@netstamp/ui";
 import type { ReactNode } from "react";
-import { classNames } from "../utils/classNames";
 import styles from "./KeyValueGrid.module.css";
 
 export interface KeyValueItem {

@@ -1,5 +1,5 @@
+import { classNames } from "@/shared/utils/classNames";
 import type { ComponentPropsWithoutRef } from "react";
-import { classNames } from "../utils/classNames";
 import styles from "./ActionRow.module.css";
 
 type ActionRowProps = ComponentPropsWithoutRef<"div">;

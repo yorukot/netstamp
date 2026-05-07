@@ -1,9 +1,9 @@
+import { pathForRoute } from "@/routes/routePaths";
+import type { Navigate } from "@/shared/utils/mockData";
 import { Badge, Button, PageShell, Panel, TextField } from "@netstamp/ui";
 import type { FormEvent } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { pathForRoute } from "../../../routes/routePaths";
-import type { Navigate } from "../../../shared/utils/mockData";
 import { useAuthMock } from "../hooks/useAuthMock";
 import styles from "./AuthPage.module.css";
 

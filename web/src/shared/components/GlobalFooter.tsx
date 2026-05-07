@@ -1,8 +1,8 @@
+import { pathForRoute } from "@/routes/routePaths";
 import netstampMark from "@netstamp/brand/assets/netstamp-mark-light.svg";
 import { GithubLogoIcon } from "@phosphor-icons/react/dist/csr/GithubLogo";
 import { StarIcon } from "@phosphor-icons/react/dist/csr/Star";
 import { Link } from "react-router-dom";
-import { pathForRoute } from "../../routes/routePaths";
 import styles from "./GlobalFooter.module.css";
 
 const githubUrl = "https://github.com/yorukot/netstamp";

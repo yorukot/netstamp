@@ -1,4 +1,4 @@
-import type { Route } from "../shared/utils/mockData";
+import type { Route } from "@/shared/utils/mockData";
 
 export const routePaths = {
 	landing: "/",

@@ -1,3 +1,7 @@
+import { pathForRoute } from "@/routes/routePaths";
+import { GlobalFooter } from "@/shared/components/GlobalFooter";
+import { classNames } from "@/shared/utils/classNames";
+import type { Navigate } from "@/shared/utils/mockData";
 import netstampLogo from "@netstamp/brand/assets/netstamp-logo-light.svg";
 import { Badge, Button } from "@netstamp/ui";
 import { ArrowUpRightIcon } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
@@ -15,10 +19,6 @@ import { useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { BufferGeometry, Clock, Line, LineBasicMaterial, Mesh, MeshBasicMaterial, OctahedronGeometry, PerspectiveCamera, Scene, SphereGeometry, Vector3, WebGLRenderer } from "three";
-import { pathForRoute } from "../../../routes/routePaths";
-import { GlobalFooter } from "../../../shared/components/GlobalFooter";
-import { classNames } from "../../../shared/utils/classNames";
-import type { Navigate } from "../../../shared/utils/mockData";
 import styles from "./LandingPage.module.css";
 
 gsap.registerPlugin(ScrollTrigger);

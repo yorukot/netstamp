@@ -1,7 +1,7 @@
+import { classNames } from "@/shared/utils/classNames";
+import type { Probe } from "@/shared/utils/mockData";
 import { Badge, Checkbox, DataTable, Surface, TextField, type DataColumn } from "@netstamp/ui";
 import { useState } from "react";
-import { classNames } from "../../../shared/utils/classNames";
-import type { Probe } from "../../../shared/utils/mockData";
 import styles from "./ProbeDetail.module.css";
 import { expandAssignedRows } from "./probeUtils";
 import type { AssignedRow, DetectionMode } from "./types";

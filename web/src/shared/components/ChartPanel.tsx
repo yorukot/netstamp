@@ -1,9 +1,9 @@
+import type { ChartOption } from "@/shared/utils/chartOptions";
 import { BarChart, LineChart } from "echarts/charts";
 import { GridComponent, LegendComponent, TooltipComponent } from "echarts/components";
 import * as echarts from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import { useEffect, useRef } from "react";
-import type { ChartOption } from "../utils/chartOptions";
 import styles from "./ChartPanel.module.css";
 
 echarts.use([LineChart, BarChart, GridComponent, TooltipComponent, LegendComponent, CanvasRenderer]);

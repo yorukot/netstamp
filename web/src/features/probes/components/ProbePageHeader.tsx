@@ -1,7 +1,7 @@
+import { pathForRoute } from "@/routes/routePaths";
+import { classNames } from "@/shared/utils/classNames";
 import { Button } from "@netstamp/ui";
 import { Link } from "react-router-dom";
-import { pathForRoute } from "../../../routes/routePaths";
-import { classNames } from "../../../shared/utils/classNames";
 import styles from "./ProbePageHeader.module.css";
 import type { ProbeView } from "./types";
 

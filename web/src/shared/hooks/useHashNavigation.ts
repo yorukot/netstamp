@@ -1,5 +1,5 @@
+import type { Route } from "@/shared/utils/mockData";
 import { startTransition, useEffect, useState } from "react";
-import type { Route } from "../utils/mockData";
 
 const fallbackRoute: Route = "landing";
 

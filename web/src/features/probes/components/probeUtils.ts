@@ -1,4 +1,4 @@
-import type { Probe, ProbeStatus } from "../../../shared/utils/mockData";
+import type { Probe, ProbeStatus } from "@/shared/utils/mockData";
 import type { AssignedRow, ProbeSort } from "./types";
 
 const assignedOverflowRowCount = 18;

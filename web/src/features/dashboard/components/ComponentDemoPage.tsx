@@ -1,3 +1,11 @@
+import { pathForRoute } from "@/routes/routePaths";
+import { ChartPanel } from "@/shared/components/ChartPanel";
+import { FleetMatrix } from "@/shared/components/FleetMatrix";
+import { NetworkMap } from "@/shared/components/NetworkMap";
+import { ScreenHeader } from "@/shared/components/ScreenHeader";
+import { SystemStateGrid } from "@/shared/components/SystemStateGrid";
+import { barChartOption, lineChartOption } from "@/shared/utils/chartOptions";
+import { latencyData, lossData, probes, toneForStatus } from "@/shared/utils/mockData";
 import {
 	Badge,
 	Button,
@@ -16,14 +24,6 @@ import {
 } from "@netstamp/ui";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { pathForRoute } from "../../../routes/routePaths";
-import { ChartPanel } from "../../../shared/components/ChartPanel";
-import { FleetMatrix } from "../../../shared/components/FleetMatrix";
-import { NetworkMap } from "../../../shared/components/NetworkMap";
-import { ScreenHeader } from "../../../shared/components/ScreenHeader";
-import { SystemStateGrid } from "../../../shared/components/SystemStateGrid";
-import { barChartOption, lineChartOption } from "../../../shared/utils/chartOptions";
-import { latencyData, lossData, probes, toneForStatus } from "../../../shared/utils/mockData";
 import styles from "./ComponentDemoPage.module.css";
 
 interface ComponentRow {

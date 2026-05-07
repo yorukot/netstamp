@@ -1,11 +1,11 @@
+import { ChartPanel } from "@/shared/components/ChartPanel";
+import { KeyValueGrid } from "@/shared/components/KeyValueGrid";
+import { PageStack } from "@/shared/components/PageStack";
+import { ScreenHeader } from "@/shared/components/ScreenHeader";
+import { lineChartOption } from "@/shared/utils/chartOptions";
+import { assignments, checks, dnsData, latencyData, probes, results, routeDiffData, toneForStatus, type CheckDefinition, type Probe } from "@/shared/utils/mockData";
 import { Badge, DataTable, Panel, SelectField, Surface, type DataColumn } from "@netstamp/ui";
 import { useState } from "react";
-import { ChartPanel } from "../../../shared/components/ChartPanel";
-import { KeyValueGrid } from "../../../shared/components/KeyValueGrid";
-import { PageStack } from "../../../shared/components/PageStack";
-import { ScreenHeader } from "../../../shared/components/ScreenHeader";
-import { lineChartOption } from "../../../shared/utils/chartOptions";
-import { assignments, checks, dnsData, latencyData, probes, results, routeDiffData, toneForStatus, type CheckDefinition, type Probe } from "../../../shared/utils/mockData";
 import styles from "./InsightPage.module.css";
 
 type InsightView = "probe" | "target";

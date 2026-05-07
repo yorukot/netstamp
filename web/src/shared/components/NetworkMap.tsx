@@ -1,7 +1,7 @@
+import { type Probe } from "@/shared/utils/mockData";
 import type { Map as MapLibreMap, Marker as MapLibreMarker, StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
-import { type Probe } from "../utils/mockData";
 import styles from "./NetworkMap.module.css";
 
 interface NetworkMapProps {

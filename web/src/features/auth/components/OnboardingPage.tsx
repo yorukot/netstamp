@@ -1,9 +1,9 @@
+import { classNames } from "@/shared/utils/classNames";
+import { type Navigate } from "@/shared/utils/mockData";
 import { Button, Input, PageShell } from "@netstamp/ui";
 import type { FormEvent, KeyboardEvent as ReactKeyboardEvent } from "react";
 import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { classNames } from "../../../shared/utils/classNames";
-import { type Navigate } from "../../../shared/utils/mockData";
 import { useAuthMock } from "../hooks/useAuthMock";
 import styles from "./OnboardingPage.module.css";
 

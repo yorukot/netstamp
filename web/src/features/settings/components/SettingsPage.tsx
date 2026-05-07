@@ -1,9 +1,9 @@
+import { ActionRow } from "@/shared/components/ActionRow";
+import { PageStack } from "@/shared/components/PageStack";
+import { ScreenHeader } from "@/shared/components/ScreenHeader";
+import { currentUser } from "@/shared/utils/mockData";
 import { Button, Panel, SignalAvatar, TextField } from "@netstamp/ui";
 import type { FormEvent } from "react";
-import { ActionRow } from "../../../shared/components/ActionRow";
-import { PageStack } from "../../../shared/components/PageStack";
-import { ScreenHeader } from "../../../shared/components/ScreenHeader";
-import { currentUser } from "../../../shared/utils/mockData";
 import styles from "./SettingsPage.module.css";
 
 function handleSettingsSubmit(event: FormEvent<HTMLFormElement>) {

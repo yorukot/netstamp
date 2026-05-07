@@ -1,4 +1,4 @@
-import type { CheckType } from "../../../shared/utils/mockData";
+import type { CheckType } from "@/shared/utils/mockData";
 
 export type ProbeView = "grid" | "map";
 export type ProbeSort = "heartbeat" | "name" | "asn";

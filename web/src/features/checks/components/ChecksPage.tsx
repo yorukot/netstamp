@@ -1,10 +1,10 @@
+import { ActionRow } from "@/shared/components/ActionRow";
+import { PageStack } from "@/shared/components/PageStack";
+import { ScreenHeader } from "@/shared/components/ScreenHeader";
+import { classNames } from "@/shared/utils/classNames";
+import { assignments, checks, probes, results, toneForStatus, type CheckDefinition, type CheckType } from "@/shared/utils/mockData";
 import { Badge, Button, Checkbox, DataTable, Panel, SelectField, TextField, type DataColumn } from "@netstamp/ui";
 import { useState } from "react";
-import { ActionRow } from "../../../shared/components/ActionRow";
-import { PageStack } from "../../../shared/components/PageStack";
-import { ScreenHeader } from "../../../shared/components/ScreenHeader";
-import { classNames } from "../../../shared/utils/classNames";
-import { assignments, checks, probes, results, toneForStatus, type CheckDefinition, type CheckType } from "../../../shared/utils/mockData";
 import styles from "./ChecksPage.module.css";
 
 interface LogRow {

@@ -1,8 +1,8 @@
+import { NetworkMap } from "@/shared/components/NetworkMap";
+import { classNames } from "@/shared/utils/classNames";
+import { assignments, probes, type ProbeStatus } from "@/shared/utils/mockData";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { NetworkMap } from "../../../shared/components/NetworkMap";
-import { classNames } from "../../../shared/utils/classNames";
-import { assignments, probes, type ProbeStatus } from "../../../shared/utils/mockData";
 import { NewProbeDrawer } from "./NewProbeDrawer";
 import { ProbeDetail } from "./ProbeDetail";
 import { ProbeList } from "./ProbeList";

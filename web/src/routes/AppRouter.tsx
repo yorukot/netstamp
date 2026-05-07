@@ -1,17 +1,17 @@
+import { AlertsPage } from "@/features/alerts/components/AlertsPage";
+import { AuthPage } from "@/features/auth/components/AuthPage";
+import { OnboardingPage } from "@/features/auth/components/OnboardingPage";
+import { ChecksPage } from "@/features/checks/components/ChecksPage";
+import { ComponentDemoPage } from "@/features/dashboard/components/ComponentDemoPage";
+import { DashboardPage } from "@/features/dashboard/components/DashboardPage";
+import { InsightPage } from "@/features/insight/components/InsightPage";
+import { LandingPage } from "@/features/landing/components/LandingPage";
+import { ProbesPage } from "@/features/probes/components/ProbesPage";
+import { SettingsPage } from "@/features/settings/components/SettingsPage";
+import { TeamPage } from "@/features/team/components/TeamPage";
+import { AppShell } from "@/layouts/AppShell";
+import type { AppRoute, Navigate } from "@/shared/utils/mockData";
 import { createBrowserRouter, Navigate as RouterNavigate, RouterProvider, useNavigate } from "react-router-dom";
-import { AlertsPage } from "../features/alerts/components/AlertsPage";
-import { AuthPage } from "../features/auth/components/AuthPage";
-import { OnboardingPage } from "../features/auth/components/OnboardingPage";
-import { ChecksPage } from "../features/checks/components/ChecksPage";
-import { ComponentDemoPage } from "../features/dashboard/components/ComponentDemoPage";
-import { DashboardPage } from "../features/dashboard/components/DashboardPage";
-import { InsightPage } from "../features/insight/components/InsightPage";
-import { LandingPage } from "../features/landing/components/LandingPage";
-import { ProbesPage } from "../features/probes/components/ProbesPage";
-import { SettingsPage } from "../features/settings/components/SettingsPage";
-import { TeamPage } from "../features/team/components/TeamPage";
-import { AppShell } from "../layouts/AppShell";
-import type { AppRoute, Navigate } from "../shared/utils/mockData";
 import { pathForRoute } from "./routePaths";
 
 function appRoutePath(route: AppRoute) {

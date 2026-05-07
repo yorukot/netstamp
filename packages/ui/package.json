@@ -4,6 +4,7 @@
 	"type": "module",
 	"exports": {
 		".": "./src/index.ts",
+		"./components/*": "./src/components/*.tsx",
 		"./styles": "./src/styles/tokens.css"
 	},
 	"files": [

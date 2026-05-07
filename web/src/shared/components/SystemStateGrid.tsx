@@ -1,5 +1,5 @@
+import { systemStates } from "@/shared/utils/mockData";
 import { Badge, Panel } from "@netstamp/ui";
-import { systemStates } from "../utils/mockData";
 import styles from "./SystemStateGrid.module.css";
 
 export function SystemStateGrid() {
