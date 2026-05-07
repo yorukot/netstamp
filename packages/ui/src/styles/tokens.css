@@ -152,27 +152,8 @@ a {
 	--ns-frame-color: var(--ns-border-faint);
 	position: relative;
 	overflow: hidden;
-	border: 1px solid transparent;
+	border: 1px solid var(--ns-frame-color);
 	clip-path: polygon(var(--ns-frame-cut) 0, 100% 0, 100% calc(100% - var(--ns-frame-cut)), calc(100% - var(--ns-frame-cut)) 100%, 0 100%, 0 var(--ns-frame-cut));
-}
-
-.ns-cut-frame::before {
-	content: "";
-	position: absolute;
-	inset: 0;
-	z-index: 2;
-	padding: 1px;
-	background: var(--ns-frame-color);
-	clip-path: inherit;
-	pointer-events: none;
-	mask:
-		linear-gradient(#000 0 0) content-box,
-		linear-gradient(#000 0 0);
-	mask-composite: exclude;
-	-webkit-mask:
-		linear-gradient(#000 0 0) content-box,
-		linear-gradient(#000 0 0);
-	-webkit-mask-composite: xor;
 }
 
 .ns-scrollbar {

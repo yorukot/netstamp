@@ -225,15 +225,16 @@ export function NewProbeDrawer() {
 								<span className={styles.fieldLabel}>Tags</span>
 								<div className={styles.tagCloud}>
 									{tagOptions.map(tag => (
-										<button
-											className={classNames("ns-cut-frame", styles.tagButton, selectedTags.includes(tag) && styles.tagSelected)}
+										<Button
+											variant="plain"
+											className={classNames(styles.tagButton, selectedTags.includes(tag) && styles.tagSelected)}
 											key={tag}
 											type="button"
 											disabled={currentStep !== 2}
 											onClick={() => toggleTag(tag)}
 										>
 											{tag}
-										</button>
+										</Button>
 									))}
 								</div>
 								<div className={styles.tagCreate}>

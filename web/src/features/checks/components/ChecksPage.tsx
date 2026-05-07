@@ -1,4 +1,4 @@
-import { Badge, Button, DataTable, Panel, SelectField, TextField, type DataColumn } from "@netstamp/ui";
+import { Badge, Button, Checkbox, DataTable, Panel, SelectField, TextField, type DataColumn } from "@netstamp/ui";
 import { useState } from "react";
 import { ActionRow } from "../../../shared/components/ActionRow";
 import { PageStack } from "../../../shared/components/PageStack";
@@ -190,7 +190,7 @@ export function ChecksPage() {
 								<div className={classNames("ns-scrollbar", styles.probeOptionList)}>
 									{probes.map(probe => (
 										<label key={probe.id}>
-											<input type="checkbox" checked={selectedProbes.includes(probe.name)} onChange={() => toggleProbe(probe.name)} />
+											<Checkbox checked={selectedProbes.includes(probe.name)} onChange={() => toggleProbe(probe.name)} />
 											<span>{probe.name}</span>
 											<small>{probe.location}</small>
 										</label>

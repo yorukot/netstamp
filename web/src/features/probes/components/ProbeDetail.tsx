@@ -1,4 +1,4 @@
-import { Badge, DataTable, Surface, TextField, type DataColumn } from "@netstamp/ui";
+import { Badge, Button, DataTable, Surface, TextField, type DataColumn } from "@netstamp/ui";
 import { useState } from "react";
 import { classNames } from "../../../shared/utils/classNames";
 import type { Probe } from "../../../shared/utils/mockData";
@@ -101,8 +101,9 @@ function ModeToggle({ mode, label, onClick }: ModeToggleProps) {
 	const modeClass = mode === "manual" ? styles.modeButtonManual : styles.modeButtonAuto;
 
 	return (
-		<button className={classNames(styles.modeButton, modeClass)} type="button" aria-label={label} aria-pressed={mode === "auto"} onClick={onClick}>
+		<Button variant="plain" className={classNames(styles.modeButton, modeClass)} type="button" aria-label={label} aria-pressed={mode === "auto"} onClick={onClick}>
+			<span className={styles.modeDot} aria-hidden="true" />
 			{mode}
-		</button>
+		</Button>
 	);
 }

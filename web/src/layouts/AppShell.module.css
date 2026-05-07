@@ -62,40 +62,28 @@
 
 .teamFrame:hover,
 .teamFrame:focus-within {
-	--ns-frame-color: var(--ns-accent-border);
+	--ns-frame-color: var(--ns-accent-active);
 }
 
-.teamFrame::after {
-	content: "";
-	position: absolute;
-	top: 50%;
-	right: 0.75rem;
-	z-index: 3;
-	width: 0.5rem;
-	height: 0.5rem;
-	border-right: 2px solid var(--ns-accent-hover);
-	border-bottom: 2px solid var(--ns-accent-hover);
-	pointer-events: none;
-	transform: translateY(-65%) rotate(45deg);
-}
-
-.teamFrame select {
-	appearance: none;
-	width: 100%;
+.teamControl {
 	min-height: 2.75rem;
-	border: 1px solid transparent;
 	padding: 0.625rem 2.375rem 0.625rem 0.75rem;
 	color: var(--ns-text);
-	background: linear-gradient(90deg, rgba(255, 122, 26, 0.08) 1px, transparent 1px), #080a0e;
+	background:
+		linear-gradient(45deg, transparent 50%, var(--ns-accent-hover) 50%) calc(100% - 1.18rem) 50% / 0.42rem 0.42rem no-repeat,
+		linear-gradient(135deg, var(--ns-accent-hover) 50%, transparent 50%) calc(100% - 0.9rem) 50% / 0.42rem 0.42rem no-repeat,
+		linear-gradient(90deg, rgba(255, 122, 26, 0.08) 1px, transparent 1px),
+		#080a0e;
 	background-size:
+		0.42rem 0.42rem,
+		0.42rem 0.42rem,
 		1rem 100%,
 		100% 100%;
 	font-family: var(--ns-font-mono);
 	font-size: 0.75rem;
-	outline: none;
 }
 
-.teamFrame select option {
+.teamControl option {
 	color: var(--ns-text);
 	background: #080a0e;
 }
@@ -132,7 +120,6 @@
 .nav a.active {
 	--ns-frame-color: var(--ns-border);
 	color: var(--ns-text);
-	border-color: transparent;
 	background: linear-gradient(90deg, rgba(255, 122, 26, 0.14), transparent 70%), #080a0e;
 }
 

@@ -20,7 +20,6 @@
 	text-decoration: none;
 	text-transform: uppercase;
 	user-select: none;
-	isolation: isolate;
 }
 
 .btn:hover {
@@ -146,4 +145,24 @@
 	--ns-frame-color: rgba(255, 69, 58, 0.74);
 	background: rgba(255, 69, 58, 0.16);
 	box-shadow: 0 0 0 0.25rem rgba(255, 69, 58, 0.1);
+}
+
+.plain {
+	--ns-frame-color: transparent;
+	min-height: auto;
+	padding: 0;
+	color: inherit;
+	background: transparent;
+	box-shadow: none;
+	font: inherit;
+	letter-spacing: inherit;
+	line-height: inherit;
+	text-transform: none;
+}
+
+.plain:hover,
+.plain:active {
+	background: transparent;
+	box-shadow: none;
+	transform: none;
 }

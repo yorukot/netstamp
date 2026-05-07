@@ -1,4 +1,4 @@
-import { Badge, DataTable, Panel, type BadgeTone, type DataColumn } from "@netstamp/ui";
+import { Badge, DataTable, Input, Panel, Select, type BadgeTone, type DataColumn } from "@netstamp/ui";
 import { classNames } from "../../../shared/utils/classNames";
 import type { Probe, ProbeStatus } from "../../../shared/utils/mockData";
 import styles from "./ProbeList.module.css";
@@ -67,26 +67,55 @@ export function ProbeList({
 		<Panel className={styles.panel} tone="matte" aria-label="Probe list">
 			<div className={styles.toolbar}>
 				<span className={styles.title}>Probe list</span>
-				<input className={styles.control} aria-label="Search probes" placeholder="Search" value={search} onChange={event => onSearchChange(event.currentTarget.value)} />
-				<select className={styles.control} aria-label="Filter status" value={statusFilter} onChange={event => onStatusChange(event.currentTarget.value as "all" | ProbeStatus)}>
+				<Input
+					variant="compact"
+					frameClassName={styles.controlFrame}
+					className={styles.control}
+					aria-label="Search probes"
+					placeholder="Search"
+					value={search}
+					onChange={event => onSearchChange(event.currentTarget.value)}
+				/>
+				<Select
+					variant="compact"
+					frameClassName={styles.controlFrame}
+					className={styles.control}
+					aria-label="Filter status"
+					value={statusFilter}
+					onChange={event => onStatusChange(event.currentTarget.value as "all" | ProbeStatus)}
+				>
 					<option value="all">Status</option>
 					<option value="Online">Online</option>
 					<option value="Draining">Draining</option>
 					<option value="Offline">Offline</option>
-				</select>
-				<select className={styles.control} aria-label="Filter provider" value={providerFilter} onChange={event => onProviderChange(event.currentTarget.value)}>
+				</Select>
+				<Select
+					variant="compact"
+					frameClassName={styles.controlFrame}
+					className={styles.control}
+					aria-label="Filter provider"
+					value={providerFilter}
+					onChange={event => onProviderChange(event.currentTarget.value)}
+				>
 					<option value="all">Provider</option>
 					{providerOptions.map(provider => (
 						<option key={provider} value={provider}>
 							{provider}
 						</option>
 					))}
-				</select>
-				<select className={classNames(styles.control, styles.sortControl)} aria-label="Sort probes" value={sortKey} onChange={event => onSortChange(event.currentTarget.value as ProbeSort)}>
+				</Select>
+				<Select
+					variant="compact"
+					frameClassName={classNames(styles.controlFrame, styles.sortControl)}
+					className={styles.control}
+					aria-label="Sort probes"
+					value={sortKey}
+					onChange={event => onSortChange(event.currentTarget.value as ProbeSort)}
+				>
 					<option value="heartbeat">Sort: Last Heartbeat</option>
 					<option value="name">Sort: Probe Name</option>
 					<option value="asn">Sort: AS</option>
-				</select>
+				</Select>
 			</div>
 
 			<DataTable

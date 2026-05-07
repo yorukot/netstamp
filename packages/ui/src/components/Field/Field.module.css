@@ -18,17 +18,18 @@
 	--ns-frame-cut: var(--ns-cut-sm);
 	--ns-frame-color: var(--ns-border);
 	display: block;
+	width: 100%;
 	min-width: 0;
-	padding: 1px;
-	background: var(--ns-frame-color);
 	transition:
-		background var(--ns-transition),
+		border-color var(--ns-transition),
 		box-shadow var(--ns-transition);
 }
 
 .controlFrame:focus-within {
-	--ns-frame-color: var(--ns-accent-border);
-	box-shadow: inset 0 0 0 1px rgba(255, 122, 26, 0.32);
+	--ns-frame-color: var(--ns-accent-active);
+	outline: 2px solid var(--ns-accent-active);
+	outline-offset: 2px;
+	box-shadow: none;
 }
 
 .controlFrame:hover:not(:focus-within) {
@@ -56,12 +57,35 @@
 		background var(--ns-transition);
 }
 
+.compactControl {
+	min-height: 2rem;
+	padding: 0.35rem 0.75rem;
+	font-family: var(--ns-font-mono);
+	font-size: 0.75rem;
+	line-height: 1;
+}
+
+.bareControl {
+	min-width: 0;
+	min-height: auto;
+	border: 0;
+	padding: 0;
+	background: transparent;
+	box-shadow: none;
+	font: inherit;
+}
+
 .control::placeholder {
 	color: var(--ns-text-low);
 }
 
 .control:focus {
-	box-shadow: inset 0 0 0 1px rgba(255, 122, 26, 0.2);
+	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.8);
+}
+
+.bareControl:focus-visible {
+	outline: 2px solid var(--ns-accent-active);
+	outline-offset: 0.15rem;
 }
 
 .control[aria-invalid="true"] {
@@ -84,9 +108,29 @@
 	cursor: pointer;
 }
 
+.compactControl.select {
+	padding-right: 2rem;
+	background:
+		linear-gradient(45deg, transparent 50%, var(--ns-text-muted) 50%) calc(100% - 1rem) 50% / 0.35rem 0.35rem no-repeat,
+		linear-gradient(135deg, var(--ns-text-muted) 50%, transparent 50%) calc(100% - 0.76rem) 50% / 0.35rem 0.35rem no-repeat,
+		#101010;
+}
+
 .select option {
 	color: var(--ns-text);
 	background: #080a0e;
+}
+
+.checkbox {
+	width: 1rem;
+	height: 1rem;
+	accent-color: var(--ns-accent);
+	outline: none;
+}
+
+.checkbox:focus-visible {
+	outline: 2px solid var(--ns-accent-active);
+	outline-offset: 2px;
 }
 
 .helper,

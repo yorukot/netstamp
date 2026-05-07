@@ -20,31 +20,19 @@
 	white-space: nowrap;
 }
 
-.control {
+.controlFrame {
 	width: 100%;
+	--ns-frame-color: rgba(255, 255, 255, 0.28);
+}
+
+.control {
 	min-height: 2rem;
-	border: 1px solid rgba(255, 255, 255, 0.28);
 	padding: 0.35rem 0.75rem;
 	color: var(--ns-text-muted);
 	background: #101010;
 	font-family: var(--ns-font-mono);
 	font-size: 0.75rem;
 	line-height: 1;
-	outline: none;
-}
-
-.control:focus {
-	border-color: rgba(255, 255, 255, 0.58);
-	box-shadow: 0 0 0 0.1875rem rgba(255, 122, 26, 0.12);
-}
-
-select.control {
-	padding-right: 2rem;
-	background:
-		linear-gradient(45deg, transparent 50%, var(--ns-text-muted) 50%) calc(100% - 1rem) 50% / 0.35rem 0.35rem no-repeat,
-		linear-gradient(135deg, var(--ns-text-muted) 50%, transparent 50%) calc(100% - 0.76rem) 50% / 0.35rem 0.35rem no-repeat,
-		#101010;
-	appearance: none;
 }
 
 .sortControl {

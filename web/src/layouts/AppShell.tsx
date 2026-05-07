@@ -1,5 +1,5 @@
 import netstampLogo from "@netstamp/brand/assets/netstamp-logo-light.svg";
-import { Button, PageShell, SignalAvatar } from "@netstamp/ui";
+import { Button, PageShell, Select, SignalAvatar } from "@netstamp/ui";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { pathForRoute } from "../routes/routePaths";
 import { GlobalFooter } from "../shared/components/GlobalFooter";
@@ -17,13 +17,11 @@ export function AppShell() {
 
 				<label className={styles.teamSelect}>
 					<span>team</span>
-					<span className={classNames("ns-cut-frame", styles.teamFrame)}>
-						<select defaultValue="vector-ix">
-							<option value="vector-ix">Vector IX / prod</option>
-							<option value="helio">Helio Validators</option>
-							<option value="lab">Lab Network</option>
-						</select>
-					</span>
+					<Select variant="compact" frameClassName={styles.teamFrame} className={styles.teamControl} defaultValue="vector-ix">
+						<option value="vector-ix">Vector IX / prod</option>
+						<option value="helio">Helio Validators</option>
+						<option value="lab">Lab Network</option>
+					</Select>
 				</label>
 
 				<nav className={styles.nav} aria-label="Primary app navigation">

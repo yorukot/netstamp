@@ -1,3 +1,4 @@
+import { Select } from "@netstamp/ui";
 import { useState } from "react";
 import { classNames } from "../../../shared/utils/classNames";
 import styles from "./RoleSelect.module.css";
@@ -19,14 +20,19 @@ export function RoleSelect({ role, name }: RoleSelectProps) {
 	const roleClass = styles[selectedRole as keyof typeof styles] || styles.member;
 
 	return (
-		<span className={classNames("ns-cut-frame", styles.frame, roleClass)}>
-			<select className={styles.select} value={selectedRole} aria-label={`Change role for ${name}`} onChange={event => setSelectedRole(event.currentTarget.value)}>
-				{roleOptions.map(option => (
-					<option key={option.value} value={option.value}>
-						{option.label}
-					</option>
-				))}
-			</select>
-		</span>
+		<Select
+			variant="compact"
+			frameClassName={classNames(styles.frame, roleClass)}
+			className={styles.select}
+			value={selectedRole}
+			aria-label={`Change role for ${name}`}
+			onChange={event => setSelectedRole(event.currentTarget.value)}
+		>
+			{roleOptions.map(option => (
+				<option key={option.value} value={option.value}>
+					{option.label}
+				</option>
+			))}
+		</Select>
 	);
 }

@@ -128,9 +128,9 @@ export function LandingPage({ navigate }: LandingPageProps) {
 			</Helmet>
 
 			<nav className={styles.nav}>
-				<button type="button" className={styles.brand} onClick={() => navigate("landing")}>
+				<Button type="button" variant="plain" className={styles.brand} onClick={() => navigate("landing")}>
 					<img className={styles.brandLogo} src={netstampLogo} alt="Netstamp" />
-				</button>
+				</Button>
 
 				<div className={styles.navActions}>
 					<a className={styles.navLink} href={githubUrl} target="_blank" rel="noreferrer">

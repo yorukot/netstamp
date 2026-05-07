@@ -27,8 +27,16 @@
 .consoleBar span {
 	width: 0.625rem;
 	height: 0.625rem;
-	border: 1px solid var(--ns-border-strong);
-	background: #0f131a;
+	border-radius: 999px;
+	background: var(--ns-critical);
+}
+
+.consoleBar span:nth-child(2) {
+	background: var(--ns-warning);
+}
+
+.consoleBar span:nth-child(3) {
+	background: var(--ns-success);
 }
 
 .consoleBar strong {
@@ -172,9 +180,15 @@
 	color: var(--ns-text-low);
 }
 
+.answerRow input:focus-visible {
+	outline: 0;
+}
+
 .answerRow:focus-within {
-	border-color: var(--ns-accent-border);
-	box-shadow: inset 0 0 0 1px rgba(255, 122, 26, 0.18);
+	border-color: var(--ns-accent-active);
+	outline: 2px solid var(--ns-accent-active);
+	outline-offset: 2px;
+	box-shadow: none;
 }
 
 .answerRow small {

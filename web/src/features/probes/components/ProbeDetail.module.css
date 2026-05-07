@@ -99,8 +99,7 @@
 	text-transform: capitalize;
 }
 
-.modeButton::before {
-	content: "";
+.modeDot {
 	width: 0.35rem;
 	height: 0.35rem;
 	background: var(--ns-accent);
@@ -115,11 +114,11 @@
 	outline-offset: 2px;
 }
 
-.modeButtonManual::before {
+.modeButtonManual .modeDot {
 	background: #ff4d63;
 }
 
-.modeButtonAuto::before {
+.modeButtonAuto .modeDot {
 	background: #61ff7f;
 }
 

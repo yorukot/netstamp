@@ -1,6 +1,8 @@
 import { Badge, Button, PageShell, Panel, TextField } from "@netstamp/ui";
 import type { FormEvent } from "react";
 import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
+import { pathForRoute } from "../../../routes/routePaths";
 import type { Navigate } from "../../../shared/utils/mockData";
 import { useAuthMock } from "../hooks/useAuthMock";
 import styles from "./AuthPage.module.css";
@@ -78,9 +80,9 @@ export function AuthPage({ mode = "login", navigate }: AuthPageProps) {
 						{submitting ? "Submitting" : isRegister ? "Create workspace" : "Log in"}
 					</Button>
 				</form>
-				<button type="button" className={styles.modeLink} onClick={() => navigate(isRegister ? "login" : "register")}>
+				<Link className={styles.modeLink} to={pathForRoute(isRegister ? "login" : "register")}>
 					{isRegister ? "or log in" : "or sign up"}
-				</button>
+				</Link>
 				<div className={styles.homeAction}>
 					<Button className={styles.homeButton} variant="secondary" size="lg" onClick={() => navigate("landing")}>
 						Go to home

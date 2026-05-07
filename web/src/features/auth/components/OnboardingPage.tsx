@@ -1,4 +1,4 @@
-import { PageShell } from "@netstamp/ui";
+import { Button, Input, PageShell } from "@netstamp/ui";
 import type { FormEvent, KeyboardEvent as ReactKeyboardEvent } from "react";
 import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -181,9 +181,9 @@ export function OnboardingPage({ navigate }: OnboardingPageProps) {
 						<div className={styles.successView} aria-live="polite">
 							<ScriptLine prompt="success" text={`Team ${createdTeam} created.`} />
 							<p>Nice, let's bring {createdTeam} online. Next we will open the probe fleet and start the new probe wizard.</p>
-							<button className={styles.tuiButton} type="button" onClick={() => navigate("probes", "#new-probe")}>
+							<Button variant="plain" className={styles.tuiButton} type="button" onClick={() => navigate("probes", "#new-probe")}>
 								[ open probe fleet / create probe ]
-							</button>
+							</Button>
 						</div>
 					) : (
 						<>
@@ -198,7 +198,8 @@ export function OnboardingPage({ navigate }: OnboardingPageProps) {
 								{teamPromptReady ? (
 									<label className={styles.answerRow}>
 										<span className={styles.answerPrompt}>answer</span>
-										<input
+										<Input
+											variant="bare"
 											ref={teamInputRef}
 											name="team"
 											value={teamName}
@@ -219,9 +220,9 @@ export function OnboardingPage({ navigate }: OnboardingPageProps) {
 									<div className={styles.inviteSection}>
 										<div className={styles.inviteHeader}>
 											<p>Press Enter for next friend email. Backspace on an empty row deletes it.</p>
-											<button className={styles.tuiMiniButton} type="button" onClick={addInvite}>
+											<Button variant="plain" className={styles.tuiMiniButton} type="button" onClick={addInvite}>
 												+ add
-											</button>
+											</Button>
 										</div>
 
 										<div className={styles.inviteList}>
@@ -229,7 +230,8 @@ export function OnboardingPage({ navigate }: OnboardingPageProps) {
 												<div className={styles.inviteRow} key={index}>
 													<label className={styles.answerRow}>
 														<span className={styles.answerPrompt}>{String(index + 1).padStart(2, "0")}</span>
-														<input
+														<Input
+															variant="bare"
 															ref={element => {
 																inviteRefs.current[index] = element;
 															}}
@@ -241,16 +243,16 @@ export function OnboardingPage({ navigate }: OnboardingPageProps) {
 															onKeyDown={event => handleInviteKeyDown(event, index)}
 														/>
 													</label>
-													<button className={styles.tuiMiniButton} type="button" onClick={() => removeInvite(index)}>
+													<Button variant="plain" className={styles.tuiMiniButton} type="button" onClick={() => removeInvite(index)}>
 														delete
-													</button>
+													</Button>
 												</div>
 											))}
 										</div>
 
-										<button className={styles.tuiButton} type="submit" disabled={submitting}>
+										<Button variant="plain" className={styles.tuiButton} type="submit" disabled={submitting}>
 											{submitting ? "[ creating team... ]" : "[ create team ]"}
-										</button>
+										</Button>
 									</div>
 								) : null}
 							</form>

@@ -6,8 +6,7 @@
 	background: #020304;
 }
 
-.avatar::after {
-	content: "";
+.overlay {
 	position: absolute;
 	inset: 0;
 	z-index: 3;
