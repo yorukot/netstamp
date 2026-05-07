@@ -1,14 +1,96 @@
+x-backend-build: &backend-build
+  context: ../..
+  dockerfile: server/Dockerfile
+
+x-nginx-build: &nginx-build
+  context: ../..
+  dockerfile: deployments/docker/nginx.Dockerfile
+
+x-backend-environment: &backend-environment
+  APP_ENV: production
+  SERVICE_NAME: netstamp-api
+  APP_VERSION: ${APP_VERSION:-v1}
+  LOG_LEVEL: ${LOG_LEVEL:-info}
+  LOG_PSEUDONYM_KEY: ${LOG_PSEUDONYM_KEY:?set LOG_PSEUDONYM_KEY}
+  HTTP_ADDR: :8080
+  GRPC_ADDR: :9090
+  DATABASE_HOST: postgres
+  DATABASE_PORT: 5432
+  DATABASE_USER: netstamp
+  DATABASE_PASSWORD: ${DATABASE_PASSWORD:?set DATABASE_PASSWORD}
+  DATABASE_NAME: netstamp
+  DATABASE_SSLMODE: disable
+  DB_MAX_CONNS: ${DB_MAX_CONNS:-10}
+  DB_MIN_CONNS: ${DB_MIN_CONNS:-0}
+  DB_MAX_CONN_LIFETIME: ${DB_MAX_CONN_LIFETIME:-1h}
+  DB_MAX_CONN_IDLE_TIME: ${DB_MAX_CONN_IDLE_TIME:-30m}
+  AUTH_JWT_SECRET: ${AUTH_JWT_SECRET:?set AUTH_JWT_SECRET}
+  AUTH_ACCESS_TOKEN_TTL: ${AUTH_ACCESS_TOKEN_TTL:-12h}
+  AUTH_ARGON2ID_MEMORY_KIB: ${AUTH_ARGON2ID_MEMORY_KIB:-65536}
+  AUTH_ARGON2ID_ITERATIONS: ${AUTH_ARGON2ID_ITERATIONS:-3}
+  AUTH_ARGON2ID_PARALLELISM: ${AUTH_ARGON2ID_PARALLELISM:-4}
+
 x-netstamp-log-labels: &netstamp-log-labels
   netstamp.logs: enabled
 
 services:
+  postgres:
+    image: ${TIMESCALEDB_IMAGE:-timescale/timescaledb:2.26.4-pg16}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: netstamp
+      POSTGRES_USER: netstamp
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:?set DATABASE_PASSWORD}
+    volumes:
+      - netstamp-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U netstamp -d netstamp"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    labels: *netstamp-log-labels
+
   migrate:
+    image: netstamp-api:${NETSTAMP_IMAGE_TAG:-local}
+    build: *backend-build
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment: *backend-environment
+    entrypoint: ["/app/netstamp-migrate"]
+    command: ["-command", "up", "-dir", "/app/db/migrations"]
+    labels: *netstamp-log-labels
+
+  backend:
+    image: netstamp-api:${NETSTAMP_IMAGE_TAG:-local}
+    build: *backend-build
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      victoria-traces:
+        condition: service_started
+    environment:
+      <<: *backend-environment
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://victoria-traces:10428/insert/opentelemetry/v1/traces
+    expose:
+      - "8080"
+      - "9090"
     labels: *netstamp-log-labels
 
   nginx:
-    labels: *netstamp-log-labels
-
-  postgres:
+    image: netstamp-web:${NETSTAMP_IMAGE_TAG:-local}
+    build: *nginx-build
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_started
+    ports:
+      - "80"
+      - "9090:9090"
     labels: *netstamp-log-labels
 
   victoria-traces:
@@ -19,14 +101,6 @@ services:
       - -retentionPeriod=${VICTORIA_TRACES_RETENTION_PERIOD:-7d}
     volumes:
       - netstamp-victoria-traces:/victoria-traces-data
-    labels: *netstamp-log-labels
-
-  backend:
-    depends_on:
-      victoria-traces:
-        condition: service_started
-    environment:
-      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://victoria-traces:10428/insert/opentelemetry/v1/traces
     labels: *netstamp-log-labels
 
   victoria-logs:
@@ -72,6 +146,7 @@ services:
     labels: *netstamp-log-labels
 
 volumes:
+  netstamp-postgres:
   netstamp-victoria-traces:
   netstamp-victoria-logs:
   netstamp-grafana:
