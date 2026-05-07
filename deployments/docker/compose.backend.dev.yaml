@@ -1,0 +1,49 @@
+services:
+  postgres:
+    image: ${TIMESCALEDB_IMAGE:-timescale/timescaledb:2.26.4-pg16}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME:-netstamp}
+      POSTGRES_USER: ${DATABASE_USER:-netstamp}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-netstamp}
+    ports:
+      - "${DATABASE_PORT:-5432}:5432"
+    volumes:
+      - netstamp-backend-dev-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  victoria-traces:
+    image: ${VICTORIA_TRACES_IMAGE:-victoriametrics/victoria-traces:v0.8.2}
+    restart: unless-stopped
+    command:
+      - -storageDataPath=/victoria-traces-data
+      - -retentionPeriod=${VICTORIA_TRACES_RETENTION_PERIOD:-7d}
+    ports:
+      - "10428:10428"
+    volumes:
+      - netstamp-backend-dev-victoria-traces:/victoria-traces-data
+
+  grafana:
+    image: ${GRAFANA_IMAGE:-grafana/grafana:13.0}
+    restart: unless-stopped
+    depends_on:
+      victoria-traces:
+        condition: service_started
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GF_SECURITY_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    ports:
+      - "${GRAFANA_HTTP_ADDR:-127.0.0.1:3000}:3000"
+    volumes:
+      - netstamp-backend-dev-grafana:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+
+volumes:
+  netstamp-backend-dev-postgres:
+  netstamp-backend-dev-victoria-traces:
+  netstamp-backend-dev-grafana:

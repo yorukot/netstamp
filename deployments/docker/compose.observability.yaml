@@ -100,7 +100,7 @@ services:
       - default
 
   victoria-traces:
-    image: ${VICTORIA_TRACES_IMAGE:-victoriametrics/victoria-traces:v0.4.0}
+    image: ${VICTORIA_TRACES_IMAGE:-victoriametrics/victoria-traces:v0.8.2}
     restart: unless-stopped
     command:
       - -storageDataPath=/victoria-traces-data

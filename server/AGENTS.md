@@ -83,8 +83,8 @@ Commands below come from the root `Justfile`, root `package.json`, `server/.air.
 - `just backend-sqlc`: regenerate sqlc code from `sqlc.yaml`.
 - `just backend-migrate-status`, `just backend-migrate-up`, `just backend-migrate-down`: run `cmd/migrate`.
 - `just backend-buf-lint`, `just backend-buf-generate`: run Buf commands; verify Buf paths first.
-- `docker compose -f deployments/docker/compose.yaml -f deployments/docker/compose.dev.yaml up -d postgres victoria-traces grafana`: start local PostgreSQL/TimescaleDB and trace UI dependencies.
-- `docker compose -f deployments/docker/compose.yaml -f deployments/docker/compose.observability.yaml up --build`: build and run the Docker stack with PostgreSQL, VictoriaTraces, VictoriaLogs, Vector, Grafana, nginx, backend, and migrations.
+- `docker compose -f deployments/docker/compose.backend.dev.yaml up -d`: start local PostgreSQL/TimescaleDB, VictoriaTraces, and Grafana dependencies for a host-run backend.
+- `docker compose -f deployments/docker/compose.observability.yaml up --build`: build and run the Docker stack with PostgreSQL, VictoriaTraces, VictoriaLogs, Vector, Grafana, nginx, backend, and migrations.
 
 Use `server/.env.example` as the env template. `server/.gitignore` intentionally ignores `.env`, `.env.*`, `bin/`, `tmp/`, and `coverage.out`.
 
