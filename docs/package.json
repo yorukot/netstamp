@@ -1,17 +1,17 @@
 {
-	"name": "@netstamp/docs",
-	"version": "0.0.1",
-	"type": "module",
-	"scripts": {
-		"astro": "astro",
-		"build": "astro build",
-		"dev": "astro dev",
-		"preview": "astro preview",
-		"start": "astro dev"
-	},
-	"dependencies": {
-		"@astrojs/starlight": "^0.38.4",
-		"astro": "^6.1.9",
-		"sharp": "^0.34.5"
-	}
+  "name": "docs",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^6.2.2"
+  }
 }
