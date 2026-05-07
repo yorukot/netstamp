@@ -61,45 +61,47 @@ export function DataTable<Row extends object>({
 	}
 
 	return (
-		<div className={["ns-cut-frame", "ns-scrollbar", styles.wrap, styles[density], className].filter(Boolean).join(" ")} style={wrapStyle}>
-			<table className={styles.table} aria-label={ariaLabel}>
-				<thead>
-					<tr>
-						{columns.map(column => (
-							<th key={column.key}>{column.label}</th>
-						))}
-					</tr>
-				</thead>
-				<tbody>
-					{rows.length ? (
-						rows.map((row, index) => {
-							const rowKey = getRowKey ? getRowKey(row, index) : String(index);
-							const selected = selectedKey === rowKey;
-
-							return (
-								<tr
-									key={rowKey}
-									className={[selected && styles.selected, onRowClick && styles.interactive].filter(Boolean).join(" ") || undefined}
-									aria-selected={selected || undefined}
-									tabIndex={onRowClick ? 0 : undefined}
-									onClick={onRowClick ? () => onRowClick(row) : undefined}
-									onKeyDown={event => handleRowKeyDown(event, row)}
-								>
-									{columns.map(column => (
-										<td key={column.key}>{column.render ? column.render(row, index) : String((row as Record<string, unknown>)[column.key] ?? "")}</td>
-									))}
-								</tr>
-							);
-						})
-					) : (
+		<div className={["ns-cut-frame", styles.frame, styles[density], className].filter(Boolean).join(" ")} style={wrapStyle}>
+			<div className={["ns-scrollbar", styles.scroller].join(" ")}>
+				<table className={styles.table} aria-label={ariaLabel}>
+					<thead>
 						<tr>
-							<td className={styles.empty} colSpan={columns.length}>
-								{emptyLabel}
-							</td>
+							{columns.map(column => (
+								<th key={column.key}>{column.label}</th>
+							))}
 						</tr>
-					)}
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						{rows.length ? (
+							rows.map((row, index) => {
+								const rowKey = getRowKey ? getRowKey(row, index) : String(index);
+								const selected = selectedKey === rowKey;
+
+								return (
+									<tr
+										key={rowKey}
+										className={[selected && styles.selected, onRowClick && styles.interactive].filter(Boolean).join(" ") || undefined}
+										aria-selected={selected || undefined}
+										tabIndex={onRowClick ? 0 : undefined}
+										onClick={onRowClick ? () => onRowClick(row) : undefined}
+										onKeyDown={event => handleRowKeyDown(event, row)}
+									>
+										{columns.map(column => (
+											<td key={column.key}>{column.render ? column.render(row, index) : String((row as Record<string, unknown>)[column.key] ?? "")}</td>
+										))}
+									</tr>
+								);
+							})
+						) : (
+							<tr>
+								<td className={styles.empty} colSpan={columns.length}>
+									{emptyLabel}
+								</td>
+							</tr>
+						)}
+					</tbody>
+				</table>
+			</div>
 		</div>
 	);
 }

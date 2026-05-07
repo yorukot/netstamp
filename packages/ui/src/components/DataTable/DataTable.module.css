@@ -1,16 +1,19 @@
-.wrap {
+.frame {
 	--ns-frame-color: rgba(255, 122, 26, 0.28);
 	--ns-frame-cut: var(--ns-cut-md);
 	width: 100%;
-	max-height: var(--ns-data-table-max-height, none);
-	overflow: auto;
-	position: relative;
-	background:
-		linear-gradient(rgba(255, 122, 26, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 122, 26, 0.04) 1px, transparent 1px), #030507;
+	background: linear-gradient(rgba(255, 122, 26, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 122, 26, 0.04) 1px, transparent 1px), #030507;
 	background-size:
 		1rem 1rem,
 		1rem 1rem,
 		100% 100%;
+}
+
+.scroller {
+	width: 100%;
+	max-height: var(--ns-data-table-max-height, none);
+	min-width: 0;
+	overflow: auto;
 }
 
 .table {
