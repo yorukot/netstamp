@@ -1,5 +1,5 @@
 {
- "name": "@netstamp/docs",
+	"name": "@netstamp/docs",
 	"private": true,
 	"type": "module",
 	"scripts": {
