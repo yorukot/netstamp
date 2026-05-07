@@ -20,8 +20,7 @@
 
 .matte {
 	--ns-frame-color: rgba(196, 204, 217, 0.2);
-	background:
-		linear-gradient(180deg, rgba(255, 255, 255, 0.014), transparent 42%), linear-gradient(135deg, rgba(255, 122, 26, 0.045), transparent 16rem), #040609;
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.014), transparent 42%), linear-gradient(135deg, rgba(255, 122, 26, 0.045), transparent 16rem), #040609;
 	background-size: 100% 100%;
 }
 
@@ -38,8 +37,7 @@
 
 .accent {
 	--ns-frame-color: var(--ns-accent-border);
-	background:
-		linear-gradient(135deg, rgba(255, 122, 26, 0.18), transparent 16rem), linear-gradient(90deg, rgba(255, 122, 26, 0.055) 0 1px, transparent 1px 0.875rem), #05070a;
+	background: linear-gradient(135deg, rgba(255, 122, 26, 0.18), transparent 16rem), linear-gradient(90deg, rgba(255, 122, 26, 0.055) 0 1px, transparent 1px 0.875rem), #05070a;
 }
 
 .danger {
