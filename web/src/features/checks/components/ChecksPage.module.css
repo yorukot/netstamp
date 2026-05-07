@@ -5,7 +5,7 @@
 	align-items: start;
 }
 
-.stickyCheckPanel {
+.checkEditorGrid .stickyCheckPanel {
 	position: sticky;
 	top: 1rem;
 	max-height: calc(100svh - 2rem);
