@@ -13,7 +13,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { CSSProperties } from "react";
 import { useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
 import { BufferGeometry, Clock, Line, LineBasicMaterial, Mesh, MeshBasicMaterial, OctahedronGeometry, PerspectiveCamera, Scene, SphereGeometry, Vector3, WebGLRenderer } from "three";
+import { pathForRoute } from "../../../routes/routePaths";
 import { GlobalFooter } from "../../../shared/components/GlobalFooter";
 import { classNames } from "../../../shared/utils/classNames";
 import type { Navigate } from "../../../shared/utils/mockData";
@@ -128,9 +130,9 @@ export function LandingPage({ navigate }: LandingPageProps) {
 			</Helmet>
 
 			<nav className={styles.nav}>
-				<Button type="button" variant="plain" className={styles.brand} onClick={() => navigate("landing")}>
+				<Link className={styles.brand} to={pathForRoute("landing")}>
 					<img className={styles.brandLogo} src={netstampLogo} alt="Netstamp" />
-				</Button>
+				</Link>
 
 				<div className={styles.navActions}>
 					<a className={styles.navLink} href={githubUrl} target="_blank" rel="noreferrer">
@@ -170,7 +172,6 @@ export function LandingPage({ navigate }: LandingPageProps) {
 							</Button>
 						</div>
 					</div>
-
 				</section>
 
 				{/* Story Section — redesigned with Three.js */}

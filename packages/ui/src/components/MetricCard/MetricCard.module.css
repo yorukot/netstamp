@@ -5,8 +5,7 @@
 	min-height: 9rem;
 }
 
-.card::after {
-	content: "";
+.corner {
 	position: absolute;
 	right: 1rem;
 	bottom: 1rem;

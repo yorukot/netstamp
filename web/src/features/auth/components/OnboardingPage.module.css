@@ -225,6 +225,8 @@
 
 .tuiButton,
 .tuiMiniButton {
+	--ns-frame-cut: var(--ns-cut-xs);
+	--ns-frame-color: var(--ns-accent-border);
 	border: 1px solid var(--ns-accent-border);
 	color: var(--ns-accent-hover);
 	background: rgba(255, 122, 26, 0.08);

@@ -150,10 +150,36 @@ a {
 .ns-cut-frame {
 	--ns-frame-cut: var(--ns-cut-md);
 	--ns-frame-color: var(--ns-border-faint);
+	--ns-frame-border-width: 1px;
 	position: relative;
 	overflow: hidden;
-	border: 1px solid var(--ns-frame-color);
+	border: var(--ns-frame-border-width) solid var(--ns-frame-color);
 	clip-path: polygon(var(--ns-frame-cut) 0, 100% 0, 100% calc(100% - var(--ns-frame-cut)), calc(100% - var(--ns-frame-cut)) 100%, 0 100%, 0 var(--ns-frame-cut));
+}
+
+.ns-cut-frame::before,
+.ns-cut-frame::after {
+	content: "";
+	position: absolute;
+	z-index: 2;
+	width: calc(var(--ns-frame-cut) * sqrt(2));
+	height: var(--ns-frame-border-width);
+	background: var(--ns-frame-color);
+	pointer-events: none;
+}
+
+.ns-cut-frame::before {
+	top: calc(var(--ns-frame-cut) - var(--ns-frame-border-width));
+	left: 0;
+	transform: rotate(-45deg);
+	transform-origin: bottom left;
+}
+
+.ns-cut-frame::after {
+	right: 0;
+	bottom: calc(var(--ns-frame-cut) - var(--ns-frame-border-width));
+	transform: rotate(-45deg);
+	transform-origin: right top;
 }
 
 .ns-scrollbar {

@@ -19,6 +19,7 @@ export function MetricCard({ label, value, detail, tone = "accent", className }:
 			<span className={styles.label}>{label}</span>
 			<strong>{value}</strong>
 			{detail ? <Badge tone={tone}>{detail}</Badge> : null}
+			<span className={styles.corner} aria-hidden="true" />
 		</Surface>
 	);
 }
