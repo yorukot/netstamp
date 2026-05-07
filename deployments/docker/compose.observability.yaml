@@ -10,8 +10,10 @@ x-backend-environment: &backend-environment
   APP_ENV: production
   SERVICE_NAME: netstamp-api
   APP_VERSION: ${APP_VERSION:-v1}
+  API_VERSION: ${API_VERSION:-v1}
   LOG_LEVEL: ${LOG_LEVEL:-info}
   LOG_PSEUDONYM_KEY: ${LOG_PSEUDONYM_KEY:?set LOG_PSEUDONYM_KEY}
+  BACKEND_BASE_URL: ${BACKEND_BASE_URL:-}
   HTTP_ADDR: :8080
   GRPC_ADDR: :9090
   DATABASE_HOST: postgres
@@ -30,9 +32,6 @@ x-backend-environment: &backend-environment
   AUTH_ARGON2ID_ITERATIONS: ${AUTH_ARGON2ID_ITERATIONS:-3}
   AUTH_ARGON2ID_PARALLELISM: ${AUTH_ARGON2ID_PARALLELISM:-4}
 
-x-netstamp-log-labels: &netstamp-log-labels
-  netstamp.logs: enabled
-
 services:
   postgres:
     image: ${TIMESCALEDB_IMAGE:-timescale/timescaledb:2.26.4-pg16}
@@ -48,7 +47,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
-    labels: *netstamp-log-labels
+    labels:
+      - netstamp.logs=enabled
 
   migrate:
     image: netstamp-api:${NETSTAMP_IMAGE_TAG:-local}
@@ -60,7 +60,8 @@ services:
     environment: *backend-environment
     entrypoint: ["/app/netstamp-migrate"]
     command: ["-command", "up", "-dir", "/app/db/migrations"]
-    labels: *netstamp-log-labels
+    labels:
+      - netstamp.logs=enabled
 
   backend:
     image: netstamp-api:${NETSTAMP_IMAGE_TAG:-local}
@@ -79,7 +80,8 @@ services:
     expose:
       - "8080"
       - "9090"
-    labels: *netstamp-log-labels
+    labels:
+      - netstamp.logs=enabled
 
   nginx:
     image: netstamp-web:${NETSTAMP_IMAGE_TAG:-local}
@@ -88,10 +90,14 @@ services:
     depends_on:
       backend:
         condition: service_started
-    ports:
+    expose:
       - "80"
-      - "9090:9090"
-    labels: *netstamp-log-labels
+      - "9090"
+    labels:
+      - netstamp.logs=enabled
+    networks:
+      - dokploy-network
+      - default
 
   victoria-traces:
     image: ${VICTORIA_TRACES_IMAGE:-victoriametrics/victoria-traces:v0.4.0}
@@ -101,7 +107,8 @@ services:
       - -retentionPeriod=${VICTORIA_TRACES_RETENTION_PERIOD:-7d}
     volumes:
       - netstamp-victoria-traces:/victoria-traces-data
-    labels: *netstamp-log-labels
+    labels:
+      - netstamp.logs=enabled
 
   victoria-logs:
     image: ${VICTORIA_LOGS_IMAGE:-victoriametrics/victoria-logs:v1.50.0}
@@ -111,7 +118,8 @@ services:
       - -retentionPeriod=${VICTORIA_LOGS_RETENTION_PERIOD:-14d}
     volumes:
       - netstamp-victoria-logs:/victoria-logs-data
-    labels: *netstamp-log-labels
+    labels:
+      - netstamp.logs=enabled
 
   vector:
     image: ${VECTOR_IMAGE:-timberio/vector:0.55.0-alpine}
@@ -138,15 +146,23 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD:?set GF_SECURITY_ADMIN_PASSWORD}
       GF_USERS_ALLOW_SIGN_UP: "false"
       GF_INSTALL_PLUGINS: ${GF_INSTALL_PLUGINS:-victoriametrics-logs-datasource}
-    ports:
-      - "${GRAFANA_HTTP_ADDR:-127.0.0.1:3000}:3000"
+    expose:
+      - "3000"
     volumes:
       - netstamp-grafana:/var/lib/grafana
       - ./grafana/provisioning.production:/etc/grafana/provisioning:ro
-    labels: *netstamp-log-labels
+    labels:
+      - netstamp.logs=enabled
+    networks:
+      - dokploy-network
+      - default
 
 volumes:
   netstamp-postgres:
   netstamp-victoria-traces:
   netstamp-victoria-logs:
   netstamp-grafana:
+
+networks:
+  dokploy-network:
+    external: true

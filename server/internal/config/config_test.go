@@ -28,6 +28,9 @@ func TestLoadDefaults(t *testing.T) {
 	if cfg.LogPseudonymKey != "local-development-log-pseudonym-key-change-before-production" {
 		t.Fatalf("expected default log pseudonym key, got %q", cfg.LogPseudonymKey)
 	}
+	if cfg.HTTP.BackendBaseURL != "" {
+		t.Fatalf("expected empty backend base URL, got %q", cfg.HTTP.BackendBaseURL)
+	}
 	if cfg.HTTP.Addr != ":8080" {
 		t.Fatalf("expected default HTTP addr, got %q", cfg.HTTP.Addr)
 	}
@@ -53,6 +56,7 @@ func TestLoadFromEnvironment(t *testing.T) {
 	t.Setenv(keyAppEnv, "production")
 	t.Setenv(keyServiceName, "netstamp-worker")
 	t.Setenv(keyLogPseudonymKey, "production-log-pseudonym-key")
+	t.Setenv(keyBackendBaseURL, "https://api.netstamp.dev")
 	t.Setenv(keyHTTPAddr, ":8181")
 	t.Setenv(keyGRPCAddr, ":9191")
 	t.Setenv(keyRequestTimeout, "250ms")
@@ -78,6 +82,9 @@ func TestLoadFromEnvironment(t *testing.T) {
 	}
 	if cfg.LogPseudonymKey != "production-log-pseudonym-key" {
 		t.Fatalf("expected log pseudonym key override, got %q", cfg.LogPseudonymKey)
+	}
+	if cfg.HTTP.BackendBaseURL != "https://api.netstamp.dev" {
+		t.Fatalf("expected backend base URL override, got %q", cfg.HTTP.BackendBaseURL)
 	}
 	if cfg.HTTP.Addr != ":8181" {
 		t.Fatalf("expected HTTP addr override, got %q", cfg.HTTP.Addr)
@@ -158,6 +165,7 @@ func TestLoadFromDotEnv(t *testing.T) {
 func TestLoadReturnsValidationErrors(t *testing.T) {
 	clearConfigEnv(t)
 	t.Setenv(keyRequestTimeout, "not-a-duration")
+	t.Setenv(keyBackendBaseURL, "https://api.netstamp.dev/api")
 	t.Setenv(keyDatabaseHost, " ")
 	t.Setenv(keyDBMaxConns, "-1")
 
@@ -169,6 +177,7 @@ func TestLoadReturnsValidationErrors(t *testing.T) {
 	message := err.Error()
 	for _, want := range []string{
 		"'REQUEST_TIMEOUT' time: invalid duration",
+		"BACKEND_BASE_URL must be an origin without path, query, fragment, or credentials",
 		"DATABASE_HOST must not be empty",
 		"DB_MAX_CONNS must not be negative",
 	} {
@@ -186,6 +195,7 @@ func TestValidateReturnsErrorsForInvalidValues(t *testing.T) {
 	cfg.LogLevel = "verbose"
 	cfg.LogPseudonymKey = ""
 	cfg.ShutdownTimeout = 0
+	cfg.HTTP.BackendBaseURL = "https://api.netstamp.dev/api"
 	cfg.HTTP.Addr = "localhost"
 	cfg.GRPC.Addr = ":99999"
 	cfg.HTTP.RequestTimeout = -time.Second
@@ -217,6 +227,7 @@ func TestValidateReturnsErrorsForInvalidValues(t *testing.T) {
 		"LOG_LEVEL must be one of debug, info, warn, error, dpanic, panic, or fatal",
 		"LOG_PSEUDONYM_KEY must not be empty",
 		"SHUTDOWN_TIMEOUT must be greater than 0",
+		"BACKEND_BASE_URL must be an origin without path, query, fragment, or credentials",
 		"HTTP_ADDR must be a host:port address",
 		"GRPC_ADDR port must be between 1 and 65535",
 		"REQUEST_TIMEOUT must be greater than 0",
@@ -238,6 +249,44 @@ func TestValidateReturnsErrorsForInvalidValues(t *testing.T) {
 		if !strings.Contains(message, want) {
 			t.Fatalf("expected error to contain %q, got %q", want, message)
 		}
+	}
+}
+
+func TestValidateOptionalHTTPOrigin(t *testing.T) {
+	tests := []struct {
+		name      string
+		value     string
+		wantError string
+	}{
+		{name: "empty", value: ""},
+		{name: "http origin", value: "http://localhost:8080"},
+		{name: "https origin", value: "https://api.netstamp.dev"},
+		{name: "trailing slash", value: "https://api.netstamp.dev/"},
+		{name: "missing scheme", value: "api.netstamp.dev", wantError: "BACKEND_BASE_URL must be a valid HTTP origin"},
+		{name: "unsupported scheme", value: "ftp://api.netstamp.dev", wantError: "BACKEND_BASE_URL must use http or https"},
+		{name: "path", value: "https://api.netstamp.dev/api", wantError: "BACKEND_BASE_URL must be an origin without path, query, fragment, or credentials"},
+		{name: "query", value: "https://api.netstamp.dev?preview=true", wantError: "BACKEND_BASE_URL must be an origin without path, query, fragment, or credentials"},
+		{name: "fragment", value: "https://api.netstamp.dev#api", wantError: "BACKEND_BASE_URL must be an origin without path, query, fragment, or credentials"},
+		{name: "credentials", value: "https://user:pass@api.netstamp.dev", wantError: "BACKEND_BASE_URL must be an origin without path, query, fragment, or credentials"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			errs := validateOptionalHTTPOrigin(keyBackendBaseURL, tt.value)
+			err := errors.Join(errs...)
+			if tt.wantError == "" {
+				if err != nil {
+					t.Fatalf("expected no error, got %v", err)
+				}
+				return
+			}
+			if err == nil {
+				t.Fatalf("expected error %q", tt.wantError)
+			}
+			if !strings.Contains(err.Error(), tt.wantError) {
+				t.Fatalf("expected error to contain %q, got %q", tt.wantError, err.Error())
+			}
+		})
 	}
 }
 

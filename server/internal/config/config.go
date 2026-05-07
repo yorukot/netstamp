@@ -20,6 +20,7 @@ const (
 	keyLogLevel              = "LOG_LEVEL"
 	keyLogPseudonymKey       = "LOG_PSEUDONYM_KEY"
 	keyShutdownTimeout       = "SHUTDOWN_TIMEOUT"
+	keyBackendBaseURL        = "BACKEND_BASE_URL"
 	keyHTTPAddr              = "HTTP_ADDR"
 	keyGRPCAddr              = "GRPC_ADDR"
 	keyRequestTimeout        = "REQUEST_TIMEOUT"
@@ -55,6 +56,7 @@ var defaultSettings = map[string]any{
 	keyLogLevel:              "info",
 	keyLogPseudonymKey:       "local-development-log-pseudonym-key-change-before-production",
 	keyShutdownTimeout:       10 * time.Second,
+	keyBackendBaseURL:        "",
 	keyHTTPAddr:              ":8080",
 	keyGRPCAddr:              ":9090",
 	keyRequestTimeout:        10 * time.Second,
@@ -98,6 +100,7 @@ type Config struct {
 }
 
 type HTTPConfig struct {
+	BackendBaseURL    string        `mapstructure:"BACKEND_BASE_URL"`
 	Addr              string        `mapstructure:"HTTP_ADDR"`
 	RequestTimeout    time.Duration `mapstructure:"REQUEST_TIMEOUT"`
 	ReadHeaderTimeout time.Duration `mapstructure:"HTTP_READ_HEADER_TIMEOUT"`
@@ -184,6 +187,7 @@ func validate(cfg Config) []error {
 	errs = append(errs, validatePositiveDuration(keyShutdownTimeout, cfg.ShutdownTimeout)...)
 
 	// HTTP settings
+	errs = append(errs, validateOptionalHTTPOrigin(keyBackendBaseURL, cfg.HTTP.BackendBaseURL)...)
 	errs = append(errs, validateListenAddr(keyHTTPAddr, cfg.HTTP.Addr)...)
 	errs = append(errs, validatePositiveDuration(keyRequestTimeout, cfg.HTTP.RequestTimeout)...)
 	errs = append(errs, validatePositiveDuration(keyHTTPReadHeaderTimeout, cfg.HTTP.ReadHeaderTimeout)...)

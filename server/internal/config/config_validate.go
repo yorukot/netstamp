@@ -115,3 +115,23 @@ func validateOptionalHTTPURL(key string, value string) []error {
 
 	return nil
 }
+
+func validateOptionalHTTPOrigin(key string, value string) []error {
+	trimmed := strings.TrimSpace(value)
+	if trimmed == "" {
+		return nil
+	}
+
+	parsed, err := url.Parse(trimmed)
+	if err != nil || !parsed.IsAbs() || parsed.Host == "" {
+		return []error{fmt.Errorf("%s must be a valid HTTP origin", key)}
+	}
+	if parsed.Scheme != "http" && parsed.Scheme != "https" {
+		return []error{fmt.Errorf("%s must use http or https", key)}
+	}
+	if parsed.User != nil || (parsed.Path != "" && parsed.Path != "/") || parsed.RawQuery != "" || parsed.Fragment != "" {
+		return []error{fmt.Errorf("%s must be an origin without path, query, fragment, or credentials", key)}
+	}
+
+	return nil
+}

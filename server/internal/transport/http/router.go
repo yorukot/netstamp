@@ -3,6 +3,7 @@ package httpserver
 import (
 	"context"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -23,6 +24,7 @@ import (
 type Dependencies struct {
 	Log            *zap.Logger
 	APIVersion     string
+	BackendBaseURL string
 	AuthService    *appauth.Service
 	AuthVerifier   appauth.TokenVerifier
 	TeamService    *appteam.Service
@@ -73,7 +75,7 @@ func NewRouter(dep Dependencies) http.Handler {
 func newHumaConfig(dep Dependencies) huma.Config {
 	config := huma.DefaultConfig("Netstamp API", dep.APIVersion)
 	config.Info.Description = "Controller HTTP API for Netstamp."
-	config.Servers = []*huma.Server{{URL: dep.basePath()}}
+	config.Servers = []*huma.Server{{URL: dep.serverURL()}}
 	if config.Components.SecuritySchemes == nil {
 		config.Components.SecuritySchemes = map[string]*huma.SecurityScheme{}
 	}
@@ -87,4 +89,12 @@ func newHumaConfig(dep Dependencies) huma.Config {
 
 func (d *Dependencies) basePath() string {
 	return "/api/" + d.APIVersion
+}
+
+func (d *Dependencies) serverURL() string {
+	backendBaseURL := strings.TrimRight(strings.TrimSpace(d.BackendBaseURL), "/")
+	if backendBaseURL == "" {
+		return d.basePath()
+	}
+	return backendBaseURL + d.basePath()
 }

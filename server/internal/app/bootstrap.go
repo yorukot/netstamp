@@ -94,7 +94,8 @@ func New(ctx context.Context) (*Application, error) {
 
 	httpHandler := httpserver.NewRouter(httpserver.Dependencies{
 		Log:            log,
-		APIVersion:     cfg.Version,
+		APIVersion:     cfg.APIVersion,
+		BackendBaseURL: cfg.HTTP.BackendBaseURL,
 		AuthService:    authSvc,
 		AuthVerifier:   tokenIssuer,
 		TeamService:    teamSvc,
