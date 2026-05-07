@@ -25,6 +25,12 @@ func TestLoadDefaults(t *testing.T) {
 	if cfg.ServiceName != "netstamp-api" {
 		t.Fatalf("expected default service name, got %q", cfg.ServiceName)
 	}
+	if cfg.Version != "0.1.0" {
+		t.Fatalf("expected default app version, got %q", cfg.Version)
+	}
+	if cfg.APIVersion != "v1" {
+		t.Fatalf("expected default API version, got %q", cfg.APIVersion)
+	}
 	if cfg.LogPseudonymKey != "local-development-log-pseudonym-key-change-before-production" {
 		t.Fatalf("expected default log pseudonym key, got %q", cfg.LogPseudonymKey)
 	}
@@ -55,6 +61,8 @@ func TestLoadFromEnvironment(t *testing.T) {
 	clearConfigEnv(t)
 	t.Setenv(keyAppEnv, "production")
 	t.Setenv(keyServiceName, "netstamp-worker")
+	t.Setenv(keyAppVersion, "0.2.0")
+	t.Setenv(keyAPIVersion, "v2")
 	t.Setenv(keyLogPseudonymKey, "production-log-pseudonym-key")
 	t.Setenv(keyBackendBaseURL, "https://api.netstamp.dev")
 	t.Setenv(keyHTTPAddr, ":8181")
@@ -79,6 +87,12 @@ func TestLoadFromEnvironment(t *testing.T) {
 	}
 	if cfg.ServiceName != "netstamp-worker" {
 		t.Fatalf("expected service override, got %q", cfg.ServiceName)
+	}
+	if cfg.Version != "0.2.0" {
+		t.Fatalf("expected app version override, got %q", cfg.Version)
+	}
+	if cfg.APIVersion != "v2" {
+		t.Fatalf("expected API version override, got %q", cfg.APIVersion)
 	}
 	if cfg.LogPseudonymKey != "production-log-pseudonym-key" {
 		t.Fatalf("expected log pseudonym key override, got %q", cfg.LogPseudonymKey)
@@ -314,7 +328,8 @@ func validConfig() Config {
 	return Config{
 		Env:             "local",
 		ServiceName:     "netstamp-api",
-		Version:         "v1",
+		Version:         "0.1.0",
+		APIVersion:      "v1",
 		LogLevel:        "info",
 		LogPseudonymKey: "local-development-log-pseudonym-key-change-before-production",
 		ShutdownTimeout: 10 * time.Second,
