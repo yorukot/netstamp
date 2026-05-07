@@ -1,7 +1,10 @@
 import { Badge, Button, DataTable, Panel, type DataColumn } from "@netstamp/ui";
+import { ActionRow } from "../../../shared/components/ActionRow";
+import { KeyValueGrid } from "../../../shared/components/KeyValueGrid";
+import { PageStack } from "../../../shared/components/PageStack";
 import { ScreenHeader } from "../../../shared/components/ScreenHeader";
 import { alerts, toneForStatus, type AlertRecord } from "../../../shared/utils/mockData";
-import styles from "./ProductPages.module.css";
+import styles from "./AlertsPage.module.css";
 
 const alertColumns: DataColumn<AlertRecord>[] = [
 	{ key: "type", label: "Alert type" },
@@ -14,7 +17,7 @@ const alertColumns: DataColumn<AlertRecord>[] = [
 
 export function AlertsPage() {
 	return (
-		<section className={styles.screen}>
+		<PageStack>
 			<ScreenHeader eyebrow="Alerting" title="Alerts (TBD)" copy="Packet loss, latency, traceroute path change, DNS query errors, abnormal response codes, probe offline, and heartbeat expiry." />
 
 			<div className={styles.alertGrid}>
@@ -22,30 +25,20 @@ export function AlertsPage() {
 					<DataTable columns={alertColumns} rows={alerts} getRowKey={row => `${row.type}-${row.probe}`} />
 				</Panel>
 				<Panel tone="deep" eyebrow="Alert detail" title="packet loss threshold exceeded">
-					<div className={styles.keyValueGrid}>
-						<div>
-							<span>Affected probe</span>
-							<strong>nyc-vps-03</strong>
-						</div>
-						<div>
-							<span>Affected check</span>
-							<strong>api-latency</strong>
-						</div>
-						<div>
-							<span>Threshold</span>
-							<strong>loss &gt; 5% for 5m</strong>
-						</div>
-						<div>
-							<span>State</span>
-							<strong>active</strong>
-						</div>
-					</div>
-					<div className={styles.actionRow}>
+					<KeyValueGrid
+						items={[
+							{ label: "Affected probe", value: "nyc-vps-03" },
+							{ label: "Affected check", value: "api-latency" },
+							{ label: "Threshold", value: "loss > 5% for 5m" },
+							{ label: "State", value: "active" }
+						]}
+					/>
+					<ActionRow>
 						<Button variant="secondary">Open result history</Button>
 						<Button variant="danger">Silence 30m</Button>
-					</div>
+					</ActionRow>
 				</Panel>
 			</div>
-		</section>
+		</PageStack>
 	);
 }

@@ -1,0 +1,362 @@
+.backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: 50;
+	display: flex;
+	justify-content: flex-end;
+	background: rgba(3, 5, 7, 0.58);
+	backdrop-filter: blur(10px);
+	animation: drawerBackdropIn 180ms ease-out;
+}
+
+.backdropClosing {
+	pointer-events: none;
+	animation: drawerBackdropOut 180ms ease-in forwards;
+}
+
+.drawer {
+	width: min(42rem, 100%);
+	min-height: 100%;
+	overflow: auto;
+	padding: 1.25rem;
+	border-left: 1px solid var(--ns-border-faint);
+	background: linear-gradient(135deg, rgba(255, 122, 26, 0.14), transparent 28rem), #070a0f;
+	box-shadow: -2rem 0 4rem rgba(0, 0, 0, 0.42);
+	animation: drawerIn 180ms ease-out;
+}
+
+.drawerClosing {
+	animation: drawerOut 180ms ease-in forwards;
+}
+
+.header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-bottom: 1rem;
+}
+
+.header h2 {
+	margin: 0.75rem 0 0.5rem;
+	color: var(--ns-text);
+	font-family: var(--ns-font-display);
+	font-size: clamp(2rem, 8vw, 3.75rem);
+	line-height: 0.92;
+}
+
+.header p {
+	max-width: 30rem;
+	margin: 0;
+	color: var(--ns-text-muted);
+	line-height: 1.6;
+}
+
+.stepTimeline {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 0.625rem;
+	padding: 0;
+	margin: 0 0 1rem;
+	list-style: none;
+}
+
+.stepItem {
+	--cut: 0.5rem;
+	--frame-color: var(--ns-border-faint);
+	position: relative;
+	display: grid;
+	gap: 0.25rem;
+	min-width: 0;
+	padding: 0.75rem;
+	border: 1px solid var(--frame-color);
+	color: var(--ns-text-low);
+	background: #0c0f14;
+	clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+}
+
+.stepItem::before,
+.stepItem::after,
+.tagButton::before,
+.tagButton::after,
+.registrationBlock::before,
+.registrationBlock::after,
+.detectCard::before,
+.detectCard::after {
+	content: "";
+	position: absolute;
+	width: calc(var(--cut) * 1.41421356);
+	height: 1px;
+	background: var(--frame-color);
+	pointer-events: none;
+}
+
+.stepItem::before,
+.tagButton::before,
+.registrationBlock::before,
+.detectCard::before {
+	top: var(--cut);
+	left: 0;
+	transform: rotate(-45deg);
+	transform-origin: left center;
+}
+
+.stepItem::after,
+.tagButton::after,
+.registrationBlock::after,
+.detectCard::after {
+	right: 0;
+	bottom: var(--cut);
+	transform: rotate(-45deg);
+	transform-origin: right center;
+}
+
+.stepItem span,
+.stepItem small {
+	font-family: var(--ns-font-mono);
+	font-size: 0.625rem;
+	font-weight: 800;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+}
+
+.stepItem strong {
+	color: var(--ns-text-muted);
+	font-family: var(--ns-font-display);
+	font-size: 1rem;
+	line-height: 1;
+}
+
+.stepActive {
+	--frame-color: var(--ns-accent-border);
+	background: rgba(255, 122, 26, 0.12);
+	box-shadow: 0 0 1.25rem rgba(255, 122, 26, 0.12);
+}
+
+.stepActive span,
+.stepActive strong {
+	color: var(--ns-accent-hover);
+}
+
+.stepComplete {
+	--frame-color: rgba(48, 209, 88, 0.42);
+	background: rgba(48, 209, 88, 0.08);
+}
+
+.stepComplete span,
+.stepComplete strong {
+	color: var(--ns-success);
+}
+
+.workflowViewport {
+	overflow: hidden;
+}
+
+.workflowTrack {
+	display: flex;
+	transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+	will-change: transform;
+}
+
+.workflowPanel {
+	display: grid;
+	flex: 0 0 100%;
+	gap: 1rem;
+	align-content: start;
+	min-width: 0;
+	padding-right: 0.125rem;
+}
+
+.workflowPanel[aria-hidden="true"] {
+	pointer-events: none;
+}
+
+.stepCopy {
+	display: grid;
+	gap: 0.625rem;
+}
+
+.stepCopy h3 {
+	margin: 0;
+	color: var(--ns-text);
+	font-family: var(--ns-font-display);
+	font-size: clamp(1.75rem, 5vw, 3rem);
+	line-height: 0.95;
+}
+
+.stepCopy p,
+.detectCard p {
+	max-width: 34rem;
+	margin: 0;
+	color: var(--ns-text-muted);
+	line-height: 1.6;
+}
+
+.formGrid,
+.tagPicker,
+.registrationBlock {
+	display: grid;
+	gap: 1rem;
+}
+
+.fieldLabel {
+	color: var(--ns-text-muted);
+	font-family: var(--ns-font-mono);
+	font-size: 0.6875rem;
+	font-weight: 700;
+	letter-spacing: 0.11em;
+	line-height: 1.2;
+	text-transform: uppercase;
+}
+
+.tagCloud,
+.actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.625rem;
+	align-items: center;
+}
+
+.tagButton {
+	--cut: 0.375rem;
+	--frame-color: var(--ns-border-faint);
+	position: relative;
+	border: 1px solid var(--frame-color);
+	padding: 0.5rem 0.75rem;
+	color: var(--ns-text-muted);
+	background: #0c0f14;
+	font-family: var(--ns-font-mono);
+	font-size: 0.75rem;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	cursor: pointer;
+	clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+}
+
+.tagButton:hover,
+.tagSelected {
+	--frame-color: var(--ns-accent-border);
+	color: var(--ns-accent-hover);
+	background: rgba(255, 122, 26, 0.1);
+}
+
+.tagButton:disabled {
+	opacity: 0.48;
+	cursor: not-allowed;
+	pointer-events: none;
+}
+
+.tagCreate {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	gap: 0.75rem;
+	align-items: end;
+}
+
+.hint {
+	margin: 0;
+	color: var(--ns-text-low);
+	font-size: 0.8125rem;
+}
+
+.registrationBlock {
+	--cut: 0.75rem;
+	--frame-color: var(--ns-border-faint);
+	position: relative;
+	margin-top: 0.25rem;
+	padding: 1rem;
+	border: 1px solid var(--frame-color);
+	background: rgba(255, 255, 255, 0.025);
+	clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+}
+
+.tokenLine {
+	display: grid;
+	gap: 0.375rem;
+}
+
+.tokenLine span {
+	color: var(--ns-text-low);
+	font-family: var(--ns-font-mono);
+	font-size: 0.6875rem;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+}
+
+.tokenLine strong {
+	color: var(--ns-accent-hover);
+	font-family: var(--ns-font-mono);
+	font-size: 0.95rem;
+	font-weight: 800;
+}
+
+.detectCard {
+	--cut: 0.75rem;
+	--frame-color: rgba(255, 122, 26, 0.22);
+	position: relative;
+	display: grid;
+	gap: 0.625rem;
+	padding: 1rem;
+	border: 1px solid var(--frame-color);
+	background: linear-gradient(135deg, rgba(255, 122, 26, 0.12), transparent 16rem), #0c0f14;
+	clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+}
+
+.detectCard strong {
+	color: var(--ns-text);
+	font-family: var(--ns-font-display);
+	font-size: 1.25rem;
+	line-height: 1;
+}
+
+@keyframes drawerIn {
+	from {
+		transform: translateX(2rem);
+		opacity: 0;
+	}
+
+	to {
+		transform: translateX(0);
+		opacity: 1;
+	}
+}
+
+@keyframes drawerOut {
+	from {
+		transform: translateX(0);
+		opacity: 1;
+	}
+
+	to {
+		transform: translateX(2rem);
+		opacity: 0;
+	}
+}
+
+@keyframes drawerBackdropIn {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes drawerBackdropOut {
+	from {
+		opacity: 1;
+	}
+
+	to {
+		opacity: 0;
+	}
+}
+
+@media (max-width: 58rem) {
+	.tagCreate {
+		grid-template-columns: 1fr;
+	}
+}

@@ -1,8 +1,10 @@
 import { Button, Panel, TextField } from "@netstamp/ui";
 import type { FormEvent } from "react";
+import { ActionRow } from "../../../shared/components/ActionRow";
+import { PageStack } from "../../../shared/components/PageStack";
 import { ScreenHeader } from "../../../shared/components/ScreenHeader";
 import { currentUser } from "../../../shared/utils/mockData";
-import styles from "./ProductPages.module.css";
+import styles from "./SettingsPage.module.css";
 
 function handleSettingsSubmit(event: FormEvent<HTMLFormElement>) {
 	event.preventDefault();
@@ -10,7 +12,7 @@ function handleSettingsSubmit(event: FormEvent<HTMLFormElement>) {
 
 export function SettingsPage() {
 	return (
-		<section className={styles.screen}>
+		<PageStack>
 			<ScreenHeader eyebrow="User settings" title="Account" copy="Set your username, rotate the login email, and change the password used for controller access." />
 
 			<div className={styles.settingsGrid}>
@@ -18,9 +20,9 @@ export function SettingsPage() {
 					<form id="username-settings" className={styles.settingsForm} onSubmit={handleSettingsSubmit}>
 						<TextField label="Display name" name="name" defaultValue={currentUser.name} />
 						<TextField label="Username" name="username" defaultValue={currentUser.username} helper="Used in audit events and probe ownership trails." />
-						<div className={styles.actionRow}>
+						<ActionRow>
 							<Button type="submit">Save username</Button>
-						</div>
+						</ActionRow>
 					</form>
 				</Panel>
 
@@ -44,9 +46,9 @@ export function SettingsPage() {
 						<TextField label="Current email" name="current-email" type="email" defaultValue={currentUser.email} />
 						<TextField label="New email" name="new-email" type="email" placeholder="operator@example.com" />
 						<TextField label="Confirm password" name="email-password" type="password" autoComplete="current-password" />
-						<div className={styles.actionRow}>
+						<ActionRow>
 							<Button type="submit">Update email</Button>
-						</div>
+						</ActionRow>
 					</form>
 				</Panel>
 
@@ -55,12 +57,12 @@ export function SettingsPage() {
 						<TextField label="Current password" name="current-password" type="password" autoComplete="current-password" />
 						<TextField label="New password" name="new-password" type="password" autoComplete="new-password" />
 						<TextField label="Confirm new password" name="confirm-password" type="password" autoComplete="new-password" helper="Use at least 12 characters for production accounts." />
-						<div className={styles.actionRow}>
+						<ActionRow>
 							<Button type="submit">Change password</Button>
-						</div>
+						</ActionRow>
 					</form>
 				</Panel>
 			</div>
-		</section>
+		</PageStack>
 	);
 }

@@ -1,0 +1,109 @@
+.header {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 1rem;
+	min-width: 0;
+}
+
+.header h1 {
+	margin: 0.55rem 0 0;
+	color: #ffffff;
+	font-family: var(--ns-font-display);
+	font-size: clamp(3rem, 7vw, 5.75rem);
+	font-weight: 900;
+	letter-spacing: -0.055em;
+	line-height: 0.86;
+}
+
+.kicker {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.625rem;
+	color: var(--ns-text-muted);
+	font-family: var(--ns-font-mono);
+	font-size: 0.6875rem;
+	font-weight: 800;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+}
+
+.kicker::before {
+	content: "";
+	width: 0.75rem;
+	height: 0.75rem;
+	background: currentColor;
+}
+
+.kickerNeutral {
+	color: #f3f3f3;
+}
+
+.kickerAccent {
+	color: var(--ns-accent);
+}
+
+.actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.875rem;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+.createButton {
+	--ns-frame-color: #f5f5f5;
+	min-width: 8.75rem;
+	color: #030406;
+	background: #f5f5f5;
+	box-shadow: none;
+}
+
+.createButton:hover {
+	--ns-frame-color: #ffffff;
+	color: #000000;
+	background: #ffffff;
+	box-shadow: 0 0 1.25rem rgba(255, 255, 255, 0.16);
+}
+
+.overlay {
+	position: absolute;
+	z-index: 3;
+	top: 0;
+	left: 0;
+	right: 0;
+	align-items: flex-start;
+	padding: 3rem 1.5rem 0;
+	pointer-events: none;
+}
+
+.overlay .actions {
+	pointer-events: auto;
+}
+
+@media (max-width: 58rem) {
+	.header {
+		display: grid;
+		align-items: start;
+	}
+
+	.actions {
+		justify-content: flex-start;
+	}
+
+	.overlay {
+		padding: 1.5rem 1rem 0;
+	}
+}
+
+@media (max-width: 38rem) {
+	.header h1 {
+		font-size: clamp(2.5rem, 18vw, 4rem);
+	}
+
+	.overlay {
+		position: relative;
+		padding: 1rem;
+		background: rgba(0, 0, 0, 0.74);
+	}
+}

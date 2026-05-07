@@ -1,8 +1,9 @@
 import { Badge, Button, MetricCard, Panel, type BadgeTone } from "@netstamp/ui";
 import { FleetMatrix } from "../../../shared/components/FleetMatrix";
+import { PageStack } from "../../../shared/components/PageStack";
 import { ScreenHeader } from "../../../shared/components/ScreenHeader";
 import { type Navigate } from "../../../shared/utils/mockData";
-import styles from "./ProductPages.module.css";
+import styles from "./DashboardPage.module.css";
 
 interface DashboardPageProps {
 	navigate: Navigate;
@@ -10,7 +11,7 @@ interface DashboardPageProps {
 
 export function DashboardPage({ navigate }: DashboardPageProps) {
 	return (
-		<section className={styles.screen}>
+		<PageStack>
 			<ScreenHeader
 				eyebrow="Controller overview"
 				title="Dashboard"
@@ -25,7 +26,7 @@ export function DashboardPage({ navigate }: DashboardPageProps) {
 				}
 			/>
 
-			<div className={styles.metricsGridTwo}>
+			<div className={styles.metricsGrid}>
 				<MetricCard label="Probes Online" value="100/128" detail="fleet" tone="success" />
 				<MetricCard label="Active Checks" value="324" detail="scheduled" tone="accent" />
 			</div>
@@ -42,7 +43,7 @@ export function DashboardPage({ navigate }: DashboardPageProps) {
 					</div>
 				</Panel>
 			</div>
-		</section>
+		</PageStack>
 	);
 }
 

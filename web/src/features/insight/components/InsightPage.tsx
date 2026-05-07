@@ -1,10 +1,12 @@
 import { Badge, DataTable, Panel, SelectField, type DataColumn } from "@netstamp/ui";
 import { useState } from "react";
 import { ChartPanel } from "../../../shared/components/ChartPanel";
+import { KeyValueGrid } from "../../../shared/components/KeyValueGrid";
+import { PageStack } from "../../../shared/components/PageStack";
 import { ScreenHeader } from "../../../shared/components/ScreenHeader";
 import { lineChartOption } from "../../../shared/utils/chartOptions";
 import { assignments, checks, dnsData, latencyData, probes, results, routeDiffData, toneForStatus, type CheckDefinition, type Probe } from "../../../shared/utils/mockData";
-import styles from "./ProductPages.module.css";
+import styles from "./InsightPage.module.css";
 
 type InsightView = "probe" | "target";
 
@@ -141,7 +143,7 @@ export function InsightPage() {
 				}));
 
 	return (
-		<section className={styles.screen}>
+		<PageStack>
 			<ScreenHeader eyebrow="Measurement insight" title="Insight" copy="Pick a time window, then switch between probe-first and target-first views to compare every matching measurement graph." />
 
 			<div className={styles.filters}>
@@ -164,14 +166,7 @@ export function InsightPage() {
 
 			<div className={styles.insightColumns}>
 				<Panel tone="glass" eyebrow={view === "probe" ? "Probe" : "Target"} title={selectedTitle}>
-					<div className={styles.entityDetailGrid}>
-						{selectedDetails.map(detail => (
-							<div key={detail.label}>
-								<span>{detail.label}</span>
-								<strong>{detail.value}</strong>
-							</div>
-						))}
-					</div>
+					<KeyValueGrid items={selectedDetails} />
 				</Panel>
 				<Panel tone="glass" eyebrow={view === "probe" ? "Targets" : "Probes"} title={view === "probe" ? "Target list" : "Probe list"}>
 					<div className={styles.entityList}>
@@ -194,9 +189,9 @@ export function InsightPage() {
 				))}
 			</div>
 
-			<Panel className={styles.wide} tone="glass" eyebrow="Measurement table" title="Recent measurements">
+			<Panel tone="glass" eyebrow="Measurement table" title="Recent measurements">
 				<DataTable columns={resultColumns} rows={resultRows} />
 			</Panel>
-		</section>
+		</PageStack>
 	);
 }

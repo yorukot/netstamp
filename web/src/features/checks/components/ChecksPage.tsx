@@ -1,8 +1,10 @@
 import { Badge, Button, DataTable, Panel, SelectField, TextField, type DataColumn } from "@netstamp/ui";
 import { useState } from "react";
+import { ActionRow } from "../../../shared/components/ActionRow";
+import { PageStack } from "../../../shared/components/PageStack";
 import { ScreenHeader } from "../../../shared/components/ScreenHeader";
 import { assignments, checks, probes, results, toneForStatus, type CheckDefinition, type CheckType } from "../../../shared/utils/mockData";
-import styles from "./ProductPages.module.css";
+import styles from "./ChecksPage.module.css";
 
 interface LogRow {
 	time: string;
@@ -115,7 +117,7 @@ export function ChecksPage() {
 	}
 
 	return (
-		<section className={styles.screen}>
+		<PageStack>
 			<ScreenHeader
 				eyebrow="Check management"
 				title="Checks"
@@ -181,7 +183,7 @@ export function ChecksPage() {
 						</div>
 
 						<div className={styles.probeMultiSelect}>
-							<span className={styles.drawerFieldLabel}>Assign probes</span>
+							<span className={styles.fieldLabel}>Assign probes</span>
 							<details>
 								<summary>{displayProbeSelection(selectedProbes)}</summary>
 								<div className={styles.probeOptionList}>
@@ -203,15 +205,15 @@ export function ChecksPage() {
 							</div>
 						</div>
 
-						<div className={styles.actionRow}>
+						<ActionRow>
 							<Button>Save check</Button>
 							<Button variant="outline">Run now</Button>
-						</div>
+						</ActionRow>
 
 						<DataTable columns={logColumns} rows={selectedLogs} />
 					</div>
 				</Panel>
 			</div>
-		</section>
+		</PageStack>
 	);
 }

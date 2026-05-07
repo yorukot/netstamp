@@ -1,0 +1,75 @@
+.orgInfoGrid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(12rem, 18rem));
+	gap: 1rem;
+	max-width: 38rem;
+	margin-bottom: 1rem;
+}
+
+.formGridThree {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 1rem;
+	align-items: end;
+	margin-bottom: 1rem;
+}
+
+.dangerZoneGrid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1rem;
+}
+
+.dangerZoneGrid article {
+	--ns-frame-color: rgba(255, 69, 58, 0.28);
+	position: relative;
+	display: grid;
+	gap: 0.875rem;
+	align-content: start;
+	padding: 1rem;
+	border: 1px solid transparent;
+	background: rgba(255, 69, 58, 0.06);
+	clip-path: polygon(0.75rem 0, 100% 0, 100% calc(100% - 0.75rem), calc(100% - 0.75rem) 100%, 0 100%, 0 0.75rem);
+}
+
+.dangerZoneGrid article::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	padding: 1px;
+	background: var(--ns-frame-color);
+	clip-path: inherit;
+	pointer-events: none;
+	mask:
+		linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	mask-composite: exclude;
+	-webkit-mask:
+		linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+}
+
+.dangerZoneGrid h3 {
+	margin: 0;
+	color: var(--ns-text);
+	font-family: var(--ns-font-display);
+	font-size: 1.15rem;
+	line-height: 1;
+}
+
+.warningCopy {
+	margin: 0;
+	color: var(--ns-text-subtle);
+	font-size: 0.875rem;
+	line-height: 1.6;
+}
+
+@media (max-width: 58rem) {
+	.orgInfoGrid,
+	.formGridThree,
+	.dangerZoneGrid {
+		grid-template-columns: 1fr;
+	}
+}

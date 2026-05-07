@@ -1,8 +1,9 @@
 import { Button, DataTable, Panel, SelectField, TextField, type DataColumn } from "@netstamp/ui";
-import { useState } from "react";
+import { PageStack } from "../../../shared/components/PageStack";
 import { ScreenHeader } from "../../../shared/components/ScreenHeader";
 import { members } from "../../../shared/utils/mockData";
-import styles from "./ProductPages.module.css";
+import { RoleSelect } from "./RoleSelect";
+import styles from "./TeamPage.module.css";
 
 interface MemberRow {
 	name: string;
@@ -15,7 +16,7 @@ const memberRows: MemberRow[] = members.map(([name, email, role, lastActive]) =>
 const memberColumns: DataColumn<MemberRow>[] = [
 	{ key: "name", label: "Name" },
 	{ key: "email", label: "Email" },
-	{ key: "role", label: "Role", render: row => <RoleDropdown role={row.role} name={row.name} /> },
+	{ key: "role", label: "Role", render: row => <RoleSelect role={row.role} name={row.name} /> },
 	{ key: "lastActive", label: "Last active" },
 	{
 		key: "delete",
@@ -28,30 +29,9 @@ const memberColumns: DataColumn<MemberRow>[] = [
 	}
 ];
 
-interface RoleDropdownProps {
-	role: string;
-	name: string;
-}
-
-function RoleDropdown({ role, name }: RoleDropdownProps) {
-	const [selectedRole, setSelectedRole] = useState(role.toLowerCase());
-	const roleClass = styles[`roleSelect_${selectedRole}` as keyof typeof styles] || styles.roleSelect_member;
-
-	return (
-		<span className={[styles.roleSelectFrame, roleClass].filter(Boolean).join(" ")}>
-			<select className={styles.roleSelect} value={selectedRole} aria-label={`Change role for ${name}`} onChange={event => setSelectedRole(event.currentTarget.value)}>
-				<option value="owner">Owner</option>
-				<option value="admin">Admin</option>
-				<option value="member">Member</option>
-				<option value="viewer">Viewer</option>
-			</select>
-		</span>
-	);
-}
-
 export function TeamPage() {
 	return (
-		<section className={styles.screen}>
+		<PageStack>
 			<ScreenHeader eyebrow="Team settings" title="Team" copy="Organization profile, member management, and destructive organization actions." />
 
 			<Panel tone="glass" eyebrow="Organization" title="Org info">
@@ -93,6 +73,6 @@ export function TeamPage() {
 					</article>
 				</div>
 			</Panel>
-		</section>
+		</PageStack>
 	);
 }

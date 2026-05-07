@@ -1,0 +1,165 @@
+.checkEditorGrid {
+	display: grid;
+	grid-template-columns: minmax(0, 1.05fr) minmax(24rem, 0.95fr);
+	gap: 1rem;
+	align-items: start;
+}
+
+.stickyCheckPanel {
+	position: sticky;
+	top: 1rem;
+	max-height: calc(100svh - 2rem);
+}
+
+.checkListStack,
+.checkEditorStack {
+	display: grid;
+	gap: 1rem;
+	min-height: 0;
+	padding-right: 0.35rem;
+	overscroll-behavior: contain;
+}
+
+.checkEditorStack {
+	align-content: start;
+	max-height: calc(100svh - 9rem);
+	overflow-y: auto;
+	overflow-x: visible;
+}
+
+.checkEditorStack::-webkit-scrollbar {
+	width: 0.5rem;
+	height: 0.5rem;
+}
+
+.checkEditorStack::-webkit-scrollbar-track {
+	background: rgba(255, 255, 255, 0.04);
+}
+
+.checkEditorStack::-webkit-scrollbar-thumb {
+	background: var(--ns-border-strong);
+}
+
+.checkEditorStack::-webkit-scrollbar-thumb:hover {
+	background: var(--ns-accent-border);
+}
+
+.checkListFilters {
+	display: grid;
+	grid-template-columns: minmax(16rem, 1fr) repeat(2, minmax(9rem, 0.45fr));
+	gap: 1rem;
+}
+
+.checkEditForm,
+.probeMultiSelect {
+	display: grid;
+	gap: 1rem;
+}
+
+.checkEditForm {
+	display: flex;
+	flex-wrap: wrap;
+	margin-bottom: 1rem;
+}
+
+.checkEditForm > * {
+	flex: 1 1 14rem;
+	min-width: 0;
+}
+
+.fieldLabel {
+	color: var(--ns-text-muted);
+	font-family: var(--ns-font-mono);
+	font-size: 0.6875rem;
+	font-weight: 700;
+	letter-spacing: 0.11em;
+	line-height: 1.2;
+	text-transform: uppercase;
+}
+
+.probeMultiSelect details {
+	position: relative;
+}
+
+.probeMultiSelect summary {
+	min-height: 2.75rem;
+	padding: 0.75rem 2.25rem 0.75rem 0.875rem;
+	border: 1px solid var(--ns-border-faint);
+	color: var(--ns-text);
+	background:
+		linear-gradient(45deg, transparent 50%, var(--ns-accent-hover) 50%) calc(100% - 1.18rem) 50% / 0.42rem 0.42rem no-repeat,
+		linear-gradient(135deg, var(--ns-accent-hover) 50%, transparent 50%) calc(100% - 0.9rem) 50% / 0.42rem 0.42rem no-repeat,
+		#05070a;
+	font-family: var(--ns-font-mono);
+	font-size: 0.875rem;
+	cursor: pointer;
+	list-style: none;
+	clip-path: polygon(0.5rem 0, 100% 0, 100% calc(100% - 0.5rem), calc(100% - 0.5rem) 100%, 0 100%, 0 0.5rem);
+}
+
+.probeMultiSelect summary::-webkit-details-marker {
+	display: none;
+}
+
+.probeOptionList {
+	position: absolute;
+	z-index: 20;
+	top: calc(100% + 0.5rem);
+	left: 0;
+	right: 0;
+	display: grid;
+	max-height: 18rem;
+	overflow: auto;
+	border: 1px solid var(--ns-border);
+	background: #070a0f;
+	box-shadow: var(--ns-shadow-md);
+}
+
+.probeOptionList label {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.1fr);
+	gap: 0.75rem;
+	align-items: center;
+	padding: 0.75rem;
+	border-bottom: 1px solid var(--ns-border-faint);
+	cursor: pointer;
+}
+
+.probeOptionList label:hover {
+	background: rgba(255, 122, 26, 0.08);
+}
+
+.probeOptionList input {
+	accent-color: var(--ns-accent);
+}
+
+.probeOptionList span {
+	color: var(--ns-text);
+	font-family: var(--ns-font-mono);
+	font-size: 0.8125rem;
+	font-weight: 700;
+}
+
+.probeOptionList small {
+	color: var(--ns-text-low);
+	font-size: 0.75rem;
+}
+
+.capabilityPills {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	margin: 1rem 0;
+}
+
+@media (max-width: 78rem) {
+	.checkEditorGrid {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 58rem) {
+	.checkListFilters {
+		grid-template-columns: 1fr;
+	}
+}

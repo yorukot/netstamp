@@ -1,0 +1,228 @@
+.card {
+	display: grid;
+	align-content: start;
+	gap: 1.25rem;
+	min-width: 0;
+	padding: 1.35rem;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	background: #181818;
+	box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.34);
+}
+
+.floating {
+	position: absolute;
+	right: 1.5rem;
+	bottom: 1.5rem;
+	z-index: 3;
+	width: min(36rem, calc(100% - 3rem));
+	background: rgba(20, 20, 20, 0.96);
+	backdrop-filter: blur(8px);
+}
+
+.header {
+	display: grid;
+	gap: 0.5rem;
+}
+
+.header > span {
+	color: #ffffff;
+	font-family: var(--ns-font-mono);
+	font-size: 0.8125rem;
+	letter-spacing: 0.08em;
+}
+
+.header strong {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	color: var(--ns-accent);
+	font-family: var(--ns-font-mono);
+	font-size: 0.8125rem;
+	font-weight: 800;
+	letter-spacing: 0.04em;
+}
+
+.header strong::before {
+	content: "";
+	width: 0.45rem;
+	height: 0.45rem;
+	background: var(--ns-accent);
+}
+
+.header small {
+	color: var(--ns-text-low);
+	font-size: 0.75rem;
+	font-weight: 700;
+	letter-spacing: 0;
+}
+
+.fieldGrid {
+	display: grid;
+	grid-template-columns: minmax(8rem, 0.7fr) minmax(10rem, 1.25fr) minmax(7rem, 0.56fr);
+	gap: 1rem;
+	align-items: start;
+}
+
+.inputWithMode {
+	display: grid;
+	gap: 0.45rem;
+	min-width: 0;
+}
+
+.input {
+	min-height: 2rem;
+	padding: 0.42rem 0.75rem;
+	background: #111111;
+	font-family: var(--ns-font-mono);
+	font-size: 0.8125rem;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	line-height: 1;
+}
+
+.input:disabled {
+	color: var(--ns-text-low);
+	background: #090909;
+	cursor: not-allowed;
+	opacity: 0.72;
+}
+
+.modeButton {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	width: max-content;
+	border: 0;
+	padding: 0.15rem 0.36rem;
+	color: #111111;
+	background: #bfbfbf;
+	font-family: var(--ns-font-mono);
+	font-size: 0.5625rem;
+	font-weight: 800;
+	letter-spacing: 0.12em;
+	line-height: 1;
+	text-transform: capitalize;
+}
+
+.modeButton::before {
+	content: "";
+	width: 0.35rem;
+	height: 0.35rem;
+	background: var(--ns-accent);
+}
+
+.modeButton:hover {
+	box-shadow: 0 0 0 0.1875rem rgba(255, 255, 255, 0.08);
+}
+
+.modeButton:focus-visible {
+	outline: 2px solid var(--ns-accent);
+	outline-offset: 2px;
+}
+
+.modeButtonManual::before {
+	background: #ff4d63;
+}
+
+.modeButtonAuto::before {
+	background: #61ff7f;
+}
+
+.tableWrap {
+	max-height: 11.75rem;
+	overflow: auto;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	overscroll-behavior: contain;
+}
+
+.tableWrap::-webkit-scrollbar {
+	width: 0.45rem;
+	height: 0.45rem;
+}
+
+.tableWrap::-webkit-scrollbar-track {
+	background: rgba(255, 255, 255, 0.04);
+}
+
+.tableWrap::-webkit-scrollbar-thumb {
+	background: rgba(255, 255, 255, 0.28);
+}
+
+.tableWrap::-webkit-scrollbar-thumb:hover {
+	background: rgba(255, 122, 26, 0.66);
+}
+
+.table {
+	width: 100%;
+	min-width: 31rem;
+	border-collapse: collapse;
+	color: #ffffff;
+	font-family: var(--ns-font-mono);
+	font-size: 0.6875rem;
+}
+
+.table th {
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	padding: 0.6rem 0.65rem;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+	color: #ffffff;
+	background: #070707;
+	font-size: 0.5625rem;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-align: left;
+	white-space: nowrap;
+}
+
+.table td {
+	padding: 0.6rem 0.65rem;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+	white-space: nowrap;
+}
+
+.table tr:last-child td {
+	border-bottom: 0;
+}
+
+.checkType {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	border: 1px solid rgba(255, 255, 255, 0.32);
+	padding: 0.125rem 0.35rem;
+	color: #ffffff;
+	background: #181818;
+	line-height: 1;
+}
+
+.checkType > span {
+	width: 0.4rem;
+	height: 0.4rem;
+	background: #ffffff;
+}
+
+@media (max-width: 78rem) {
+	.fieldGrid {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 58rem) {
+	.floating {
+		right: 1rem;
+		bottom: 1rem;
+		width: min(36rem, calc(100% - 2rem));
+	}
+}
+
+@media (max-width: 38rem) {
+	.floating {
+		position: relative;
+		right: auto;
+		bottom: auto;
+		width: auto;
+		margin: 1rem;
+	}
+}
