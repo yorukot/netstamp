@@ -9,7 +9,7 @@ export interface BadgeProps extends ComponentPropsWithoutRef<"span"> {
 }
 
 export function Badge({ tone = "neutral", dot = true, className, children, ...props }: BadgeProps) {
-	const classes = ["ns-cut-frame", styles.badge, styles[tone], className].filter(Boolean).join(" ");
+	const classes = [styles.badge, styles[tone], className].filter(Boolean).join(" ");
 
 	return (
 		<span className={classes} {...props}>

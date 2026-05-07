@@ -1,4 +1,4 @@
-import { Badge, Button, DataTable, Surface, TextField, type DataColumn } from "@netstamp/ui";
+import { Badge, Checkbox, DataTable, Surface, TextField, type DataColumn } from "@netstamp/ui";
 import { useState } from "react";
 import { classNames } from "../../../shared/utils/classNames";
 import type { Probe } from "../../../shared/utils/mockData";
@@ -70,11 +70,11 @@ export function ProbeDetail({ probe, assignedRows, floating = false }: ProbeDeta
 						disabled={locationMode === "auto"}
 						onChange={event => setProbeLocation(event.currentTarget.value)}
 					/>
-					<ModeToggle mode={locationMode} label="location detect mode" onClick={toggleLocationMode} />
+					<ModeToggle mode={locationMode} label="location detect mode" onToggle={toggleLocationMode} />
 				</div>
 				<div className={styles.inputWithMode}>
 					<TextField className={styles.input} label="AS" value={probeAsn} disabled={asMode === "auto"} onChange={event => setProbeAsn(event.currentTarget.value)} />
-					<ModeToggle mode={asMode} label="AS detect mode" onClick={toggleAsMode} />
+					<ModeToggle mode={asMode} label="AS detect mode" onToggle={toggleAsMode} />
 				</div>
 			</div>
 
@@ -94,16 +94,19 @@ export function ProbeDetail({ probe, assignedRows, floating = false }: ProbeDeta
 interface ModeToggleProps {
 	mode: DetectionMode;
 	label: string;
-	onClick: () => void;
+	onToggle: () => void;
 }
 
-function ModeToggle({ mode, label, onClick }: ModeToggleProps) {
-	const modeClass = mode === "manual" ? styles.modeButtonManual : styles.modeButtonAuto;
+function ModeToggle({ mode, label, onToggle }: ModeToggleProps) {
+	const modeClass = mode === "manual" ? styles.modeToggleManual : styles.modeToggleAuto;
 
 	return (
-		<Button variant="plain" className={classNames(styles.modeButton, modeClass)} type="button" aria-label={label} aria-pressed={mode === "auto"} onClick={onClick}>
-			<span className={styles.modeDot} aria-hidden="true" />
-			{mode}
-		</Button>
+		<label className={classNames(styles.modeToggle, modeClass)}>
+			<Checkbox className={styles.modeInput} checked={mode === "auto"} aria-label={label} onChange={onToggle} />
+			<span className={styles.modePill}>
+				<span className={styles.modeDot} aria-hidden="true" />
+				<span>{mode}</span>
+			</span>
+		</label>
 	);
 }

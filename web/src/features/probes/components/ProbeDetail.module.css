@@ -82,11 +82,26 @@
 	opacity: 0.72;
 }
 
-.modeButton {
+.modeToggle {
+	display: inline-flex;
+	width: max-content;
+	cursor: pointer;
+}
+
+.modeToggle .modeInput {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.modePill {
 	display: inline-flex;
 	align-items: center;
 	gap: 0.25rem;
-	width: max-content;
 	border: 0;
 	padding: 0.15rem 0.36rem;
 	color: #111111;
@@ -97,6 +112,9 @@
 	letter-spacing: 0.12em;
 	line-height: 1;
 	text-transform: capitalize;
+	transition:
+		box-shadow var(--ns-transition),
+		background var(--ns-transition);
 }
 
 .modeDot {
@@ -105,20 +123,20 @@
 	background: var(--ns-accent);
 }
 
-.modeButton:hover {
+.modeToggle:hover .modePill {
 	box-shadow: 0 0 0 0.1875rem rgba(255, 255, 255, 0.08);
 }
 
-.modeButton:focus-visible {
+.modeInput:focus-visible + .modePill {
 	outline: 2px solid var(--ns-accent);
 	outline-offset: 2px;
 }
 
-.modeButtonManual .modeDot {
+.modeToggleManual .modeDot {
 	background: #ff4d63;
 }
 
-.modeButtonAuto .modeDot {
+.modeToggleAuto .modeDot {
 	background: #61ff7f;
 }
 

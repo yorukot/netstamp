@@ -7,10 +7,10 @@
 }
 
 .header h1 {
-	margin: 0.55rem 0 0;
+	margin: 0.55rem 0 .2rem;
 	color: #ffffff;
 	font-family: var(--ns-font-display);
-	font-size: clamp(3rem, 7vw, 5.75rem);
+	font-size: clamp(3rem, 7vw, 5rem);
 	font-weight: 900;
 	letter-spacing: -0.055em;
 	line-height: 0.86;
