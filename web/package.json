@@ -11,6 +11,7 @@
 		"typecheck": "tsc -p tsconfig.json --noEmit"
 	},
 	"dependencies": {
+		"@netstamp/brand": "workspace:*",
 		"@netstamp/ui": "workspace:*",
 		"@phosphor-icons/react": "^2.1.10",
 		"echarts": "^6.0.0",

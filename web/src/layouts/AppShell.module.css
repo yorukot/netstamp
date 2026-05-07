@@ -38,12 +38,7 @@
 	color: var(--ns-text);
 	background: transparent;
 	border: 1px solid transparent;
-	font-family: var(--ns-font-display);
-	font-size: 1rem;
-	font-weight: 800;
-	letter-spacing: 0.02em;
 	text-decoration: none;
-	text-transform: uppercase;
 }
 
 .brand:hover {
@@ -51,18 +46,12 @@
 	background: rgba(255, 122, 26, 0.12);
 }
 
-.mark {
-	--ns-frame-color: var(--ns-accent-border);
-	position: relative;
-	width: 2rem;
-	height: 2rem;
-	border: 1px solid transparent;
-	background: #101217;
-	box-shadow: var(--ns-shadow-glow);
-	clip-path: polygon(0.5rem 0, 100% 0, 100% calc(100% - 0.5rem), calc(100% - 0.5rem) 100%, 0 100%, 0 0.5rem);
+.brandLogo {
+	display: block;
+	width: 11.25rem;
+	height: auto;
 }
 
-.mark::before,
 .teamFrame::before,
 .nav a::before,
 .userCard::before,
@@ -84,24 +73,6 @@
 		linear-gradient(#000 0 0);
 	-webkit-mask-composite: xor;
 }
-
-.mark::after {
-	content: "";
-	position: absolute;
-	inset: 0.5rem;
-	border: 1px solid var(--ns-accent);
-	transform: rotate(45deg);
-}
-
-.mark::after {
-	z-index: 1;
-}
-
-.mark::after {
-	inset: 0.75rem;
-	background: var(--ns-accent);
-}
-
 .teamSelect {
 	display: grid;
 	gap: 0.5rem;

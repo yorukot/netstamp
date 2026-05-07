@@ -27,40 +27,10 @@
 }
 
 .brandMark {
-	--ns-frame-color: var(--ns-border);
-	position: relative;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
+	display: block;
+	flex: 0 0 auto;
 	width: 2rem;
 	height: 2rem;
-	color: var(--ns-accent-hover);
-	border: 1px solid var(--ns-frame-color);
-	background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent), #0d0d12;
-	background-size:
-		100% 100%,
-		100% 100%;
-	box-shadow: var(--ns-shadow-sm);
-	clip-path: polygon(var(--ns-cut-sm) 0, 100% 0, 100% calc(100% - var(--ns-cut-sm)), calc(100% - var(--ns-cut-sm)) 100%, 0 100%, 0 var(--ns-cut-sm));
-}
-
-.brandMark::before {
-	content: "";
-	position: absolute;
-	inset: 0;
-	z-index: 2;
-	padding: 1px;
-	background: var(--ns-frame-color, var(--ns-border));
-	clip-path: inherit;
-	pointer-events: none;
-	mask:
-		linear-gradient(#000 0 0) content-box,
-		linear-gradient(#000 0 0);
-	mask-composite: exclude;
-	-webkit-mask:
-		linear-gradient(#000 0 0) content-box,
-		linear-gradient(#000 0 0);
-	-webkit-mask-composite: xor;
 }
 
 .footerBrand {

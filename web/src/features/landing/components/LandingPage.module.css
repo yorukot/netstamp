@@ -61,12 +61,13 @@
 	color: var(--ns-text);
 	background: transparent;
 	border: 0;
-	font-family: var(--ns-font-display);
-	font-size: 1rem;
-	font-weight: 800;
-	letter-spacing: 0.04em;
-	text-transform: uppercase;
 	cursor: pointer;
+}
+
+.brandLogo {
+	display: block;
+	width: clamp(9rem, 15vw, 11.25rem);
+	height: auto;
 }
 
 .brand:focus-visible,
@@ -75,14 +76,12 @@
 	outline-offset: 0.25rem;
 }
 
-.brandMark,
 .cardIcon {
 	--ns-frame-color: var(--ns-border);
 	position: relative;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	color: var(--ns-accent-hover);
 	border: 1px solid var(--ns-frame-color);
 	background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent), #0d0d12;
 	background-size:
@@ -91,15 +90,8 @@
 	box-shadow: var(--ns-shadow-sm);
 	clip-path: polygon(var(--ns-cut-sm) 0, 100% 0, 100% calc(100% - var(--ns-cut-sm)), calc(100% - var(--ns-cut-sm)) 100%, 0 100%, 0 var(--ns-cut-sm));
 }
-
-.brandMark {
-	width: 2rem;
-	height: 2rem;
-}
-
 /* Chamfered border overlay — only on small, icon-sized elements where
    there is no text content sitting beneath the pseudo-element */
-.brandMark::before,
 .heroTelemetry::before,
 .cardIcon::before,
 .checkGrid strong::before {

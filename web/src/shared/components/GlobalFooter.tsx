@@ -1,5 +1,5 @@
+import netstampMark from "@netstamp/brand/assets/netstamp-mark-light.svg";
 import { GithubLogoIcon } from "@phosphor-icons/react/dist/csr/GithubLogo";
-import { NetworkIcon } from "@phosphor-icons/react/dist/csr/Network";
 import { StarIcon } from "@phosphor-icons/react/dist/csr/Star";
 import { Link } from "react-router-dom";
 import { pathForRoute } from "../../routes/routePaths";
@@ -20,9 +20,7 @@ export function GlobalFooter({ variant = "full", className }: GlobalFooterProps)
 			{variant === "full" ? (
 				<div className={styles.footerGrid}>
 					<div className={styles.footerBrand}>
-						<span className={styles.brandMark} aria-hidden="true">
-							<NetworkIcon size={18} weight="bold" />
-						</span>
+						<img className={styles.brandMark} src={netstampMark} alt="" aria-hidden="true" />
 						<div>
 							<strong>Netstamp</strong>
 							<p>Open-source network measurement from probes you control.</p>

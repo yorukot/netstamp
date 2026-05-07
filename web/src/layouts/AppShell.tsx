@@ -1,3 +1,4 @@
+import netstampLogo from "@netstamp/brand/assets/netstamp-logo-light.svg";
 import { Button } from "@netstamp/ui";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { pathForRoute } from "../routes/routePaths";
@@ -10,8 +11,7 @@ export function AppShell() {
 		<div className={styles.shell}>
 			<aside className={styles.sidebar}>
 				<Link className={styles.brand} to={pathForRoute("landing")}>
-					<span className={styles.mark} aria-hidden="true" />
-					<span>Netstamp</span>
+					<img className={styles.brandLogo} src={netstampLogo} alt="Netstamp" />
 				</Link>
 
 				<label className={styles.teamSelect}>

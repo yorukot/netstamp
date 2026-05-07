@@ -1,5 +1,14 @@
+import netstampFavicon from "@netstamp/brand/assets/netstamp-favicon.svg";
+import { Helmet } from "react-helmet-async";
 import { AppRouter } from "./routes/AppRouter";
 
 export default function App() {
-	return <AppRouter />;
+	return (
+		<>
+			<Helmet>
+				<link rel="icon" type="image/svg+xml" href={netstampFavicon} />
+			</Helmet>
+			<AppRouter />
+		</>
+	);
 }

@@ -1,3 +1,4 @@
+import netstampLogo from "@netstamp/brand/assets/netstamp-logo-light.svg";
 import { Badge, Button } from "@netstamp/ui";
 import { ArrowUpRightIcon } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
 import { CheckCircleIcon } from "@phosphor-icons/react/dist/csr/CheckCircle";
@@ -121,10 +122,7 @@ export function LandingPage({ navigate }: LandingPageProps) {
 
 			<nav className={styles.nav}>
 				<button type="button" className={styles.brand} onClick={() => navigate("landing")}>
-					<span className={styles.brandMark} aria-hidden="true">
-						<NetworkIcon size={18} weight="bold" />
-					</span>
-					<span>Netstamp</span>
+					<img className={styles.brandLogo} src={netstampLogo} alt="Netstamp" />
 				</button>
 
 				<div className={styles.navActions}>
