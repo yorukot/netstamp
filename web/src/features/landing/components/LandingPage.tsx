@@ -11,7 +11,6 @@ import { GlobeHemisphereWestIcon } from "@phosphor-icons/react/dist/csr/GlobeHem
 import { NetworkIcon } from "@phosphor-icons/react/dist/csr/Network";
 import { PulseIcon } from "@phosphor-icons/react/dist/csr/Pulse";
 import { RocketLaunchIcon } from "@phosphor-icons/react/dist/csr/RocketLaunch";
-import { ShieldCheckIcon } from "@phosphor-icons/react/dist/csr/ShieldCheck";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { CSSProperties } from "react";
@@ -19,6 +18,7 @@ import { useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { BufferGeometry, Clock, Line, LineBasicMaterial, Mesh, MeshBasicMaterial, OctahedronGeometry, PerspectiveCamera, Scene, SphereGeometry, Vector3, WebGLRenderer } from "three";
+import taiwanSubmarineCablesMap from "../../../../assets/taiwan_submarine_cables.svg";
 import styles from "./LandingPage.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -34,8 +34,6 @@ const checkCards = [
 const routeHops = ["AMS", "FRA", "IXP", "NYC", "SFO"];
 
 const routeSignals = ["See latency.", "See packet loss.", "See DNS failures.", "See path changes.", "See where traffic takes the long way around."];
-
-const trustSignals = ["Some regions do not get enough bandwidth.", "Some routes are inefficient.", "Some links are fragile.", "Some failures are political, physical, or economic."];
 
 interface LandingPageProps {
 	navigate: Navigate;
@@ -101,22 +99,6 @@ export function LandingPage({ navigate }: LandingPageProps) {
 				}
 			});
 
-			// Trust signal cards
-			const trustItems = gsap.utils.toArray<Element>("[data-gs='trust-signal']");
-			if (trustItems.length) {
-				gsap.from(trustItems, {
-					opacity: 0,
-					scale: 0.94,
-					y: 12,
-					duration: 0.55,
-					ease: "power2.out",
-					stagger: 0.1,
-					scrollTrigger: {
-						trigger: trustItems[0],
-						start: "top 82%"
-					}
-				});
-			}
 		}, landingRef);
 
 		return () => ctx.revert();
@@ -270,7 +252,7 @@ export function LandingPage({ navigate }: LandingPageProps) {
 							<div className={styles.routeRail}>
 								{routeHops.map(hop => (
 									<span className={styles.routeNode} key={hop}>
-										{hop}
+										<span className={styles.routeNodeLabel}>{hop}</span>
 									</span>
 								))}
 							</div>
@@ -321,13 +303,8 @@ export function LandingPage({ navigate }: LandingPageProps) {
 						</div>
 
 						<div className={styles.trustRight}>
-							<div className={styles.trustGrid}>
-								{trustSignals.map(signal => (
-									<div data-gs="trust-signal" className={classNames("ns-cut-frame", styles.trustLine)} key={signal}>
-										<ShieldCheckIcon size={18} weight="bold" aria-hidden="true" />
-										<span>{signal}</span>
-									</div>
-								))}
+							<div className={styles.trustMapBackdrop}>
+								<img className={styles.trustMapImage} src={taiwanSubmarineCablesMap} alt="Map of Taiwan submarine cable routes" loading="lazy" decoding="async" />
 							</div>
 						</div>
 					</div>

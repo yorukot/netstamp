@@ -105,12 +105,6 @@
 	z-index: 3;
 }
 
-.trustLine > svg,
-.trustLine > span {
-	position: relative;
-	z-index: 3;
-}
-
 .navActions {
 	display: flex;
 	align-items: center;
@@ -757,26 +751,44 @@
 	grid-template-columns: 1fr 0.64fr 0.92fr 0.45fr;
 	gap: 0.25rem;
 	align-items: end;
-	height: 2.25rem;
+	height: 3rem;
 }
 
 .checkPacketRail i {
+	--bar-low-scale: 0.38;
+	--bar-high-scale: 1.28;
 	display: block;
-	height: 38%;
+	height: 52%;
 	background: linear-gradient(180deg, var(--ns-accent-hover), rgba(255, 122, 26, 0.18));
 	box-shadow: 0 0 0.9rem rgba(255, 122, 26, 0.22);
+	transform: scaleY(var(--bar-low-scale));
+	transform-origin: bottom;
+	animation: checkBarPulse 2.8s ease-in-out infinite;
+}
+
+.checkPacketRail i:nth-child(1) {
+	animation-delay: 0s;
 }
 
 .checkPacketRail i:nth-child(2) {
-	height: 72%;
+	--bar-low-scale: 0.42;
+	--bar-high-scale: 1.18;
+	height: 80%;
+	animation-delay: 0.28s;
 }
 
 .checkPacketRail i:nth-child(3) {
-	height: 54%;
+	--bar-low-scale: 0.34;
+	--bar-high-scale: 1.32;
+	height: 64%;
+	animation-delay: 0.56s;
 }
 
 .checkPacketRail i:nth-child(4) {
-	height: 94%;
+	--bar-low-scale: 0.28;
+	--bar-high-scale: 1.12;
+	height: 96%;
+	animation-delay: 0.84s;
 }
 
 .checkTelemetry {
@@ -818,7 +830,22 @@
 	box-shadow: 0 0 1rem rgba(255, 122, 26, 0.22);
 }
 
+.routeRail::after {
+	content: "";
+	position: absolute;
+	left: 1.25rem;
+	right: 1.25rem;
+	top: 50%;
+	height: 1px;
+	background: linear-gradient(90deg, rgba(255, 122, 26, 0), var(--ns-accent-hover), rgba(255, 122, 26, 0));
+	box-shadow: 0 0 1.2rem rgba(255, 122, 26, 0.34);
+	transform: scaleX(0);
+	transform-origin: left;
+	animation: routeRailTrace 5.6s ease-in-out infinite;
+}
+
 .routeNode {
+	--route-node-y: 0rem;
 	position: relative;
 	z-index: 1;
 	display: grid;
@@ -832,27 +859,63 @@
 	font-size: 0.625rem;
 	font-weight: 900;
 	letter-spacing: 0.1em;
+	overflow: hidden;
 	box-shadow:
 		0 0 0 0.25rem rgba(255, 122, 26, 0.04),
 		0 0 1.4rem rgba(255, 122, 26, 0.08);
+	transform: translateY(var(--route-node-y));
+}
+
+.routeNode::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	background: linear-gradient(180deg, rgba(255, 122, 26, 0.72), rgba(153, 65, 10, 0.88));
+	box-shadow: inset 0 0 1rem rgba(255, 255, 255, 0.22);
+	opacity: 0;
+	transform: scaleY(0);
+	transform-origin: bottom;
+	animation: routeNodeFill 5.6s ease-in-out infinite;
+}
+
+.routeNodeLabel {
+	position: relative;
+	z-index: 1;
 }
 
 .routeNode:nth-child(1),
 .routeNode:nth-child(5) {
-	transform: translateY(0.25rem);
+	--route-node-y: 0.25rem;
 }
 
 .routeNode:nth-child(2),
 .routeNode:nth-child(4) {
-	transform: translateY(-0.125rem);
+	--route-node-y: -0.125rem;
 }
 
 .routeNode:nth-child(3) {
-	color: var(--ns-text-on-accent);
-	background: var(--ns-accent-hover);
+	background: linear-gradient(180deg, rgba(255, 122, 26, 0.34), rgba(255, 122, 26, 0.12)), #020407;
+	border-color: rgba(255, 122, 26, 0.74);
 	box-shadow:
 		0 0 0 0.25rem rgba(255, 122, 26, 0.08),
 		0 0 1.8rem rgba(255, 122, 26, 0.2);
+}
+
+.routeNode:nth-child(2)::before {
+	animation-delay: 0.45s;
+}
+
+.routeNode:nth-child(3)::before {
+	animation-delay: 0.9s;
+}
+
+.routeNode:nth-child(4)::before {
+	animation-delay: 1.35s;
+}
+
+.routeNode:nth-child(5)::before {
+	animation-delay: 1.8s;
 }
 
 .routeMetrics {
@@ -894,6 +957,7 @@
 /* ── Trust / CTA Section ──────────────────────────────────── */
 
 .trustSection {
+	overflow: hidden;
 	padding: clamp(5rem, 9vw, 9rem) 2rem clamp(5rem, 9vw, 8rem);
 	border-top: 1px solid rgba(255, 122, 26, 0.18);
 	background:
@@ -920,6 +984,8 @@
 }
 
 .trustLeft {
+	position: relative;
+	z-index: 2;
 	display: grid;
 	align-content: start;
 	gap: 1.4rem;
@@ -936,34 +1002,32 @@
 }
 
 .trustRight {
+	position: relative;
+	z-index: 1;
 	display: grid;
-	align-content: start;
+	min-height: clamp(30rem, 56vw, 46rem);
+	overflow: visible;
+	pointer-events: none;
 }
 
-.trustGrid {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 0.75rem;
+.trustMapBackdrop {
+	position: absolute;
+	inset: -30% -36% -32% -52%;
+	overflow: hidden;
+	background: radial-gradient(ellipse at center, rgba(255, 122, 26, 0.14), transparent 68%);
+	mask-image: radial-gradient(ellipse at 62% 50%, #000 0 44%, rgba(0, 0, 0, 0.66) 62%, rgba(0, 0, 0, 0.22) 80%, transparent 100%);
 }
 
-.trustLine {
-	--ns-frame-cut: var(--ns-cut-sm);
-	--ns-frame-color: rgba(196, 204, 217, 0.18);
-	display: flex;
-	align-items: flex-start;
-	gap: 0.75rem;
-	padding: 1.1rem 1rem;
-	color: var(--ns-text-muted);
-	background: linear-gradient(160deg, rgba(255, 122, 26, 0.07), transparent 58%), #030508;
-	font-size: 0.9rem;
-	line-height: 1.5;
-	transition: border-color var(--ns-transition);
-}
-
-.trustLine svg {
-	flex: 0 0 auto;
-	margin-top: 0.1rem;
-	color: var(--ns-accent-hover);
+.trustMapImage {
+	display: block;
+	width: 100%;
+	height: 100%;
+	aspect-ratio: 1600 / 1040;
+	object-fit: cover;
+	opacity: 0.4;
+	filter: saturate(1.2) contrast(1.08) brightness(1.08);
+	transform: scale(1.08);
+	transform-origin: 62% 50%;
 }
 
 /* ── Keyframes ────────────────────────────────────────────── */
@@ -1006,6 +1070,60 @@
 	}
 	50% {
 		opacity: 1;
+	}
+}
+
+@keyframes checkBarPulse {
+	0%,
+	100% {
+		opacity: 0.62;
+		transform: scaleY(var(--bar-low-scale));
+	}
+	42% {
+		opacity: 1;
+		transform: scaleY(var(--bar-high-scale));
+	}
+	68% {
+		opacity: 0.82;
+		transform: scaleY(0.82);
+	}
+}
+
+@keyframes routeRailTrace {
+	0%,
+	10% {
+		opacity: 0;
+		transform: scaleX(0);
+	}
+	20%,
+	62% {
+		opacity: 1;
+	}
+	68% {
+		opacity: 0.84;
+		transform: scaleX(1);
+	}
+	100% {
+		opacity: 0;
+		transform: scaleX(1);
+	}
+}
+
+@keyframes routeNodeFill {
+	0%,
+	12% {
+		opacity: 0;
+		transform: scaleY(0);
+	}
+	24%,
+	45% {
+		opacity: 1;
+		transform: scaleY(1);
+	}
+	64%,
+	100% {
+		opacity: 0;
+		transform: scaleY(0);
 	}
 }
 
@@ -1084,9 +1202,21 @@
 	.packetOne,
 	.packetTwo,
 	.packetThree,
+	.checkPacketRail i,
+	.routeRail::after,
+	.routeNode::before,
 	.rosterDot,
 	.storyVizDot {
 		animation: none;
+	}
+
+	.checkPacketRail i {
+		transform: none;
+	}
+
+	.routeNode:nth-child(3)::before {
+		opacity: 0.9;
+		transform: scaleY(1);
 	}
 }
 
@@ -1135,8 +1265,7 @@
 		min-height: 18rem;
 	}
 
-	.featureStack,
-	.trustGrid {
+	.featureStack {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 
@@ -1202,8 +1331,7 @@
 
 	.checkGrid,
 	.checkTelemetry,
-	.routeMetrics,
-	.trustGrid {
+	.routeMetrics {
 		grid-template-columns: 1fr;
 	}
 

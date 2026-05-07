@@ -7,6 +7,7 @@
 - Put reused app-level components in `web/src/shared/components`.
 - Put shared utilities, mock data, and data helpers in `web/src/shared/utils`.
 - Use `@netstamp/ui` for reusable primitives before adding app-local controls.
+- Use `@` aliases for imports to avoid relative paths and improve readability.
 
 ## Styling
 
