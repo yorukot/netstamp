@@ -1,0 +1,96 @@
+.surface {
+	min-width: 0;
+	isolation: isolate;
+	box-shadow:
+		var(--ns-shadow-sm),
+		inset 0 0 0 1px rgba(255, 122, 26, 0.035);
+}
+
+.glass {
+	--ns-frame-color: rgba(255, 122, 26, 0.34);
+	background:
+		linear-gradient(135deg, rgba(255, 122, 26, 0.09), transparent 14rem), linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 38%),
+		linear-gradient(90deg, rgba(255, 122, 26, 0.045) 0 1px, transparent 1px 0.875rem), #05070a;
+	background-size:
+		100% 100%,
+		100% 100%,
+		0.875rem 100%,
+		100% 100%;
+}
+
+.matte {
+	--ns-frame-color: rgba(196, 204, 217, 0.2);
+	background:
+		linear-gradient(180deg, rgba(255, 255, 255, 0.014), transparent 42%), linear-gradient(135deg, rgba(255, 122, 26, 0.045), transparent 16rem), #040609;
+	background-size: 100% 100%;
+}
+
+.deep {
+	--ns-frame-color: rgba(255, 255, 255, 0.18);
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), transparent), #010203;
+	background-size: 100% 100%;
+}
+
+.flat {
+	--ns-frame-color: rgba(196, 204, 217, 0.18);
+	background: #04070b;
+}
+
+.accent {
+	--ns-frame-color: var(--ns-accent-border);
+	background:
+		linear-gradient(135deg, rgba(255, 122, 26, 0.18), transparent 16rem), linear-gradient(90deg, rgba(255, 122, 26, 0.055) 0 1px, transparent 1px 0.875rem), #05070a;
+}
+
+.danger {
+	--ns-frame-color: rgba(255, 69, 58, 0.42);
+	background: linear-gradient(135deg, rgba(255, 69, 58, 0.14), transparent 14rem), #080303;
+}
+
+.cutXs {
+	--ns-frame-cut: var(--ns-cut-xs);
+}
+
+.cutSm {
+	--ns-frame-cut: var(--ns-cut-sm);
+}
+
+.cutMd {
+	--ns-frame-cut: var(--ns-cut-md);
+}
+
+.cutLg {
+	--ns-frame-cut: var(--ns-cut-lg);
+}
+
+.paddingNone {
+	--ns-surface-padding-x: 0rem;
+	--ns-surface-padding-y: 0rem;
+	padding: 0;
+}
+
+.paddingSm {
+	--ns-surface-padding-x: 0.875rem;
+	--ns-surface-padding-y: 0.875rem;
+	padding: var(--ns-surface-padding-y) var(--ns-surface-padding-x);
+}
+
+.paddingMd {
+	--ns-surface-padding-x: 1.25rem;
+	--ns-surface-padding-y: 1.25rem;
+	padding: var(--ns-surface-padding-y) var(--ns-surface-padding-x);
+}
+
+.paddingLg {
+	--ns-surface-padding-x: 1.35rem;
+	--ns-surface-padding-y: 1.35rem;
+	padding: var(--ns-surface-padding-y) var(--ns-surface-padding-x);
+}
+
+@media (max-width: 48rem) {
+	.paddingMd,
+	.paddingLg {
+		--ns-surface-padding-x: 1rem;
+		--ns-surface-padding-y: 1rem;
+	}
+}

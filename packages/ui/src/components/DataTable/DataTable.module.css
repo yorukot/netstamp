@@ -1,19 +1,21 @@
 .wrap {
+	--ns-frame-color: rgba(255, 122, 26, 0.28);
+	--ns-frame-cut: var(--ns-cut-md);
 	width: 100%;
+	max-height: var(--ns-data-table-max-height, none);
 	overflow: auto;
-	--ns-frame-color: var(--ns-border-faint);
 	position: relative;
-	border: 1px solid transparent;
-	background: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px), #27292c;
+	background:
+		linear-gradient(rgba(255, 122, 26, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 122, 26, 0.04) 1px, transparent 1px), #030507;
 	background-size:
 		1rem 1rem,
+		1rem 1rem,
 		100% 100%;
-	clip-path: polygon(var(--ns-cut-md) 0, 100% 0, 100% calc(100% - var(--ns-cut-md)), calc(100% - var(--ns-cut-md)) 100%, 0 100%, 0 var(--ns-cut-md));
 }
 
 .table {
 	width: 100%;
-	min-width: 48rem;
+	min-width: var(--ns-data-table-min-width, 48rem);
 	border-collapse: collapse;
 	color: var(--ns-text-muted);
 	font-family: var(--ns-font-mono);
@@ -25,9 +27,9 @@
 	top: 0;
 	z-index: 1;
 	padding: 0.875rem 1rem;
-	color: var(--ns-text-low);
-	background: #14171d;
-	border-bottom: 1px solid var(--ns-border);
+	color: var(--ns-accent-hover);
+	background: #05070b;
+	border-bottom: 1px solid rgba(255, 122, 26, 0.26);
 	font-size: 0.6875rem;
 	font-weight: 700;
 	letter-spacing: 0.12em;
@@ -38,7 +40,7 @@
 
 .table td {
 	padding: 0.875rem 1rem;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 	white-space: nowrap;
 }
 
@@ -49,6 +51,16 @@
 }
 
 .table tbody tr:hover {
+	color: var(--ns-text);
+	background: rgba(255, 122, 26, 0.12);
+}
+
+.interactive {
+	cursor: pointer;
+	outline: none;
+}
+
+.interactive:focus-visible {
 	color: var(--ns-text);
 	background: rgba(255, 122, 26, 0.12);
 }
@@ -66,4 +78,17 @@
 	padding: 2rem;
 	color: var(--ns-text-low);
 	text-align: center;
+}
+
+.compact .table {
+	font-size: 0.6875rem;
+}
+
+.compact .table th,
+.compact .table td {
+	padding: 0.625rem 0.75rem;
+}
+
+.compact .table th {
+	font-size: 0.625rem;
 }

@@ -12,14 +12,14 @@
 	--ns-font-display: "Arial Black", "TASAExplorer", "TASA Explorer", sans-serif;
 	--ns-font-mono: "JetBrainsMono", "JetBrains Mono", monospace;
 
-	--ns-bg: #030406;
-	--ns-bg-section: #07090d;
-	--ns-bg-subtle: #0b0e13;
-	--ns-surface: #111318;
-	--ns-surface-raised: #181b20;
-	--ns-surface-deep: #07080b;
-	--ns-glass-dark: rgba(15, 18, 23, 0.94);
-	--ns-glass-light: rgba(255, 255, 255, 0.025);
+	--ns-bg: #010203;
+	--ns-bg-section: #030507;
+	--ns-bg-subtle: #05080c;
+	--ns-surface: #07090d;
+	--ns-surface-raised: #0c1016;
+	--ns-surface-deep: #020304;
+	--ns-glass-dark: rgba(3, 5, 8, 0.94);
+	--ns-glass-light: rgba(255, 255, 255, 0.012);
 
 	--ns-text: #fff7ec;
 	--ns-text-muted: #ddd4c8;
@@ -39,11 +39,11 @@
 	--ns-critical: #ff453a;
 	--ns-warning: #ff9f0a;
 	--ns-success: #30d158;
-	--ns-metal: #a8b4c7;
-	--ns-slate-line: rgba(168, 180, 199, 0.24);
-	--ns-border: rgba(255, 255, 255, 0.22);
-	--ns-border-strong: rgba(255, 255, 255, 0.38);
-	--ns-border-faint: rgba(255, 255, 255, 0.13);
+	--ns-metal: #c4ccd9;
+	--ns-slate-line: rgba(196, 204, 217, 0.22);
+	--ns-border: rgba(255, 255, 255, 0.28);
+	--ns-border-strong: rgba(255, 255, 255, 0.48);
+	--ns-border-faint: rgba(255, 255, 255, 0.16);
 
 	--ns-radius-xs: 0;
 	--ns-radius-sm: 0;
@@ -55,8 +55,8 @@
 	--ns-cut-md: 0.75rem;
 	--ns-cut-lg: 1rem;
 
-	--ns-shadow-sm: 0 0 0 1px rgba(0, 0, 0, 0.85), 0 1rem 2rem rgba(0, 0, 0, 0.52);
-	--ns-shadow-md: 0 0 0 1px rgba(0, 0, 0, 0.9), 0 1.5rem 3rem rgba(0, 0, 0, 0.64);
+	--ns-shadow-sm: 0 0 0 1px rgba(0, 0, 0, 0.95), 0 1rem 2.25rem rgba(0, 0, 0, 0.72);
+	--ns-shadow-md: 0 0 0 1px rgba(0, 0, 0, 0.96), 0 1.5rem 3.5rem rgba(0, 0, 0, 0.82);
 	--ns-shadow-glow: 0 0 0 1px rgba(255, 122, 26, 0.44), 0 0 2rem rgba(255, 122, 26, 0.2);
 	--ns-transition: 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
 
@@ -109,4 +109,90 @@ a {
 ::selection {
 	color: var(--ns-text-on-accent);
 	background: var(--ns-accent);
+}
+
+.ns-grid-shell {
+	min-height: 100vh;
+	min-height: 100svh;
+	color: var(--ns-text);
+	background:
+		radial-gradient(circle at 16% 18%, rgba(255, 122, 26, 0.13), transparent 22rem), radial-gradient(circle at 88% 10%, rgba(255, 122, 26, 0.08), transparent 20rem),
+		linear-gradient(rgba(255, 122, 26, 0.09) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 122, 26, 0.09) 1px, transparent 1px),
+		linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px), var(--ns-bg);
+	background-size:
+		100% 100%,
+		100% 100%,
+		8rem 8rem,
+		8rem 8rem,
+		2rem 2rem,
+		2rem 2rem,
+		100% 100%;
+}
+
+.ns-grid-shell--constellation {
+	background:
+		radial-gradient(circle at 18% 24%, rgba(255, 255, 255, 0.12) 0 1px, transparent 1px), radial-gradient(circle at 82% 18%, rgba(255, 122, 26, 0.32) 0 1px, transparent 1px),
+		radial-gradient(circle at 64% 76%, rgba(255, 122, 26, 0.18) 0 1px, transparent 1px), radial-gradient(circle at 88% 10%, rgba(255, 122, 26, 0.08), transparent 22rem),
+		linear-gradient(rgba(255, 122, 26, 0.09) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 122, 26, 0.09) 1px, transparent 1px),
+		linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px), var(--ns-bg);
+	background-size:
+		22rem 22rem,
+		18rem 18rem,
+		26rem 26rem,
+		100% 100%,
+		8rem 8rem,
+		8rem 8rem,
+		2rem 2rem,
+		2rem 2rem,
+		100% 100%;
+}
+
+.ns-cut-frame {
+	--ns-frame-cut: var(--ns-cut-md);
+	--ns-frame-color: var(--ns-border-faint);
+	position: relative;
+	overflow: hidden;
+	border: 1px solid transparent;
+	clip-path: polygon(var(--ns-frame-cut) 0, 100% 0, 100% calc(100% - var(--ns-frame-cut)), calc(100% - var(--ns-frame-cut)) 100%, 0 100%, 0 var(--ns-frame-cut));
+}
+
+.ns-cut-frame::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 2;
+	padding: 1px;
+	background: var(--ns-frame-color);
+	clip-path: inherit;
+	pointer-events: none;
+	mask:
+		linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	mask-composite: exclude;
+	-webkit-mask:
+		linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+}
+
+.ns-scrollbar {
+	scrollbar-color: var(--ns-border-strong) rgba(255, 255, 255, 0.04);
+	scrollbar-width: thin;
+}
+
+.ns-scrollbar::-webkit-scrollbar {
+	width: 0.5rem;
+	height: 0.5rem;
+}
+
+.ns-scrollbar::-webkit-scrollbar-track {
+	background: rgba(255, 255, 255, 0.04);
+}
+
+.ns-scrollbar::-webkit-scrollbar-thumb {
+	background: var(--ns-border-strong);
+}
+
+.ns-scrollbar::-webkit-scrollbar-thumb:hover {
+	background: var(--ns-accent-border);
 }

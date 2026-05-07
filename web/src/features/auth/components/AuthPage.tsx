@@ -1,4 +1,4 @@
-import { Badge, Button, Panel, TextField } from "@netstamp/ui";
+import { Badge, Button, PageShell, Panel, TextField } from "@netstamp/ui";
 import type { FormEvent } from "react";
 import { Helmet } from "react-helmet-async";
 import type { Navigate } from "../../../shared/utils/mockData";
@@ -38,7 +38,7 @@ export function AuthPage({ mode = "login", navigate }: AuthPageProps) {
 	}
 
 	return (
-		<main className={styles.authShell}>
+		<PageShell className={styles.authShell}>
 			<Helmet>
 				<title>{isRegister ? "Sign up" : "Log in"} - Netstamp</title>
 				<meta name="description" content="Access the Netstamp distributed network observability console." />
@@ -87,6 +87,6 @@ export function AuthPage({ mode = "login", navigate }: AuthPageProps) {
 					</Button>
 				</div>
 			</Panel>
-		</main>
+		</PageShell>
 	);
 }

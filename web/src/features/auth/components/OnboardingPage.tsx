@@ -1,6 +1,8 @@
+import { PageShell } from "@netstamp/ui";
 import type { FormEvent, KeyboardEvent as ReactKeyboardEvent } from "react";
 import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { classNames } from "../../../shared/utils/classNames";
 import { type Navigate } from "../../../shared/utils/mockData";
 import { useAuthMock } from "../hooks/useAuthMock";
 import styles from "./OnboardingPage.module.css";
@@ -160,12 +162,12 @@ export function OnboardingPage({ navigate }: OnboardingPageProps) {
 	}
 
 	return (
-		<main className={styles.shell}>
+		<PageShell variant="constellation" center className={styles.shell}>
 			<Helmet>
 				<title>Create Team - Netstamp</title>
 			</Helmet>
 
-			<section className={styles.console} aria-label="First contact onboarding console">
+			<section className={classNames("ns-cut-frame", styles.console)} aria-label="First contact onboarding console">
 				<div className={styles.consoleBar}>
 					<span aria-hidden="true" />
 					<span aria-hidden="true" />
@@ -256,7 +258,7 @@ export function OnboardingPage({ navigate }: OnboardingPageProps) {
 					)}
 				</div>
 			</section>
-		</main>
+		</PageShell>
 	);
 }
 

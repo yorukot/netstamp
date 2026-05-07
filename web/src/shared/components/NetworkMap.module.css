@@ -1,10 +1,9 @@
 .map {
+	--ns-frame-cut: var(--ns-cut-lg);
+	--ns-frame-color: var(--ns-border-faint);
 	position: relative;
 	min-height: 22rem;
-	overflow: hidden;
-	border: 1px solid var(--ns-border-faint);
 	background: #050505;
-	clip-path: polygon(1rem 0, 100% 0, 100% calc(100% - 1rem), calc(100% - 1rem) 100%, 0 100%, 0 1rem);
 }
 
 .canvas {

@@ -123,7 +123,7 @@ export function NetworkMap({ probes, selectedId, onSelect, mode = "fleet", class
 	const mapRef = useRef<MapLibreMap | null>(null);
 	const markersRef = useRef<MapLibreMarker[]>([]);
 	const [mapReady, setMapReady] = useState(false);
-	const classes = [styles.map, className].filter(Boolean).join(" ");
+	const classes = ["ns-cut-frame", styles.map, className].filter(Boolean).join(" ");
 
 	useEffect(() => {
 		let cancelled = false;

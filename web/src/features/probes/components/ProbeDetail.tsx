@@ -1,10 +1,18 @@
-import { TextField } from "@netstamp/ui";
+import { Badge, DataTable, Surface, TextField, type DataColumn } from "@netstamp/ui";
 import { useState } from "react";
 import { classNames } from "../../../shared/utils/classNames";
 import type { Probe } from "../../../shared/utils/mockData";
 import styles from "./ProbeDetail.module.css";
 import { expandAssignedRows } from "./probeUtils";
 import type { AssignedRow, DetectionMode } from "./types";
+
+const assignedColumns: DataColumn<AssignedRow>[] = [
+	{ key: "check", label: "Assigned check" },
+	{ key: "type", label: "Type", render: row => <Badge tone="neutral">{row.type}</Badge> },
+	{ key: "interval", label: "Interval" },
+	{ key: "jitter", label: "Jitter" },
+	{ key: "latest", label: "Latest" }
+];
 
 interface ProbeDetailProps {
 	probe: Probe;
@@ -43,7 +51,7 @@ export function ProbeDetail({ probe, assignedRows, floating = false }: ProbeDeta
 	}
 
 	return (
-		<section className={classNames(styles.card, floating && styles.floating)} aria-label="Probe detail">
+		<Surface as="section" tone="matte" cut="lg" padding="lg" className={classNames(styles.card, floating && styles.floating)} aria-label="Probe detail">
 			<div className={styles.header}>
 				<span>Probe detail</span>
 				<strong>
@@ -70,36 +78,16 @@ export function ProbeDetail({ probe, assignedRows, floating = false }: ProbeDeta
 				</div>
 			</div>
 
-			<div className={styles.tableWrap}>
-				<table className={styles.table}>
-					<thead>
-						<tr>
-							<th>Assigned check</th>
-							<th>Type</th>
-							<th>Interval</th>
-							<th>Jitter</th>
-							<th>Latest</th>
-						</tr>
-					</thead>
-					<tbody>
-						{detailRows.map((row, index) => (
-							<tr key={`${row.probe}-${row.check}-${index}`}>
-								<td>{row.check}</td>
-								<td>
-									<span className={styles.checkType}>
-										<span aria-hidden="true" />
-										{row.type}
-									</span>
-								</td>
-								<td>{row.interval}</td>
-								<td>{row.jitter}</td>
-								<td>{row.latest}</td>
-							</tr>
-						))}
-					</tbody>
-				</table>
-			</div>
-		</section>
+			<DataTable
+				ariaLabel="Assigned checks"
+				columns={assignedColumns}
+				rows={detailRows}
+				density="compact"
+				minWidth="31rem"
+				maxHeight="11.75rem"
+				getRowKey={(row, index) => `${row.probe}-${row.check}-${index}`}
+			/>
+		</Surface>
 	);
 }
 

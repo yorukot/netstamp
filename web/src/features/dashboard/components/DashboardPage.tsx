@@ -1,4 +1,4 @@
-import { Badge, Button, MetricCard, Panel, type BadgeTone } from "@netstamp/ui";
+import { Badge, Button, MetricCard, Panel, Surface, type BadgeTone } from "@netstamp/ui";
 import { FleetMatrix } from "../../../shared/components/FleetMatrix";
 import { PageStack } from "../../../shared/components/PageStack";
 import { ScreenHeader } from "../../../shared/components/ScreenHeader";
@@ -55,9 +55,9 @@ interface EventProps {
 
 function Event({ title, copy, tone }: EventProps) {
 	return (
-		<article className={styles.event}>
+		<Surface as="article" className={styles.event} tone="flat" cut="md" padding="sm">
 			<Badge tone={tone}>{title}</Badge>
 			<p>{copy}</p>
-		</article>
+		</Surface>
 	);
 }

@@ -1,8 +1,9 @@
 import * as Separator from "@radix-ui/react-separator";
 import type { ComponentPropsWithoutRef, ElementType, ReactNode } from "react";
+import { Surface, type SurfaceTone } from "../Surface/Surface";
 import styles from "./Panel.module.css";
 
-export type PanelTone = "glass" | "matte" | "deep";
+export type PanelTone = Extract<SurfaceTone, "glass" | "matte" | "deep">;
 
 export interface PanelProps extends Omit<ComponentPropsWithoutRef<"section">, "title"> {
 	as?: ElementType;
@@ -14,10 +15,10 @@ export interface PanelProps extends Omit<ComponentPropsWithoutRef<"section">, "t
 }
 
 export function Panel({ as: Comp = "section", tone = "glass", eyebrow, title, actions, padded = true, className, children, ...props }: PanelProps) {
-	const classes = [styles.panel, styles[tone], padded ? styles.padded : styles.flush, className].filter(Boolean).join(" ");
+	const classes = [styles.panel, className].filter(Boolean).join(" ");
 
 	return (
-		<Comp className={classes} {...props}>
+		<Surface as={Comp} tone={tone} cut="lg" padding={padded ? "md" : "none"} className={classes} {...props}>
 			{eyebrow || title || actions ? (
 				<div className={styles.header}>
 					<div className={styles.copy}>
@@ -29,6 +30,6 @@ export function Panel({ as: Comp = "section", tone = "glass", eyebrow, title, ac
 			) : null}
 			{eyebrow || title || actions ? <Separator.Root className={styles.separator} /> : null}
 			{children}
-		</Comp>
+		</Surface>
 	);
 }

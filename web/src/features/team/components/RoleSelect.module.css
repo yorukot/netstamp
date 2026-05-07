@@ -1,38 +1,12 @@
 .frame {
-	--cut: 0.375rem;
+	--ns-frame-cut: 0.375rem;
 	--role-color: var(--ns-metal);
-	--role-border: var(--ns-border-faint);
+	--ns-frame-color: var(--ns-border-faint);
 	--role-bg: rgba(168, 180, 199, 0.08);
-	position: relative;
 	display: inline-grid;
 	width: max-content;
 	min-width: 7.5rem;
-	border: 1px solid var(--role-border);
 	background: var(--role-bg);
-	clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
-}
-
-.frame::before,
-.frame::after {
-	content: "";
-	position: absolute;
-	width: calc(var(--cut) * 1.41421356);
-	height: 1px;
-	background: var(--role-border);
-	pointer-events: none;
-	transform: rotate(-45deg);
-}
-
-.frame::before {
-	top: var(--cut);
-	left: 0;
-	transform-origin: left center;
-}
-
-.frame::after {
-	right: 0;
-	bottom: var(--cut);
-	transform-origin: right center;
 }
 
 .select {
@@ -60,18 +34,18 @@
 .owner,
 .admin {
 	--role-color: var(--ns-accent-hover);
-	--role-border: rgba(255, 122, 26, 0.34);
+	--ns-frame-color: rgba(255, 122, 26, 0.34);
 	--role-bg: rgba(255, 122, 26, 0.14);
 }
 
 .member {
 	--role-color: var(--ns-metal);
-	--role-border: var(--ns-border-faint);
+	--ns-frame-color: var(--ns-border-faint);
 	--role-bg: rgba(168, 180, 199, 0.08);
 }
 
 .viewer {
 	--role-color: var(--ns-text-low);
-	--role-border: var(--ns-border-faint);
+	--ns-frame-color: var(--ns-border-faint);
 	--role-bg: rgba(255, 255, 255, 0.04);
 }

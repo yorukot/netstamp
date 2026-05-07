@@ -1,34 +1,16 @@
 .shell {
-	min-height: 100svh;
-	display: grid;
-	place-items: center;
 	padding: 2rem;
-	background:
-		radial-gradient(circle at 18% 24%, rgba(255, 255, 255, 0.2) 0 1px, transparent 1px), radial-gradient(circle at 82% 18%, rgba(255, 122, 26, 0.26) 0 1px, transparent 1px),
-		radial-gradient(circle at 64% 76%, rgba(255, 255, 255, 0.14) 0 1px, transparent 1px), linear-gradient(rgba(255, 122, 26, 0.08) 1px, transparent 1px),
-		linear-gradient(90deg, rgba(255, 122, 26, 0.08) 1px, transparent 1px), linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-		linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px), var(--ns-bg);
-	background-size:
-		22rem 22rem,
-		18rem 18rem,
-		26rem 26rem,
-		8rem 8rem,
-		8rem 8rem,
-		2rem 2rem,
-		2rem 2rem,
-		100% 100%;
 }
 
 .console {
+	--ns-frame-cut: 0.875rem;
+	--ns-frame-color: var(--ns-border);
 	width: min(58rem, 100%);
-	overflow: hidden;
-	border: 1px solid var(--ns-border);
 	background: #030507;
 	box-shadow:
 		0 0 0 1px rgba(0, 0, 0, 0.88),
 		0 1.5rem 5rem rgba(0, 0, 0, 0.62),
 		0 0 4rem rgba(255, 122, 26, 0.08);
-	clip-path: polygon(0.875rem 0, 100% 0, 100% calc(100% - 0.875rem), calc(100% - 0.875rem) 100%, 0 100%, 0 0.875rem);
 }
 
 .consoleBar {

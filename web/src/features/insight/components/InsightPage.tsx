@@ -1,4 +1,4 @@
-import { Badge, DataTable, Panel, SelectField, type DataColumn } from "@netstamp/ui";
+import { Badge, DataTable, Panel, SelectField, Surface, type DataColumn } from "@netstamp/ui";
 import { useState } from "react";
 import { ChartPanel } from "../../../shared/components/ChartPanel";
 import { KeyValueGrid } from "../../../shared/components/KeyValueGrid";
@@ -171,10 +171,10 @@ export function InsightPage() {
 				<Panel tone="glass" eyebrow={view === "probe" ? "Targets" : "Probes"} title={view === "probe" ? "Target list" : "Probe list"}>
 					<div className={styles.entityList}>
 						{graphCards.map(graph => (
-							<article key={graph.key}>
+							<Surface as="article" tone="flat" cut="sm" padding="sm" key={graph.key}>
 								<span>{graph.title}</span>
 								<strong>{graph.metric}</strong>
-							</article>
+							</Surface>
 						))}
 					</div>
 				</Panel>

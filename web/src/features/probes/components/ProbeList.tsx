@@ -1,8 +1,38 @@
-import type { KeyboardEvent as ReactKeyboardEvent } from "react";
+import { Badge, DataTable, Panel, type BadgeTone, type DataColumn } from "@netstamp/ui";
 import { classNames } from "../../../shared/utils/classNames";
 import type { Probe, ProbeStatus } from "../../../shared/utils/mockData";
 import styles from "./ProbeList.module.css";
 import type { ProbeSort } from "./types";
+
+const statusTones: Record<ProbeStatus, BadgeTone> = {
+	Online: "success",
+	Draining: "warning",
+	Offline: "critical"
+};
+
+const probeColumns: DataColumn<Probe>[] = [
+	{ key: "name", label: "Probe name" },
+	{ key: "status", label: "Status", render: probe => <Badge tone={statusTones[probe.status]}>{probe.status}</Badge> },
+	{ key: "location", label: "Location" },
+	{ key: "publicIp", label: "Public IP" },
+	{ key: "asn", label: "AS" },
+	{ key: "ipFamily", label: "Support IP Family" },
+	{ key: "lastHeartbeat", label: "Last heartbeat" },
+	{
+		key: "tags",
+		label: "Tags",
+		render: probe => (
+			<span className={styles.tagList}>
+				{probe.tags.map(tag => (
+					<Badge key={tag} tone="muted" dot={false}>
+						{tag}
+					</Badge>
+				))}
+			</span>
+		)
+	},
+	{ key: "version", label: "Version" }
+];
 
 interface ProbeListProps {
 	probes: Probe[];
@@ -33,15 +63,8 @@ export function ProbeList({
 	onSortChange,
 	onSelect
 }: ProbeListProps) {
-	function handleRowKeyDown(event: ReactKeyboardEvent<HTMLTableRowElement>, probeId: string) {
-		if (event.key === "Enter" || event.key === " ") {
-			event.preventDefault();
-			onSelect(probeId);
-		}
-	}
-
 	return (
-		<section className={styles.panel} aria-label="Probe list">
+		<Panel className={styles.panel} tone="matte" aria-label="Probe list">
 			<div className={styles.toolbar}>
 				<span className={styles.title}>Probe list</span>
 				<input className={styles.control} aria-label="Search probes" placeholder="Search" value={search} onChange={event => onSearchChange(event.currentTarget.value)} />
@@ -66,65 +89,18 @@ export function ProbeList({
 				</select>
 			</div>
 
-			<div className={styles.tableWrap}>
-				<table className={styles.table}>
-					<thead>
-						<tr>
-							<th>Probe name</th>
-							<th>Status</th>
-							<th>location</th>
-							<th>Public IP</th>
-							<th>AS</th>
-							<th>Support IP Family</th>
-							<th>last heartbeat</th>
-							<th>tags</th>
-							<th>Version</th>
-						</tr>
-					</thead>
-					<tbody>
-						{probes.length ? (
-							probes.map(probe => (
-								<tr
-									key={probe.id}
-									className={probe.id === selectedId ? styles.selectedRow : undefined}
-									tabIndex={0}
-									onClick={() => onSelect(probe.id)}
-									onKeyDown={event => handleRowKeyDown(event, probe.id)}
-								>
-									<td>{probe.name}</td>
-									<td>
-										<span className={classNames(styles.statusPill, styles[`status${probe.status}` as keyof typeof styles])}>
-											<span aria-hidden="true" />
-											{probe.status}
-										</span>
-									</td>
-									<td>{probe.location}</td>
-									<td>{probe.publicIp}</td>
-									<td>{probe.asn}</td>
-									<td>{probe.ipFamily}</td>
-									<td>{probe.lastHeartbeat}</td>
-									<td>
-										<span className={styles.tagList}>
-											{probe.tags.map(tag => (
-												<span className={styles.tag} key={tag}>
-													{tag}
-												</span>
-											))}
-										</span>
-									</td>
-									<td>{probe.version}</td>
-								</tr>
-							))
-						) : (
-							<tr>
-								<td className={styles.emptyRow} colSpan={9}>
-									No probes found
-								</td>
-							</tr>
-						)}
-					</tbody>
-				</table>
-			</div>
-		</section>
+			<DataTable
+				ariaLabel="Probes"
+				columns={probeColumns}
+				rows={probes}
+				density="compact"
+				minWidth="62rem"
+				maxHeight="min(28rem, 46svh)"
+				getRowKey={probe => probe.id}
+				selectedKey={selectedId}
+				onRowClick={probe => onSelect(probe.id)}
+				emptyLabel="No probes found"
+			/>
+		</Panel>
 	);
 }

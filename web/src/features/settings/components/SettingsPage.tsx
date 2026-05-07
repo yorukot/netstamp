@@ -1,4 +1,4 @@
-import { Button, Panel, TextField } from "@netstamp/ui";
+import { Button, Panel, SignalAvatar, TextField } from "@netstamp/ui";
 import type { FormEvent } from "react";
 import { ActionRow } from "../../../shared/components/ActionRow";
 import { PageStack } from "../../../shared/components/PageStack";
@@ -28,9 +28,7 @@ export function SettingsPage() {
 
 				<Panel tone="deep" eyebrow="Profile image" title="Gravatar signal preview">
 					<div className={styles.profilePreview}>
-						<span className={styles.profileFrame} aria-hidden="true">
-							<img src={currentUser.gravatarUrl} alt="" referrerPolicy="no-referrer" />
-						</span>
+						<SignalAvatar size="lg" src={currentUser.gravatarUrl} referrerPolicy="no-referrer" aria-hidden="true" />
 						<div>
 							<h3>{currentUser.name}</h3>
 							<p>{currentUser.email}</p>

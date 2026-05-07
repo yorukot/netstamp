@@ -37,7 +37,7 @@ export function TextField({ label, helper, error, className, ...props }: TextFie
 
 	return (
 		<FieldShell id={id} label={label} helper={helper} error={error}>
-			<span className={styles.controlFrame} data-invalid={Boolean(error)}>
+			<span className={["ns-cut-frame", styles.controlFrame].join(" ")} data-invalid={Boolean(error)}>
 				<input id={id} className={classes} aria-invalid={Boolean(error)} {...props} />
 			</span>
 		</FieldShell>
@@ -57,7 +57,7 @@ export function TextAreaField({ label, helper, error, className, ...props }: Tex
 
 	return (
 		<FieldShell id={id} label={label} helper={helper} error={error}>
-			<span className={styles.controlFrame} data-invalid={Boolean(error)}>
+			<span className={["ns-cut-frame", styles.controlFrame].join(" ")} data-invalid={Boolean(error)}>
 				<textarea id={id} className={classes} aria-invalid={Boolean(error)} {...props} />
 			</span>
 		</FieldShell>
@@ -75,7 +75,7 @@ export function SelectField({ label, helper, error, options, className, ...props
 	const generatedId = useId();
 	const id = props.id || generatedId;
 	const classes = [styles.control, styles.select, className].filter(Boolean).join(" ");
-	const frameClasses = [styles.controlFrame, styles.selectFrame].join(" ");
+	const frameClasses = ["ns-cut-frame", styles.controlFrame, styles.selectFrame].join(" ");
 
 	return (
 		<FieldShell id={id} label={label} helper={helper} error={error}>

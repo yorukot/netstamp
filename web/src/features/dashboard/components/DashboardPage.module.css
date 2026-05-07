@@ -16,33 +16,8 @@
 }
 
 .event {
-	--ns-frame-color: var(--ns-border-faint);
-	position: relative;
 	display: grid;
 	gap: 0.75rem;
-	padding: 0.875rem;
-	border: 1px solid transparent;
-	background: #0c0f14;
-	clip-path: polygon(0.75rem 0, 100% 0, 100% calc(100% - 0.75rem), calc(100% - 0.75rem) 100%, 0 100%, 0 0.75rem);
-}
-
-.event::before {
-	content: "";
-	position: absolute;
-	inset: 0;
-	z-index: 0;
-	padding: 1px;
-	background: var(--ns-frame-color);
-	clip-path: inherit;
-	pointer-events: none;
-	mask:
-		linear-gradient(#000 0 0) content-box,
-		linear-gradient(#000 0 0);
-	mask-composite: exclude;
-	-webkit-mask:
-		linear-gradient(#000 0 0) content-box,
-		linear-gradient(#000 0 0);
-	-webkit-mask-composite: xor;
 }
 
 .event p {

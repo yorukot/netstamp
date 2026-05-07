@@ -13,17 +13,17 @@
 }
 
 .footerGrid {
+	--ns-frame-cut: var(--ns-cut-lg);
+	--ns-frame-color: var(--ns-border-faint);
 	display: grid;
 	grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(12rem, 0.5fr));
 	gap: 1rem;
 	padding: clamp(1.25rem, 3vw, 2rem);
-	border: 1px solid var(--ns-border-faint);
 	background: linear-gradient(135deg, rgba(255, 122, 26, 0.08) 0 1px, transparent 1px 0.875rem), linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent), #05070a;
 	background-size:
 		0.875rem 0.875rem,
 		100% 100%,
 		100% 100%;
-	clip-path: polygon(var(--ns-cut-lg) 0, 100% 0, 100% calc(100% - var(--ns-cut-lg)), calc(100% - var(--ns-cut-lg)) 100%, 0 100%, 0 var(--ns-cut-lg));
 }
 
 .brandMark {

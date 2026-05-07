@@ -1,57 +1,5 @@
 @import "@netstamp/ui/styles";
 
-*,
-*::before,
-*::after {
-	box-sizing: border-box;
-	padding: 0;
-	margin: 0;
-}
-
-html {
-	scroll-behavior: smooth;
-	background: var(--ns-bg);
-}
-
-:root {
-	font: 16px/1.5 var(--ns-font-sans);
-	color: var(--ns-text);
-	background: var(--ns-bg);
-	font-synthesis: none;
-	text-rendering: optimizeLegibility;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-}
-
-body {
-	min-width: 20rem;
-	min-height: 100svh;
-	/* overflow-x: hidden; */
-	color: var(--ns-text);
-	background: var(--ns-bg);
-}
-
-button,
-input,
-select,
-textarea {
-	font: inherit;
-}
-
-button,
-select {
-	cursor: pointer;
-}
-
-a {
-	color: inherit;
-}
-
-::selection {
-	color: var(--ns-text-on-accent);
-	background: var(--ns-accent);
-}
-
 #root {
 	min-height: 100vh;
 	min-height: 100svh;

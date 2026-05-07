@@ -9,7 +9,13 @@ export { SelectField, TextAreaField, TextField } from "./components/Field/Field"
 export type { SelectFieldProps, TextAreaFieldProps, TextFieldProps } from "./components/Field/Field";
 export { MetricCard } from "./components/MetricCard/MetricCard";
 export type { MetricCardProps } from "./components/MetricCard/MetricCard";
+export { PageShell } from "./components/PageShell/PageShell";
+export type { PageShellProps, PageShellVariant } from "./components/PageShell/PageShell";
 export { Panel } from "./components/Panel/Panel";
 export type { PanelProps, PanelTone } from "./components/Panel/Panel";
+export { SignalAvatar } from "./components/SignalAvatar/SignalAvatar";
+export type { SignalAvatarProps, SignalAvatarSize } from "./components/SignalAvatar/SignalAvatar";
+export { Surface } from "./components/Surface/Surface";
+export type { SurfaceCut, SurfacePadding, SurfaceProps, SurfaceTone } from "./components/Surface/Surface";
 export { Terminal } from "./components/Terminal/Terminal";
 export type { TerminalProps } from "./components/Terminal/Terminal";

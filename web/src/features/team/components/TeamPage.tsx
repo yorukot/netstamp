@@ -1,4 +1,4 @@
-import { Button, DataTable, Panel, SelectField, TextField, type DataColumn } from "@netstamp/ui";
+import { Button, DataTable, Panel, SelectField, Surface, TextField, type DataColumn } from "@netstamp/ui";
 import { PageStack } from "../../../shared/components/PageStack";
 import { ScreenHeader } from "../../../shared/components/ScreenHeader";
 import { members } from "../../../shared/utils/mockData";
@@ -61,16 +61,16 @@ export function TeamPage() {
 
 			<Panel tone="deep" eyebrow="Danger zone" title="Dangerous organization actions">
 				<div className={styles.dangerZoneGrid}>
-					<article>
+					<Surface as="article" tone="danger" cut="md" padding="md">
 						<h3>Delete organization</h3>
 						<p className={styles.warningCopy}>Delete this organization, disable future assignments, and revoke all probe registration tokens.</p>
 						<Button variant="danger">Delete organization</Button>
-					</article>
-					<article>
+					</Surface>
+					<Surface as="article" tone="danger" cut="md" padding="md">
 						<h3>Exit organization</h3>
 						<p className={styles.warningCopy}>Leave this organization and remove your access to its probes, checks, alerts, and measurements.</p>
 						<Button variant="outline">Exit organization</Button>
-					</article>
+					</Surface>
 				</div>
 			</Panel>
 		</PageStack>

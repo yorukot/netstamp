@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ActionRow } from "../../../shared/components/ActionRow";
 import { PageStack } from "../../../shared/components/PageStack";
 import { ScreenHeader } from "../../../shared/components/ScreenHeader";
+import { classNames } from "../../../shared/utils/classNames";
 import { assignments, checks, probes, results, toneForStatus, type CheckDefinition, type CheckType } from "../../../shared/utils/mockData";
 import styles from "./ChecksPage.module.css";
 
@@ -155,7 +156,7 @@ export function ChecksPage() {
 				</Panel>
 
 				<Panel className={styles.stickyCheckPanel} tone="glass" eyebrow="Edit check" title={selectedCheck.name}>
-					<div className={styles.checkEditorStack}>
+					<div className={classNames("ns-scrollbar", styles.checkEditorStack)}>
 						<div className={styles.checkEditForm}>
 							<TextField label="Check name" defaultValue={selectedCheck.name} />
 							<TextField label="Target" defaultValue={selectedCheck.target} />
@@ -185,8 +186,8 @@ export function ChecksPage() {
 						<div className={styles.probeMultiSelect}>
 							<span className={styles.fieldLabel}>Assign probes</span>
 							<details>
-								<summary>{displayProbeSelection(selectedProbes)}</summary>
-								<div className={styles.probeOptionList}>
+								<summary className={classNames("ns-cut-frame", styles.probeSummary)}>{displayProbeSelection(selectedProbes)}</summary>
+								<div className={classNames("ns-scrollbar", styles.probeOptionList)}>
 									{probes.map(probe => (
 										<label key={probe.id}>
 											<input type="checkbox" checked={selectedProbes.includes(probe.name)} onChange={() => toggleProbe(probe.name)} />

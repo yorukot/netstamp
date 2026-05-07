@@ -15,6 +15,7 @@ import { useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { BufferGeometry, Clock, Line, LineBasicMaterial, Mesh, MeshBasicMaterial, OctahedronGeometry, PerspectiveCamera, Scene, SphereGeometry, Vector3, WebGLRenderer } from "three";
 import { GlobalFooter } from "../../../shared/components/GlobalFooter";
+import { classNames } from "../../../shared/utils/classNames";
 import type { Navigate } from "../../../shared/utils/mockData";
 import styles from "./LandingPage.module.css";
 
@@ -22,7 +23,13 @@ gsap.registerPlugin(ScrollTrigger);
 
 const githubUrl = "https://github.com/yorukot/netstamp";
 
-const checks = ["Ping", "DNS", "Traceroute"];
+const checkCards = [
+	{ name: "Ping", metric: "p95 42ms", detail: "ICMP / TCP probes" },
+	{ name: "DNS", metric: "NOERROR", detail: "resolver + authority" },
+	{ name: "Traceroute", metric: "14 hops", detail: "route hash diff" }
+];
+
+const routeHops = ["AMS", "FRA", "IXP", "NYC", "SFO"];
 
 const routeSignals = ["See latency.", "See packet loss.", "See DNS failures.", "See path changes.", "See where traffic takes the long way around."];
 
@@ -164,11 +171,6 @@ export function LandingPage({ navigate }: LandingPageProps) {
 						</div>
 					</div>
 
-					<div className={styles.heroTelemetry} aria-hidden="true">
-						<span>probe://edge</span>
-						<strong>128</strong>
-						<span>packets in flight</span>
-					</div>
 				</section>
 
 				{/* Story Section — redesigned with Three.js */}
@@ -202,9 +204,9 @@ export function LandingPage({ navigate }: LandingPageProps) {
 						<div className={styles.featureHeaderRule} aria-hidden="true" />
 					</div>
 
-					<article data-gs="feature-card" className={styles.featureCard}>
+					<article data-gs="feature-card" className={classNames("ns-cut-frame", styles.featureCard, styles.probeFeatureCard)}>
 						<div className={styles.featureCardMain}>
-							<div className={styles.cardIcon} aria-hidden="true">
+							<div className={classNames("ns-cut-frame", styles.cardIcon)} aria-hidden="true">
 								<GlobeHemisphereWestIcon size={24} weight="duotone" />
 							</div>
 							<h2>Probes everywhere.</h2>
@@ -219,27 +221,64 @@ export function LandingPage({ navigate }: LandingPageProps) {
 						</span>
 					</article>
 
-					<article data-gs="feature-card" className={styles.featureCard}>
-						<div className={styles.cardIcon} aria-hidden="true">
-							<PulseIcon size={24} weight="duotone" />
+					<article data-gs="feature-card" className={classNames("ns-cut-frame", styles.featureCard)}>
+						<div className={styles.featureCardTopline}>
+							<div className={classNames("ns-cut-frame", styles.cardIcon)} aria-hidden="true">
+								<PulseIcon size={24} weight="duotone" />
+							</div>
+							<span>scheduler / result stream</span>
 						</div>
 						<h2>Checks that matter.</h2>
+						<p>Simple tools. Structured results. Historical visibility.</p>
 						<div className={styles.checkGrid}>
-							{checks.map(check => (
-								<strong key={check}>{check}</strong>
+							{checkCards.map(check => (
+								<div className={classNames("ns-cut-frame", styles.checkCard)} key={check.name}>
+									<div className={styles.checkCardHeader}>
+										<strong>{check.name}</strong>
+										<span>{check.metric}</span>
+									</div>
+									<div className={styles.checkPacketRail} aria-hidden="true">
+										<i />
+										<i />
+										<i />
+										<i />
+									</div>
+									<small>{check.detail}</small>
+								</div>
 							))}
 						</div>
-						<p>Simple tools. Structured results. Historical visibility.</p>
+						<div className={styles.checkTelemetry} aria-hidden="true">
+							<span>interval 30s</span>
+							<span>jitter +/-4s</span>
+							<span>retention 30d</span>
+						</div>
 						<span className={styles.featureBadge} aria-hidden="true">
 							02
 						</span>
 					</article>
 
-					<article data-gs="feature-card" className={styles.featureCard}>
-						<div className={styles.cardIcon} aria-hidden="true">
-							<NetworkIcon size={24} weight="duotone" />
+					<article data-gs="feature-card" className={classNames("ns-cut-frame", styles.featureCard)}>
+						<div className={styles.featureCardTopline}>
+							<div className={classNames("ns-cut-frame", styles.cardIcon)} aria-hidden="true">
+								<NetworkIcon size={24} weight="duotone" />
+							</div>
+							<span>path hash / hop timeline</span>
 						</div>
 						<h2>Routes you can compare.</h2>
+						<div className={styles.routeBoard} aria-hidden="true">
+							<div className={styles.routeRail}>
+								{routeHops.map(hop => (
+									<span className={styles.routeNode} key={hop}>
+										{hop}
+									</span>
+								))}
+							</div>
+							<div className={styles.routeMetrics}>
+								<span>delta +18ms</span>
+								<span>hash changed</span>
+								<span>hop 9 reroute</span>
+							</div>
+						</div>
 						<ul className={styles.signalList}>
 							{routeSignals.map(signal => (
 								<li key={signal}>
@@ -283,7 +322,7 @@ export function LandingPage({ navigate }: LandingPageProps) {
 						<div className={styles.trustRight}>
 							<div className={styles.trustGrid}>
 								{trustSignals.map(signal => (
-									<div data-gs="trust-signal" className={styles.trustLine} key={signal}>
+									<div data-gs="trust-signal" className={classNames("ns-cut-frame", styles.trustLine)} key={signal}>
 										<ShieldCheckIcon size={18} weight="bold" aria-hidden="true" />
 										<span>{signal}</span>
 									</div>

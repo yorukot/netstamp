@@ -62,53 +62,14 @@
 }
 
 .stepItem {
-	--cut: 0.5rem;
-	--frame-color: var(--ns-border-faint);
-	position: relative;
+	--ns-frame-cut: var(--ns-cut-sm);
+	--ns-frame-color: var(--ns-border-faint);
 	display: grid;
 	gap: 0.25rem;
 	min-width: 0;
 	padding: 0.75rem;
-	border: 1px solid var(--frame-color);
 	color: var(--ns-text-low);
 	background: #0c0f14;
-	clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
-}
-
-.stepItem::before,
-.stepItem::after,
-.tagButton::before,
-.tagButton::after,
-.registrationBlock::before,
-.registrationBlock::after,
-.detectCard::before,
-.detectCard::after {
-	content: "";
-	position: absolute;
-	width: calc(var(--cut) * 1.41421356);
-	height: 1px;
-	background: var(--frame-color);
-	pointer-events: none;
-}
-
-.stepItem::before,
-.tagButton::before,
-.registrationBlock::before,
-.detectCard::before {
-	top: var(--cut);
-	left: 0;
-	transform: rotate(-45deg);
-	transform-origin: left center;
-}
-
-.stepItem::after,
-.tagButton::after,
-.registrationBlock::after,
-.detectCard::after {
-	right: 0;
-	bottom: var(--cut);
-	transform: rotate(-45deg);
-	transform-origin: right center;
 }
 
 .stepItem span,
@@ -128,7 +89,7 @@
 }
 
 .stepActive {
-	--frame-color: var(--ns-accent-border);
+	--ns-frame-color: var(--ns-accent-border);
 	background: rgba(255, 122, 26, 0.12);
 	box-shadow: 0 0 1.25rem rgba(255, 122, 26, 0.12);
 }
@@ -139,7 +100,7 @@
 }
 
 .stepComplete {
-	--frame-color: rgba(48, 209, 88, 0.42);
+	--ns-frame-color: rgba(48, 209, 88, 0.42);
 	background: rgba(48, 209, 88, 0.08);
 }
 
@@ -218,10 +179,8 @@
 }
 
 .tagButton {
-	--cut: 0.375rem;
-	--frame-color: var(--ns-border-faint);
-	position: relative;
-	border: 1px solid var(--frame-color);
+	--ns-frame-cut: var(--ns-cut-xs);
+	--ns-frame-color: var(--ns-border-faint);
 	padding: 0.5rem 0.75rem;
 	color: var(--ns-text-muted);
 	background: #0c0f14;
@@ -231,12 +190,11 @@
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
 	cursor: pointer;
-	clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
 }
 
 .tagButton:hover,
 .tagSelected {
-	--frame-color: var(--ns-accent-border);
+	--ns-frame-color: var(--ns-accent-border);
 	color: var(--ns-accent-hover);
 	background: rgba(255, 122, 26, 0.1);
 }
@@ -261,14 +219,11 @@
 }
 
 .registrationBlock {
-	--cut: 0.75rem;
-	--frame-color: var(--ns-border-faint);
-	position: relative;
+	--ns-frame-cut: var(--ns-cut-md);
+	--ns-frame-color: var(--ns-border-faint);
 	margin-top: 0.25rem;
 	padding: 1rem;
-	border: 1px solid var(--frame-color);
 	background: rgba(255, 255, 255, 0.025);
-	clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
 }
 
 .tokenLine {
@@ -293,15 +248,12 @@
 }
 
 .detectCard {
-	--cut: 0.75rem;
-	--frame-color: rgba(255, 122, 26, 0.22);
-	position: relative;
+	--ns-frame-cut: var(--ns-cut-md);
+	--ns-frame-color: rgba(255, 122, 26, 0.22);
 	display: grid;
 	gap: 0.625rem;
 	padding: 1rem;
-	border: 1px solid var(--frame-color);
 	background: linear-gradient(135deg, rgba(255, 122, 26, 0.12), transparent 16rem), #0c0f14;
-	clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
 }
 
 .detectCard strong {

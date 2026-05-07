@@ -1,14 +1,15 @@
 import netstampLogo from "@netstamp/brand/assets/netstamp-logo-light.svg";
-import { Button } from "@netstamp/ui";
+import { Button, PageShell, SignalAvatar } from "@netstamp/ui";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { pathForRoute } from "../routes/routePaths";
 import { GlobalFooter } from "../shared/components/GlobalFooter";
+import { classNames } from "../shared/utils/classNames";
 import { currentUser, sidebarItems } from "../shared/utils/mockData";
 import styles from "./AppShell.module.css";
 
 export function AppShell() {
 	return (
-		<div className={styles.shell}>
+		<PageShell as="div" className={styles.shell}>
 			<aside className={styles.sidebar}>
 				<Link className={styles.brand} to={pathForRoute("landing")}>
 					<img className={styles.brandLogo} src={netstampLogo} alt="Netstamp" />
@@ -16,7 +17,7 @@ export function AppShell() {
 
 				<label className={styles.teamSelect}>
 					<span>team</span>
-					<span className={styles.teamFrame}>
+					<span className={classNames("ns-cut-frame", styles.teamFrame)}>
 						<select defaultValue="vector-ix">
 							<option value="vector-ix">Vector IX / prod</option>
 							<option value="helio">Helio Validators</option>
@@ -27,17 +28,15 @@ export function AppShell() {
 
 				<nav className={styles.nav} aria-label="Primary app navigation">
 					{sidebarItems.map(item => (
-						<NavLink key={item.route} to={pathForRoute(item.route)} className={({ isActive }) => (isActive ? styles.active : undefined)}>
+						<NavLink key={item.route} to={pathForRoute(item.route)} className={({ isActive }) => classNames("ns-cut-frame", isActive && styles.active)}>
 							{item.label}
 						</NavLink>
 					))}
 				</nav>
 
-				<div className={styles.userCard}>
+				<div className={classNames("ns-cut-frame", styles.userCard)}>
 					<div className={styles.userProfile}>
-						<span className={styles.avatarFrame} aria-hidden="true">
-							<img src={currentUser.gravatarUrl} alt="" referrerPolicy="no-referrer" />
-						</span>
+						<SignalAvatar size="sm" src={currentUser.gravatarUrl} referrerPolicy="no-referrer" aria-hidden="true" />
 						<div className={styles.userMeta}>
 							<strong>{currentUser.name}</strong>
 							<span>{currentUser.role}</span>
@@ -58,6 +57,6 @@ export function AppShell() {
 				<Outlet />
 				<GlobalFooter variant="compact" />
 			</main>
-		</div>
+		</PageShell>
 	);
 }

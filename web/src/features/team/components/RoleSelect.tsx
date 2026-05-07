@@ -19,7 +19,7 @@ export function RoleSelect({ role, name }: RoleSelectProps) {
 	const roleClass = styles[selectedRole as keyof typeof styles] || styles.member;
 
 	return (
-		<span className={classNames(styles.frame, roleClass)}>
+		<span className={classNames("ns-cut-frame", styles.frame, roleClass)}>
 			<select className={styles.select} value={selectedRole} aria-label={`Change role for ${name}`} onChange={event => setSelectedRole(event.currentTarget.value)}>
 				{roleOptions.map(option => (
 					<option key={option.value} value={option.value}>

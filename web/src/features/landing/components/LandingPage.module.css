@@ -77,73 +77,29 @@
 }
 
 .cardIcon {
+	--ns-frame-cut: var(--ns-cut-sm);
 	--ns-frame-color: var(--ns-border);
-	position: relative;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	border: 1px solid var(--ns-frame-color);
+	color: var(--ns-accent-hover);
 	background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent), #0d0d12;
 	background-size:
 		100% 100%,
 		100% 100%;
 	box-shadow: var(--ns-shadow-sm);
-	clip-path: polygon(var(--ns-cut-sm) 0, 100% 0, 100% calc(100% - var(--ns-cut-sm)), calc(100% - var(--ns-cut-sm)) 100%, 0 100%, 0 var(--ns-cut-sm));
-}
-/* Chamfered border overlay — only on small, icon-sized elements where
-   there is no text content sitting beneath the pseudo-element */
-.heroTelemetry::before,
-.cardIcon::before,
-.checkGrid strong::before {
-	content: "";
-	position: absolute;
-	inset: 0;
-	z-index: 2;
-	padding: 1px;
-	background: var(--ns-frame-color, var(--ns-border));
-	clip-path: inherit;
-	pointer-events: none;
-	mask:
-		linear-gradient(#000 0 0) content-box,
-		linear-gradient(#000 0 0);
-	mask-composite: exclude;
-	-webkit-mask:
-		linear-gradient(#000 0 0) content-box,
-		linear-gradient(#000 0 0);
-	-webkit-mask-composite: xor;
 }
 
-/* featureCard and trustLine have content children — the ::before border
-   overlay sits at z-index 2 but the inner content must be elevated above
-   it so it isn't washed out. */
-.featureCard::before,
-.trustLine::before {
-	content: "";
-	position: absolute;
-	inset: 0;
-	z-index: 2;
-	padding: 1px;
-	background: var(--ns-frame-color, var(--ns-border));
-	clip-path: inherit;
-	pointer-events: none;
-	mask:
-		linear-gradient(#000 0 0) content-box,
-		linear-gradient(#000 0 0);
-	mask-composite: exclude;
-	-webkit-mask:
-		linear-gradient(#000 0 0) content-box,
-		linear-gradient(#000 0 0);
-	-webkit-mask-composite: xor;
-}
-
-/* Lift all direct children above the ::before border overlay */
 .featureCardMain,
 .probeRoster,
+.featureCardTopline,
 .featureCard > .cardIcon,
 .featureCard > h2,
 .featureCard > p,
 .featureCard > .checkGrid,
-.featureCard > .signalList {
+.featureCard > .signalList,
+.featureCard > .checkTelemetry,
+.featureCard > .routeBoard {
 	position: relative;
 	z-index: 3;
 }
@@ -440,38 +396,6 @@
 	transform: rotateX(72deg) translateZ(-10rem);
 }
 
-.heroTelemetry {
-	--ns-frame-color: var(--ns-border);
-	position: absolute;
-	right: clamp(1rem, 4vw, 5rem);
-	bottom: clamp(2rem, 6vw, 5rem);
-	z-index: 4;
-	display: grid;
-	gap: 0.25rem;
-	min-width: 12rem;
-	padding: 0.9rem 1rem;
-	border: 1px solid var(--ns-frame-color);
-	background: #08080b;
-	box-shadow: var(--ns-shadow-md);
-	clip-path: polygon(var(--ns-cut-sm) 0, 100% 0, 100% calc(100% - var(--ns-cut-sm)), calc(100% - var(--ns-cut-sm)) 100%, 0 100%, 0 var(--ns-cut-sm));
-}
-
-.heroTelemetry span {
-	color: var(--ns-text-low);
-	font-family: var(--ns-font-mono);
-	font-size: 0.65rem;
-	font-weight: 700;
-	letter-spacing: 0.12em;
-	text-transform: uppercase;
-}
-
-.heroTelemetry strong {
-	color: var(--ns-accent-hover);
-	font-family: var(--ns-font-display);
-	font-size: 2.4rem;
-	line-height: 1;
-}
-
 /* ── Story Section ────────────────────────────────────────── */
 
 .storySection {
@@ -560,16 +484,16 @@
 	display: inline-block;
 	width: 0.4rem;
 	height: 0.4rem;
-	background: var(--ns-success);
+	background: var(--ns-accent-hover);
 	border-radius: 50%;
-	box-shadow: 0 0 0.5rem var(--ns-success);
+	box-shadow: 0 0 0.5rem var(--ns-accent-hover);
 	animation: nodeBlink 2.4s ease-in-out infinite;
 }
 
 /* ── Feature Stack ────────────────────────────────────────── */
 
 .featureStack {
-	padding: clamp(4rem, 8vw, 8rem) 2rem;
+	padding: 4rem 2rem;
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: 1rem;
@@ -598,35 +522,35 @@
 .featureHeaderRule {
 	flex: 1;
 	height: 1px;
-	background: linear-gradient(90deg, var(--ns-border-faint), transparent);
+	background: linear-gradient(90deg, var(--ns-accent-border), rgba(255, 122, 26, 0.18), transparent);
 }
 
 .featureCard {
-	--ns-frame-color: var(--ns-border);
-	position: relative;
+	--ns-frame-cut: var(--ns-cut-lg);
+	--ns-frame-color: rgba(255, 122, 26, 0.78);
 	display: grid;
 	align-content: start;
 	gap: 1rem;
 	padding: clamp(1.5rem, 2.6vw, 2.25rem);
-	background: linear-gradient(160deg, rgba(255, 255, 255, 0.032), transparent 55%), #0c0c11;
 	border: 1px solid var(--ns-frame-color);
-	box-shadow: var(--ns-shadow-sm);
-	clip-path: polygon(var(--ns-cut-lg) 0, 100% 0, 100% calc(100% - var(--ns-cut-lg)), calc(100% - var(--ns-cut-lg)) 100%, 0 100%, 0 var(--ns-cut-lg));
-	transition:
-		border-color var(--ns-transition),
-		box-shadow var(--ns-transition);
-	overflow: hidden;
+	background:
+		linear-gradient(90deg, rgba(255, 122, 26, 0.2), transparent 42%), linear-gradient(160deg, rgba(255, 255, 255, 0.015), transparent 54%), #030508;
+	background-size:
+		100% 100%,
+		100% 100%;
+	box-shadow:
+		var(--ns-shadow-md),
+		0 0 0 1px rgba(0, 0, 0, 0.88),
+		0 0 3.5rem rgba(255, 122, 26, 0.13);
 }
 
-.featureCard:hover {
-	--ns-frame-color: var(--ns-border-strong);
-	box-shadow: var(--ns-shadow-md);
+.featureCard::before {
+	display: none;
 }
 
 /* First card: full-width, two-column with 3D visualization on the right.
    Styled consistently with cards 2 and 3. */
-.featureCard:first-of-type {
-	--ns-frame-color: var(--ns-accent-border);
+.probeFeatureCard {
 	grid-column: 1 / -1;
 	display: grid;
 	grid-template-columns: 1fr 1fr;
@@ -636,14 +560,12 @@
 	overflow: hidden;
 }
 
-.featureCard:first-of-type::before {
-	display: none; /* accent ::before re-rendered via clip-path + border on the card */
-}
-
 /* Left content column inside first card */
-.featureCard:first-of-type .featureCardMain {
+.probeFeatureCard .featureCardMain {
 	padding: clamp(1.5rem, 2.6vw, 2.25rem);
-	border-right: 1px solid var(--ns-accent-border);
+	border-right: 1px solid rgba(255, 122, 26, 0.58);
+	background:
+		linear-gradient(180deg, rgba(0, 0, 0, 0.18), transparent), linear-gradient(90deg, rgba(255, 122, 26, 0.12), transparent 42%);
 }
 
 /* Right visualization column */
@@ -652,7 +574,7 @@
 	min-height: 22rem;
 }
 
-.featureCard:first-of-type .featureBadge {
+.probeFeatureCard .featureBadge {
 	position: absolute;
 	top: 1.25rem;
 	right: 1.5rem;
@@ -663,6 +585,22 @@
 	display: grid;
 	align-content: start;
 	gap: 1rem;
+}
+
+.featureCardTopline {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+}
+
+.featureCardTopline > span {
+	color: var(--ns-accent-hover);
+	text-shadow: 0 0 1rem rgba(255, 122, 26, 0.22);
+	font-family: var(--ns-font-mono);
+	font-size: 0.6875rem;
+	font-weight: 800;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
 }
 
 .cardIcon {
@@ -683,7 +621,7 @@
 	top: 1.25rem;
 	right: 1.5rem;
 	z-index: 3; /* above ::before border overlay */
-	color: rgba(255, 122, 26, 0.18);
+	color: rgba(255, 122, 26, 0.24);
 	font-family: var(--ns-font-display);
 	font-size: clamp(3rem, 4.5vw, 5rem);
 	font-weight: 800;
@@ -721,17 +659,13 @@
 	transition: border-color var(--ns-transition);
 }
 
-.rosterRow:hover {
-	border-left-color: var(--ns-accent-border);
-}
-
 .rosterDot {
 	display: block;
 	width: 0.38rem;
 	height: 0.38rem;
-	background: var(--ns-success);
+	background: var(--ns-accent-hover);
 	border-radius: 50%;
-	box-shadow: 0 0 0.4rem var(--ns-success);
+	box-shadow: 0 0 0.4rem var(--ns-accent-hover);
 	animation: nodeBlink 2.8s ease-in-out infinite;
 }
 
@@ -778,26 +712,171 @@
 	margin: 0.25rem 0;
 }
 
-.checkGrid strong {
-	--ns-frame-color: var(--ns-border-faint);
-	position: relative;
+.checkCard {
+	--ns-frame-cut: var(--ns-cut-sm);
+	--ns-frame-color: rgba(255, 122, 26, 0.28);
 	display: grid;
-	place-items: center;
-	min-height: 4.8rem;
+	gap: 0.75rem;
+	min-height: 8.25rem;
 	padding: 0.75rem;
+	background:
+		linear-gradient(180deg, rgba(255, 122, 26, 0.12), transparent 65%), linear-gradient(90deg, rgba(255, 122, 26, 0.045) 0 1px, transparent 1px 0.75rem), #030508;
+	box-shadow:
+		inset 0 0 0 1px rgba(0, 0, 0, 0.82),
+		0 0 1.25rem rgba(255, 122, 26, 0.045);
+	align-content: space-between;
+}
+
+.checkCardHeader {
+	display: grid;
+	gap: 0.25rem;
+}
+
+.checkCard strong {
 	color: var(--ns-accent-hover);
-	background: #090910;
-	border: 1px solid var(--ns-frame-color);
 	font-family: var(--ns-font-mono);
 	font-size: 0.85rem;
+	line-height: 1;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
-	clip-path: polygon(var(--ns-cut-sm) 0, 100% 0, 100% calc(100% - var(--ns-cut-sm)), calc(100% - var(--ns-cut-sm)) 100%, 0 100%, 0 var(--ns-cut-sm));
+}
+
+.checkCardHeader span,
+.checkCard small,
+.checkTelemetry span,
+.routeMetrics span {
+	color: var(--ns-text-low);
+	font-family: var(--ns-font-mono);
+	font-size: 0.625rem;
+	font-weight: 800;
+	letter-spacing: 0.1em;
+	line-height: 1.25;
+	text-transform: uppercase;
+}
+
+.checkCardHeader span {
+	color: var(--ns-text-muted);
+}
+
+.checkPacketRail {
+	display: grid;
+	grid-template-columns: 1fr 0.64fr 0.92fr 0.45fr;
+	gap: 0.25rem;
+	align-items: end;
+	height: 2.25rem;
+}
+
+.checkPacketRail i {
+	display: block;
+	height: 38%;
+	background: linear-gradient(180deg, var(--ns-accent-hover), rgba(255, 122, 26, 0.18));
+	box-shadow: 0 0 0.9rem rgba(255, 122, 26, 0.22);
+}
+
+.checkPacketRail i:nth-child(2) {
+	height: 72%;
+}
+
+.checkPacketRail i:nth-child(3) {
+	height: 54%;
+}
+
+.checkPacketRail i:nth-child(4) {
+	height: 94%;
+}
+
+.checkTelemetry {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 0.5rem;
+	margin-top: auto;
+}
+
+.checkTelemetry span {
+	border-top: 1px solid rgba(255, 122, 26, 0.22);
+	padding-top: 0.625rem;
+}
+
+.routeBoard {
+	display: grid;
+	gap: 0.875rem;
+	margin: 0.25rem 0;
+	padding: 1rem 0 0.25rem;
+}
+
+.routeRail {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.5rem;
+	min-height: 4.5rem;
+}
+
+.routeRail::before {
+	content: "";
+	position: absolute;
+	left: 1.25rem;
+	right: 1.25rem;
+	top: 50%;
+	height: 1px;
+	background: linear-gradient(90deg, transparent, rgba(255, 122, 26, 0.22), var(--ns-accent-border), rgba(255, 122, 26, 0.18), transparent);
+	box-shadow: 0 0 1rem rgba(255, 122, 26, 0.22);
+}
+
+.routeNode {
+	position: relative;
+	z-index: 1;
+	display: grid;
+	place-items: center;
+	width: clamp(2.4rem, 6vw, 3.2rem);
+	height: clamp(2.4rem, 6vw, 3.2rem);
+	color: var(--ns-text);
+	background: #020407;
+	border: 1px solid rgba(255, 122, 26, 0.44);
+	font-family: var(--ns-font-mono);
+	font-size: 0.625rem;
+	font-weight: 900;
+	letter-spacing: 0.1em;
+	box-shadow:
+		0 0 0 0.25rem rgba(255, 122, 26, 0.04),
+		0 0 1.4rem rgba(255, 122, 26, 0.08);
+}
+
+.routeNode:nth-child(1),
+.routeNode:nth-child(5) {
+	transform: translateY(0.25rem);
+}
+
+.routeNode:nth-child(2),
+.routeNode:nth-child(4) {
+	transform: translateY(-0.125rem);
+}
+
+.routeNode:nth-child(3) {
+	color: var(--ns-text-on-accent);
+	background: var(--ns-accent-hover);
+	box-shadow:
+		0 0 0 0.25rem rgba(255, 122, 26, 0.08),
+		0 0 1.8rem rgba(255, 122, 26, 0.2);
+}
+
+.routeMetrics {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 0.5rem;
+}
+
+.routeMetrics span {
+	border: 1px solid rgba(255, 122, 26, 0.22);
+	padding: 0.55rem;
+	color: var(--ns-accent-hover);
+	background: rgba(0, 0, 0, 0.28);
 }
 
 .signalList {
 	display: grid;
-	gap: 0.7rem;
+	gap: 0.55rem;
 	margin: 0.25rem 0 0;
 	padding: 0;
 	list-style: none;
@@ -808,22 +887,24 @@
 	align-items: flex-start;
 	gap: 0.65rem;
 	color: var(--ns-text-muted);
-	font-size: 1rem;
+	font-size: 0.95rem;
 	line-height: 1.45;
 }
 
 .signalList svg {
 	flex: 0 0 auto;
 	margin-top: 0.2rem;
-	color: var(--ns-success);
+	color: var(--ns-accent-hover);
 }
 
 /* ── Trust / CTA Section ──────────────────────────────────── */
 
 .trustSection {
 	padding: clamp(5rem, 9vw, 9rem) 2rem clamp(5rem, 9vw, 8rem);
-	border-top: 1px solid var(--ns-border-faint);
-	background: linear-gradient(180deg, #060709, var(--ns-bg) 80%);
+	border-top: 1px solid rgba(255, 122, 26, 0.18);
+	background:
+		radial-gradient(circle at 12% 8%, rgba(255, 122, 26, 0.12), transparent 20rem), radial-gradient(circle at 88% 22%, rgba(255, 122, 26, 0.07), transparent 22rem),
+		linear-gradient(180deg, #020304, var(--ns-bg) 80%);
 }
 
 /* Subtle scan-line texture */
@@ -872,23 +953,17 @@
 }
 
 .trustLine {
-	--ns-frame-color: var(--ns-border-faint);
-	position: relative;
+	--ns-frame-cut: var(--ns-cut-sm);
+	--ns-frame-color: rgba(196, 204, 217, 0.18);
 	display: flex;
 	align-items: flex-start;
 	gap: 0.75rem;
 	padding: 1.1rem 1rem;
 	color: var(--ns-text-muted);
-	background: linear-gradient(160deg, rgba(255, 255, 255, 0.025), transparent), #09090e;
-	border: 1px solid var(--ns-frame-color);
+	background: linear-gradient(160deg, rgba(255, 122, 26, 0.07), transparent 58%), #030508;
 	font-size: 0.9rem;
 	line-height: 1.5;
-	clip-path: polygon(var(--ns-cut-sm) 0, 100% 0, 100% calc(100% - var(--ns-cut-sm)), calc(100% - var(--ns-cut-sm)) 100%, 0 100%, 0 var(--ns-cut-sm));
 	transition: border-color var(--ns-transition);
-}
-
-.trustLine:hover {
-	--ns-frame-color: var(--ns-border);
 }
 
 .trustLine svg {
@@ -1039,11 +1114,6 @@
 		min-height: 32rem;
 	}
 
-	.heroTelemetry {
-		right: 2rem;
-		bottom: 2rem;
-	}
-
 	.storySection {
 		grid-template-columns: 1fr;
 		min-height: auto;
@@ -1058,11 +1128,11 @@
 		min-height: 28rem;
 	}
 
-	.featureCard:first-of-type {
+	.probeFeatureCard {
 		grid-template-columns: 1fr;
 	}
 
-	.featureCard:first-of-type .featureCardMain {
+	.probeFeatureCard .featureCardMain {
 		border-right: none;
 		border-bottom: 1px solid var(--ns-accent-border);
 	}
@@ -1120,14 +1190,6 @@
 		margin: 0 -1rem;
 	}
 
-	.heroTelemetry {
-		position: relative;
-		right: auto;
-		bottom: auto;
-		width: fit-content;
-		margin-top: 0.5rem;
-	}
-
 	.storyCopy {
 		padding: 2.5rem 1.25rem;
 	}
@@ -1140,11 +1202,13 @@
 		grid-template-columns: 1fr;
 	}
 
-	.featureCard:first-of-type {
+	.probeFeatureCard {
 		grid-column: auto;
 	}
 
 	.checkGrid,
+	.checkTelemetry,
+	.routeMetrics,
 	.trustGrid {
 		grid-template-columns: 1fr;
 	}

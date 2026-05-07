@@ -9,8 +9,8 @@
 	line-height: 1;
 	white-space: nowrap;
 	cursor: pointer;
+	--ns-frame-cut: var(--ns-cut-sm);
 	--ns-frame-color: transparent;
-	border: 1px solid var(--ns-frame-color);
 	transition:
 		background-color var(--ns-transition),
 		border-color var(--ns-transition),
@@ -20,43 +20,11 @@
 	text-decoration: none;
 	text-transform: uppercase;
 	user-select: none;
-	position: relative;
 	isolation: isolate;
-	clip-path: polygon(var(--ns-cut-sm) 0, 100% 0, 100% calc(100% - var(--ns-cut-sm)), calc(100% - var(--ns-cut-sm)) 100%, 0 100%, 0 var(--ns-cut-sm));
-}
-
-.btn::before {
-	content: "";
-	position: absolute;
-	top: var(--ns-cut-sm);
-	left: 0;
-	width: calc(var(--ns-cut-sm) * 1.41421356);
-	height: 1px;
-	background: var(--ns-frame-color);
-	pointer-events: none;
-	transform: rotate(-45deg);
-	transform-origin: left center;
-}
-
-.btn::after {
-	content: "";
-	position: absolute;
-	right: 0;
-	bottom: var(--ns-cut-sm);
-	width: calc(var(--ns-cut-sm) * 1.41421356);
-	height: 1px;
-	background: var(--ns-frame-color);
-	pointer-events: none;
-	transform: rotate(-45deg);
-	transform-origin: right center;
 }
 
 .btn:hover {
 	transform: translateY(-0.0625rem);
-}
-
-.btn:hover::after {
-	opacity: 1;
 }
 
 .btn:focus-visible {

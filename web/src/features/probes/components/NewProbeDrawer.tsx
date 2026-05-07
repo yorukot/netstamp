@@ -143,7 +143,7 @@ export function NewProbeDrawer() {
 
 				<ol className={styles.stepTimeline} aria-label="Create probe progress">
 					{createProbeSteps.map((step, index) => (
-						<li className={classNames(styles.stepItem, index === currentStep && styles.stepActive, index < currentStep && styles.stepComplete)} key={step.number}>
+						<li className={classNames("ns-cut-frame", styles.stepItem, index === currentStep && styles.stepActive, index < currentStep && styles.stepComplete)} key={step.number}>
 							<span>{step.number}</span>
 							<strong>{step.title}</strong>
 							<small>{step.copy}</small>
@@ -177,7 +177,7 @@ export function NewProbeDrawer() {
 								<p>Run this command on the host. The wizard watches for the first heartbeat and unlocks metadata when the probe is detected.</p>
 							</div>
 
-							<div className={styles.registrationBlock}>
+							<div className={classNames("ns-cut-frame", styles.registrationBlock)}>
 								<div className={styles.tokenLine}>
 									<span>Registration token</span>
 									<strong>{token}</strong>
@@ -187,7 +187,7 @@ export function NewProbeDrawer() {
 								</Terminal>
 							</div>
 
-							<div className={styles.detectCard}>
+							<div className={classNames("ns-cut-frame", styles.detectCard)}>
 								<Badge tone={installStatus === "detected" ? "success" : "warning"}>{installStatus === "detected" ? "Heartbeat received" : "Listening for heartbeat"}</Badge>
 								<strong>{installStatus === "detected" ? `${probeName.trim()} is online` : "Waiting for install to finish"}</strong>
 								<p>{installStatus === "detected" ? "The controller accepted the first signed result stream." : "This frontend mock auto-detects shortly after the install step starts."}</p>
@@ -226,7 +226,7 @@ export function NewProbeDrawer() {
 								<div className={styles.tagCloud}>
 									{tagOptions.map(tag => (
 										<button
-											className={classNames(styles.tagButton, selectedTags.includes(tag) && styles.tagSelected)}
+											className={classNames("ns-cut-frame", styles.tagButton, selectedTags.includes(tag) && styles.tagSelected)}
 											key={tag}
 											type="button"
 											disabled={currentStep !== 2}

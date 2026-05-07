@@ -15,42 +15,15 @@
 }
 
 .controlFrame {
+	--ns-frame-cut: var(--ns-cut-sm);
 	--ns-frame-color: var(--ns-border);
-	position: relative;
 	display: block;
 	min-width: 0;
-	overflow: hidden;
 	padding: 1px;
 	background: var(--ns-frame-color);
-	clip-path: polygon(var(--ns-cut-sm) 0, 100% 0, 100% calc(100% - var(--ns-cut-sm)), calc(100% - var(--ns-cut-sm)) 100%, 0 100%, 0 var(--ns-cut-sm));
 	transition:
 		background var(--ns-transition),
 		box-shadow var(--ns-transition);
-}
-
-.controlFrame::before,
-.controlFrame::after {
-	content: "";
-	position: absolute;
-	z-index: 2;
-	width: calc(var(--ns-cut-sm) * 1.41421356);
-	height: 1px;
-	background: var(--ns-frame-color);
-	pointer-events: none;
-}
-
-.controlFrame::before {
-	top: var(--ns-cut-sm);
-	left: 0;
-	transform: rotate(-45deg);
-	transform-origin: left center;
-}
-
-.controlFrame::after {
-	right: 0;
-	bottom: var(--ns-cut-sm);
-	transform: rotate(-45deg);
-	transform-origin: right center;
 }
 
 .controlFrame:focus-within {

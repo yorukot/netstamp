@@ -18,7 +18,7 @@ export function GlobalFooter({ variant = "full", className }: GlobalFooterProps)
 	return (
 		<footer className={classes}>
 			{variant === "full" ? (
-				<div className={styles.footerGrid}>
+				<div className={["ns-cut-frame", styles.footerGrid].join(" ")}>
 					<div className={styles.footerBrand}>
 						<img className={styles.brandMark} src={netstampMark} alt="" aria-hidden="true" />
 						<div>

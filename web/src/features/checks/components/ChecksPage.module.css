@@ -27,23 +27,6 @@
 	overflow-x: visible;
 }
 
-.checkEditorStack::-webkit-scrollbar {
-	width: 0.5rem;
-	height: 0.5rem;
-}
-
-.checkEditorStack::-webkit-scrollbar-track {
-	background: rgba(255, 255, 255, 0.04);
-}
-
-.checkEditorStack::-webkit-scrollbar-thumb {
-	background: var(--ns-border-strong);
-}
-
-.checkEditorStack::-webkit-scrollbar-thumb:hover {
-	background: var(--ns-accent-border);
-}
-
 .checkListFilters {
 	display: grid;
 	grid-template-columns: minmax(16rem, 1fr) repeat(2, minmax(9rem, 0.45fr));
@@ -81,10 +64,11 @@
 	position: relative;
 }
 
-.probeMultiSelect summary {
+.probeSummary {
+	--ns-frame-cut: var(--ns-cut-sm);
+	--ns-frame-color: var(--ns-border-faint);
 	min-height: 2.75rem;
 	padding: 0.75rem 2.25rem 0.75rem 0.875rem;
-	border: 1px solid var(--ns-border-faint);
 	color: var(--ns-text);
 	background:
 		linear-gradient(45deg, transparent 50%, var(--ns-accent-hover) 50%) calc(100% - 1.18rem) 50% / 0.42rem 0.42rem no-repeat,
@@ -94,10 +78,9 @@
 	font-size: 0.875rem;
 	cursor: pointer;
 	list-style: none;
-	clip-path: polygon(0.5rem 0, 100% 0, 100% calc(100% - 0.5rem), calc(100% - 0.5rem) 100%, 0 100%, 0 0.5rem);
 }
 
-.probeMultiSelect summary::-webkit-details-marker {
+.probeSummary::-webkit-details-marker {
 	display: none;
 }
 
