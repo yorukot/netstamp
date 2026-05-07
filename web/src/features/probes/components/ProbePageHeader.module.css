@@ -7,7 +7,7 @@
 }
 
 .header h1 {
-	margin: 0.55rem 0 .2rem;
+	margin: 0.55rem 0 0.2rem;
 	color: #ffffff;
 	font-family: var(--ns-font-display);
 	font-size: clamp(3rem, 7vw, 5rem);
