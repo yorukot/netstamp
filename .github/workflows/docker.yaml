@@ -102,6 +102,7 @@ jobs:
         uses: actions/setup-go@v6
         with:
           go-version-file: server/go.mod
+          cache-dependency-path: server/go.sum
 
       - name: Validate release tag
         if: github.ref_type == 'tag'
